@@ -1,0 +1,64 @@
+<project name="pinochle" basedir="." default="compile">
+  <property name="home.dir"  value="." />
+  <property name="src.dir"   value="src" />
+  <property name="build.dir" value="out" />
+  <property name="lib.dir"   value="lib" />
+  <property name="dist.dir"  value="${basedir}" />
+
+  <target name="clean">
+    <delete dir="${build.dir}"></delete>
+  </target>
+
+  <path id="classpath">
+    <pathelement location="${build.dir}" />
+    <fileset dir="${lib.dir}">
+      <include name="*.jar" />
+    </fileset>
+  </path>
+
+  <target name="compile" depends="resources">
+    <mkdir dir="${build.dir}" />
+    <javac debug="true" includeantruntime="false" srcdir="${src.dir}" destdir="${build.dir}">
+      <classpath refid="classpath" />
+      <include name="**/*.java"/>
+    </javac>        
+  </target>
+
+  <target name="resources" >  
+    <copy todir="${build.dir}/org/joedog/pinochle/images" >  
+      <fileset dir="${src.dir}/org/joedog/pinochle/images" includes="*.png" />  
+    </copy>
+    <copy todir="${build.dir}/org/joedog/pinochle/images/cards" >  
+      <fileset dir="${src.dir}/org/joedog/pinochle/images/cards" includes="*.png" />  
+    </copy>
+  </target> 
+
+  <target name="run" depends="clean,compile,resources">
+    <java classname="org.joedog.pinochle.Main" fork="yes">
+      <classpath refid="classpath" />
+      <jvmarg value="-splash:${build.dir}org/joedog/pinochle/images/splash.png -XX:-OmitStackTraceInFastThrow"/>
+    </java>
+  </target>
+
+  <target name="jar" depends="clean,compile,resources">
+    <jar jarfile="${dist.dir}/${ant.project.name}.jar" basedir="${build.dir}">  
+      <manifest>  
+        <attribute name="Built-By"           value="${user.name}" />  
+        <attribute name="Main-Class"         value="org.joedog.pinochle.Main" />  
+        <attribute name="SplashScreen-Image" value="org/joedog/pinochle/images/splash.png" />  
+        <section name="common">  
+          <attribute name="Specification-Title" value="${component.name}" />  
+          <attribute name="Specification-Version" value="${component.version}" />  
+          <attribute name="Specification-Vendor" value="${component.vendor}" />  
+          <attribute name="Implementation-Title" value="${component.name}" />  
+          <attribute name="Implementation-Version" value="${component.version} ${TODAY}" />  
+          <attribute name="Implementation-Vendor" value="${component.vendor}" />  
+        </section>  
+        <attribute name="Class-Path" value="${libs.dir}" />  
+      </manifest>  
+    </jar> 
+  </target>
+
+  <target name="main" depends="clean,run" />
+
+</project>
