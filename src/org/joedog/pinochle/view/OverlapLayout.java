@@ -111,8 +111,14 @@ public class OverlapLayout implements LayoutManager2, java.io.Serializable {
    */
   public int convertIndex(int index) {
     if (overlapAbove) {
-      if (components.size() == 0) return 0;
-      return components.size() - index - 1;
+      if (components.size() == 0) {
+        return 0;
+      }
+      int i = components.size() - index - 1;
+      if (i < 1) 
+        return 1;
+      else 
+        return i;
     } else {
       return index;
     }
@@ -208,7 +214,6 @@ public class OverlapLayout implements LayoutManager2, java.io.Serializable {
     if (constraint == null) {
       constraints.remove(component);
     } else if (constraint instanceof Boolean) {
-      System.out.println("putting contraint....");
       constraints.put(component, (Boolean)constraint);
     } else {
       String message = "Constraint parameter must be of type Boolean";
