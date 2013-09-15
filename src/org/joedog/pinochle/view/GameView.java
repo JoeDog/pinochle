@@ -117,17 +117,6 @@ public class GameView extends JFrame implements View, MouseListener {
     this.setVisible(true);
   }
 
-  public ImageIcon getTrumpIcon(int suit) {
-    String path  = "org/joedog/pinochle/images/cards";
-    URL[] u      = new URL[]{
-      getClass().getClassLoader().getResource(path+"/hearts.png"),
-      getClass().getClassLoader().getResource(path+"/clubs.png"),
-      getClass().getClassLoader().getResource(path+"/diamonds.png"),
-      getClass().getClassLoader().getResource(path+"/spades.png"),
-    };
-    return new ImageIcon(u[suit]);
-  }
-
   public JPanel getMsgBox() {
     if (trump == null) {
       trump = new JLabel("", null, JLabel.CENTER);
@@ -148,23 +137,23 @@ public class GameView extends JFrame implements View, MouseListener {
         case Pinochle.NORTH:
           setting[position] = new Setting(this.controller);
           // x- from the left, y- from the top, w- width, h- height
-          setting[position].setBounds(new Rectangle(300, 10, 450, 120));
+          setting[position].setBounds(new Rectangle(300, 10, 450, 132));
           setting[position].show();
           break;
         case Pinochle.SOUTH:
           setting[position] = new Setting(this.controller);
           // x- from the left, y- from the top, w- width, h- height
-          setting[position].setBounds(new Rectangle(300, 350, 420, 120));
+          setting[position].setBounds(new Rectangle(300, 350, 420, 132));
           break;
         case Pinochle.EAST:
           setting[position] = new Setting(this.controller);
           // x- from the left, y- from the top, w- width, h- height
-          setting[position].setBounds(new Rectangle(580, 190, 420, 120));
+          setting[position].setBounds(new Rectangle(580, 190, 420, 132));
           break;
         case Pinochle.WEST:
           setting[position] = new Setting(this.controller);
           // x- from the left, y- from the top, w- width, h- height
-          setting[position].setBounds(new Rectangle(20, 190, 420, 120));
+          setting[position].setBounds(new Rectangle(20, 190, 420, 132));
           break;
       }
     }
@@ -192,16 +181,20 @@ public class GameView extends JFrame implements View, MouseListener {
     if (e.getPropertyName().equals(controller.TRUMP)) {
       trump.setText(controller.getProperty("GameBid"));
       if (e.getNewValue().equals("0")) {
-        trump.setIcon(getTrumpIcon(Pinochle.HEARTS));
+        System.out.println("Setting HEARTS");
+        trump.setIcon(new TrumpIcon(Pinochle.HEARTS));
       }
       if (e.getNewValue().equals("1")) {
-        trump.setIcon(getTrumpIcon(Pinochle.CLUBS));
+        System.out.println("Setting CLUBS");
+        trump.setIcon(new TrumpIcon(Pinochle.CLUBS));
       }
       if (e.getNewValue().equals("2")) {
-        trump.setIcon(getTrumpIcon(Pinochle.DIAMONDS));
+        System.out.println("Setting DIAMONDS");
+        trump.setIcon(new TrumpIcon(Pinochle.DIAMONDS));
       }
       if (e.getNewValue().equals("3")) {
-        trump.setIcon(getTrumpIcon(Pinochle.SPADES));
+        System.out.println("Setting SPADES");
+        trump.setIcon(new TrumpIcon(Pinochle.SPADES));
       }
     }
   }

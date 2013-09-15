@@ -3,9 +3,10 @@ package org.joedog.pinochle.game;
 import java.util.Random;
 
 public class Meld {
-  private   int  trump;
-  private   int  score = 0;
-  protected Hand hand;
+  private   int     trump;
+  private   boolean select;    // should we select cards for melding?
+  private   int     score = 0;
+  protected Hand    hand;
 
   static final int[] suits = new int[]{
     Pinochle.HEARTS,Pinochle.CLUBS,Pinochle.DIAMONDS,Pinochle.SPADES
@@ -20,9 +21,10 @@ public class Meld {
   }
 
   public Meld(Hand hand, int trump) {
-    this.hand  = hand; 
-    this.trump = trump; 
-    this.score = score(this.trump);
+    this.hand   = hand; 
+    this.trump  = trump; 
+    this.select = true;
+    this.score  = score(this.trump);
   }
 
   public int getMeld() {
@@ -228,7 +230,6 @@ public class Meld {
         hand.remove(nine);
       }
     }
-    System.out.println("Passed our logic: here's the deck size: "+deck.count());
 
     /**
      * Eek! We've gotten this far and we haven't found
@@ -255,25 +256,44 @@ public class Meld {
   }
 
   public int run(int trump) {
-    int ace =   hand.contains(new Card(Pinochle.ACE,   trump));
-    if (ace == 0)   return 0;
-    int ten =   hand.contains(new Card(Pinochle.TEN,   trump));
-    if (ten == 0)   return 0;
-    int king =  hand.contains(new Card(Pinochle.KING,  trump));
-    if (king == 0)  return 0;
-    int queen = hand.contains(new Card(Pinochle.QUEEN, trump));
-    if (queen == 0) return 0;
-    int jack =  hand.contains(new Card(Pinochle.JACK,  trump));
-    if (jack == 0)  return 0;
-    return ((ace+ten+king+queen+jack) == 10) ? 150 : 15;
+    Card ace   = new Card(Pinochle.ACE,   trump);
+    Card ten   = new Card(Pinochle.TEN,   trump);
+    Card king  = new Card(Pinochle.KING,  trump);
+    Card queen = new Card(Pinochle.QUEEN, trump);
+    Card jack  = new Card(Pinochle.JACK,  trump);
+    int a = hand.contains(ace);
+    if (a == 0)   return 0;
+    int t = hand.contains(ten);
+    if (t == 0)   return 0;
+    int k = hand.contains(king);
+    if (k == 0)  return 0;
+    int q = hand.contains(queen);
+    if (q == 0) return 0;
+    int j = hand.contains(jack);
+    if (j == 0)  return 0;
+    if (select) {
+      int num = ((a+t+k+q+j) == 10) ? 2 : 1;
+      hand.meld(ace,   num);
+      hand.meld(ten,   num);
+      hand.meld(king,  num);
+      hand.meld(queen, num);
+      hand.meld(jack,  num);
+    }
+    return ((a+t+k+q+j) == 10) ? 150 : 15;
   }
 
   public int nines(int trump) {
-    return hand.contains(new Card(Pinochle.NINE, trump));
+    Card nine = new Card(Pinochle.NINE, trump);
+    int num = hand.contains(nine);
+    if (select) {
+      hand.meld(nine, num);
+    }
+    return num;
   }
 
   public int marriage(int suit, int trump) {
     int  n  = 0;
+    int  r  = 0;
     Card k  = new Card(Pinochle.KING, suit);
     Card q  = new Card(Pinochle.QUEEN, suit);
     int  ks = this.hand.contains(k);
@@ -282,11 +302,17 @@ public class Meld {
       if (ks + qs > 3) n = 2; 
       else             n = 1;
     }
-    return (suit == trump) ? n * 4 : n * 2;
+    r = (suit == trump) ? n * 4 : n * 2;
+    if (select) {
+      hand.meld(k, n);
+      hand.meld(q, n);
+    }    
+    return r;
   }
   
   public int pinochle() {
     int  n  = 0;
+    int  r  = 0;
     Card j  = new Card(Pinochle.JACK,  Pinochle.DIAMONDS);
     Card q  = new Card(Pinochle.QUEEN, Pinochle.SPADES);
     int  js = this.hand.contains(j);
@@ -295,11 +321,17 @@ public class Meld {
       if (js + qs == 4) n = 2; 
       else              n = 1;
     }
-    return (n==2) ? 30 : n*4;
+    r = (n==2) ? 30 : n*4;
+    if (select) {
+      hand.meld(j, n);
+      hand.meld(q, n);
+    }
+    return r;
   }
 
   public int round(int rank) {
     int   res = 0;
+    int   ret = 0;
     int[] num = new int[suits.length];
     for (int i = 0; i < suits.length; i++) {
       num[i] = this.hand.contains(new Card(rank, suits[i]));  
@@ -307,7 +339,14 @@ public class Meld {
     } 
     for (int i = 0; i < num.length; i++) 
       res += num[i];
-    return (res==8) ? 10 * this.multiplier(rank) : 1 * this.multiplier(rank); 
+    ret = (res==8) ? 10 * this.multiplier(rank) : 1 * this.multiplier(rank); 
+    if (select) {
+      int y = (res == 8) ? 2 : 1;
+      for (int i = 0; i < suits.length; i++) {
+        hand.meld(new Card(rank, suits[i]), y);  
+      }
+    }
+    return ret;
   }
 
   public int shortsuit(int trump) {
@@ -323,7 +362,6 @@ public class Meld {
         }
       } 
     } 
-    System.out.println("The short suit is: "+Pinochle.suit(suit));
     return suit;
   }
 

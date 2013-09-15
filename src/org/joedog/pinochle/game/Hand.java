@@ -67,12 +67,29 @@ public class Hand {
     return found;
   }
 
+  public void meld (Card card) {
+    meld(card, 1);
+  }
+
+  public void meld (Card card, int num) {
+    int total = 0; 
+
+    if (num == 0) return;
+    for (Card c: this.getCards()) {
+      if (c.matches(card)) {
+        c.meld();
+        total += 1;
+        if (total== num) return;
+      }  
+    }
+    return;
+  }
+
   public Card pass (Card card) {
     Card tmp = null;
     for (Card c: this.getCards()) {
       if (c.matches(card)) {
         tmp = new Card(c); 
-        //remove(c);
         return tmp;
       }
     }
@@ -80,8 +97,10 @@ public class Hand {
   }
 
   public void sort() {
-    Comparator cc = Card.getComparator(Card.SortParameter.SUIT_ASCENDING,
-                                       Card.SortParameter.RANK_DESCENDING);
+    Comparator cc = Card.getComparator(
+      Card.SortParameter.SUIT_ASCENDING,
+      Card.SortParameter.RANK_DESCENDING
+    );
     Collections.sort(hand, cc);
   }
 
@@ -93,12 +112,15 @@ public class Hand {
   @Override
   public String toString() {
     String str = "";
-    Comparator cc = Card.getComparator(Card.SortParameter.SUIT_ASCENDING,
-                                       Card.SortParameter.RANK_DESCENDING);
+    Comparator cc = Card.getComparator(
+      Card.SortParameter.SUIT_ASCENDING,
+      Card.SortParameter.RANK_DESCENDING
+    );
     Collections.sort(hand, cc); 
     for (int i = 0; i < hand.size(); i++) { 
       Card c = (Card)hand.get(i);
-      str = str + c.toString()+" ";
+      String m = (c.melded()==true) ? "* " : "";
+      str = str + c.toString()+" "+m;
     }
     return str;
   }

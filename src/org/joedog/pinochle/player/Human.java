@@ -9,6 +9,7 @@ import javax.swing.JOptionPane;
 import org.joedog.pinochle.controller.GameController;
 import org.joedog.pinochle.game.*;
 import org.joedog.pinochle.view.Setting;
+import org.joedog.pinochle.view.TrumpDialog;
 
 public class Human extends Player {
   private GameController controller;
@@ -45,9 +46,9 @@ public class Human extends Player {
       myBid = -1;
     }
     if (this.myBid < 0) 
-      this.setting.bid("Pass");
+      this.setting.setText("Bid: Pass");
     else
-      this.setting.bid(""+this.myBid);
+      this.setting.setText("Bid: "+this.myBid);
     return myBid;
   }
 
@@ -58,9 +59,11 @@ public class Human extends Player {
   public int nameTrump() {
     String suits[] = new String[]{"Hearts", "Clubs", "Diamonds", "Spades"};
     JFrame frame   = new JFrame("Trump");
-    String trump   = (String) JOptionPane.showInputDialog(frame, 
-      "Name trump", "Trump", JOptionPane.QUESTION_MESSAGE, null, suits, suits[0]
-    ); 
+    TrumpDialog td = new TrumpDialog();
+    //String trump   = (String) JOptionPane.showInputDialog(frame, 
+    //  "Name trump", "Trump", JOptionPane.QUESTION_MESSAGE, null, suits, suits[0]
+    //); 
+    String trump = (String)td.getValue();
     if (trump.equals("Hearts"))   return Pinochle.HEARTS;
     if (trump.equals("Clubs"))    return Pinochle.CLUBS;
     if (trump.equals("Diamonds")) return Pinochle.DIAMONDS;

@@ -28,25 +28,21 @@ public abstract class Player {
   }
 
   public void takeCards(Deck d) {
-    //System.out.println("takeCards.BEFORE: "+this.hand.toString());
-    //System.out.println(getName()+" is taking "+d.count()+" cards");
     for (Card c: d.getCards()) {
-      //System.out.println("Adding: "+c.toString()+" with id: "+c.getId());
       if (this.type == HUMAN) {
         c.setFaceUp();
       } else {
-        c.setFaceUp();
+        c.setFaceDown();
       }
       this.hand.add(c);
     } 
     this.hand.sort();
     this.setting.refresh(this.hand);
-    //System.out.println("takeCards.AFTER: "+this.hand.toString());
   }
 
   public void refresh() {
     this.hand.display();
-    this.setting.display(this.hand);
+    this.setting.refresh(this.hand);
   }
 
   public void newHand() {

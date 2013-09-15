@@ -18,7 +18,7 @@ public class Card {
   URL     back     = null;
   boolean faceup   = false;
   boolean selected = false;
-  boolean meldable = false;
+  boolean melded   = false;
   
   public Card(int rank, int suit) {
     this.id   = -1;
@@ -84,23 +84,18 @@ public class Card {
 
   public void select(boolean select) {
     this.selected = select;
-    if (select) {
-      System.out.println("Selected: "+this.toString());
-    } else {
-      System.out.println("DE-Selected: "+this.toString());
-    }
   }
 
   public boolean isSelected() {
     return this.selected;
   }
 
-  public boolean isMeldable() {
-    return this.meldable;
+  public boolean melded () {
+    return this.melded;
   }
 
-  public void setMeldable(boolean meldable) {
-    this.meldable = meldable;
+  public void meld () {
+    this.melded = true;
   }
 
   public void turnOver() {
@@ -189,7 +184,7 @@ public class Card {
     SUIT_ASCENDING,
     SUIT_DESCENDING,
     RANK_ASCENDING,
-    RANK_DESCENDING
+    RANK_DESCENDING,
   }
 
   private static class CardComparator implements Comparator<Card> {

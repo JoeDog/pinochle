@@ -11,18 +11,20 @@ import org.joedog.pinochle.controller.GameController;
 
 public class Setting extends JPanel implements MouseListener {
   private String         name;
-  private String         bid        = null;
   private Hand           hand       = null;
   private int            size       = 0;
   private OverlapLayout  layout     = null;
   private GameController controller = null;
   private JPanel setting = null;
+  private JLabel notice  = null;
 
   public Setting(GameController controller) {
     this.name = "default";
     this.controller = controller;
     this.setLayout(new BorderLayout());
     this.setBackground(new Color(48,200,126));
+    this.notice = new JLabel("");
+    this.add(notice, BorderLayout.SOUTH);
     Point overlap = new Point(20,0);
     layout = new OverlapLayout(overlap, true);
     Insets popupInsets = new Insets(20, 0, 0, 0);
@@ -36,8 +38,23 @@ public class Setting extends JPanel implements MouseListener {
     createPanel();
   }
 
+  public void setText(String text) {
+    this.notice.setText(text);
+  }
+
   public void refresh(Hand hand) {
-    this.hand    = hand;
+    int status = this.controller.gameStatus();
+    if (status == GameController.MELD) {
+      Hand tmp = new Hand();
+      for (Card c: hand.getCards()) {
+        if (c.melded() || c.isFaceUp()) {
+          tmp.add(c);
+        }
+      }
+      this.hand = tmp;
+    } else {
+      this.hand = hand;
+    }
     this.setting.removeAll();
     this.setting = null;
     createPanel();
@@ -50,8 +67,10 @@ public class Setting extends JPanel implements MouseListener {
     setting.setBackground(new Color(48,200,126));
     if (this.hand != null) {
       hand.sort();
-      int i = 0;
       for (Card card: hand.getCards()) {
+        if (card.melded() == true) {
+          card.setFaceUp();
+        }
         CardPanel cp = new CardPanel(setting, card);
         cp.addMouseListener(this);
       }
@@ -59,7 +78,10 @@ public class Setting extends JPanel implements MouseListener {
     try {
       int index = layout.convertIndex(1);
       int count = setting.getComponentCount();
-      if (index < 1) return;
+      System.out.println("Count: "+count);
+      if (index < 1) {
+        return;
+      }
       Component c = setting.getComponent(index);
       c.invalidate();
       c.validate();
@@ -70,10 +92,6 @@ public class Setting extends JPanel implements MouseListener {
     setting.revalidate();
     this.add(setting, BorderLayout.NORTH);
     this.revalidate();
-  }
-
-  public void bid (String bid) {
-    this.bid = bid;
   }
 
   public void setName(String name) {
@@ -88,11 +106,10 @@ public class Setting extends JPanel implements MouseListener {
   public void mousePressed(MouseEvent e) {
     int status   = this.controller.gameStatus();
     CardPanel cp = (CardPanel)e.getComponent();
-    if (status == GameController.PASS) {
+    //if (status == GameController.PASS) {
       Boolean constraint = layout.getConstraints(cp);
       try {
         if (constraint == null || constraint == OverlapLayout.POP_DOWN) {
-          System.out.println("POP UP: "+Pinochle.rank(cp.getRank())+Pinochle.suit(cp.getSuit()));
           layout.addLayoutComponent(cp, OverlapLayout.POP_UP);
           cp.select(true);
         } else {
@@ -105,7 +122,7 @@ public class Setting extends JPanel implements MouseListener {
       cp.getParent().invalidate();
       cp.getParent().validate();
       this.revalidate();
-    }
+    //}
   }
 
   public void mouseMoved(MouseEvent e) {}
