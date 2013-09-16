@@ -78,15 +78,17 @@ public class Setting extends JPanel implements MouseListener {
     try {
       int index = layout.convertIndex(1);
       int count = setting.getComponentCount();
-      System.out.println("Count: "+count);
+      System.out.println("Count: "+count+" Index: "+index);
       if (index < 1) {
         return;
       }
+      index = (count == 1) ? 0 : index; // kludge
       Component c = setting.getComponent(index);
       c.invalidate();
       c.validate();
       layout.addLayoutComponent(c, OverlapLayout.POP_DOWN);
-    } catch (java.lang.ArrayIndexOutOfBoundsException ex){ /* error! bad input to the function*/
+    } catch (java.lang.ArrayIndexOutOfBoundsException ex){ 
+      /* error! bad input */
       ex.printStackTrace();
     }
     setting.revalidate();
