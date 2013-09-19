@@ -22,10 +22,6 @@ public class TrumpDialog extends JOptionPane {
     for (int i = 0; i < 4; i++) {
       icons[i] = new TrumpIcon(i);
     }
-    //icons[0] = new ImageIcon("../images/cards/hearts.png");
-    //icons[1] = new ImageIcon("../images/cards/clubs.png");
-    //icons[2] = new ImageIcon("../images/cards/diamonds.png");
-    //icons[3] = new ImageIcon("../images/cards/spades.png");
     Object objects[] = new Object[4];
     for (int i = 0; i < 4; i++) {
       objects[i] = getButton(this, suits[i], icons[i]);
