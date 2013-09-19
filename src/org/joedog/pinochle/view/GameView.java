@@ -8,26 +8,18 @@ import org.joedog.pinochle.game.*;
 
 import java.awt.Color;
 import java.awt.Dimension;
-import java.awt.Graphics;
-import java.awt.Graphics2D;
-import java.awt.GridLayout;
 import java.awt.FlowLayout;
 import java.awt.BorderLayout;
 import java.awt.Font;
-import java.awt.Canvas;
-import java.awt.Rectangle;
 import java.awt.Toolkit;
 import java.awt.image.BufferedImage;
 import java.awt.event.MouseEvent;
+import java.awt.event.MouseAdapter;
 import java.awt.event.MouseListener;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.KeyEvent;
 import java.beans.PropertyChangeEvent;
-import java.io.IOException;
-import java.io.File;
-import java.net.URL;
-import javax.imageio.*;
 import javax.swing.ImageIcon;
 import javax.swing.JFrame;
 import javax.swing.Action;
@@ -39,7 +31,7 @@ import javax.swing.WindowConstants;
 
 public class GameView extends JFrame implements View, MouseListener {
   private JPanel         main        = new JPanel();
-  private JPanel         table       = new JPanel();
+  private Table          table       = new Table();
   private JPanel         bottom      = new JPanel();
   private JPanel         buttons     = new JPanel();
   private JPanel         msgbox;
@@ -47,7 +39,7 @@ public class GameView extends JFrame implements View, MouseListener {
   private JLabel[]       spacer      = new JLabel[3];
   public  Setting[]      setting     = new Setting[4]; 
   private StatusBar      status      = new StatusBar(); 
-  private Action         resetAction = new ResetAction();
+  private JButton        passButton  = null;
   private MenuView       menu;
   private GameController controller;
   private GameActions    actions;
@@ -74,26 +66,20 @@ public class GameView extends JFrame implements View, MouseListener {
   public void display() {
     int id = 0;
     this.setPreferredSize(new Dimension(1024,638));
-    BorderLayout bl = new BorderLayout();
-    GridLayout   gl = new GridLayout(3, 3);
-    FlowLayout   fl = new FlowLayout();
+
     for (int i=0; i < 3; i++)
       spacer[i] = new JLabel("    ");
-    gl.setVgap(1);
-    gl.setHgap(1);
-    table.setLayout(null);
-    table.setBackground(new Color(48,200,126));
-    table.add(getMsgBox(), null);
-    table.add(getSetting(Pinochle.NORTH), null);
-    table.add(getSetting(Pinochle.EAST),  null);
-    table.add(getSetting(Pinochle.SOUTH), null);
-    table.add(getSetting(Pinochle.WEST),  null);
-    buttons.setLayout(fl);
-    buttons.add(new JButton(resetAction));
+
+    table.add(getMsgBox(), 0, 0, 84, 42);
+    table.add(getSetting(Pinochle.NORTH), 300, 10,  450, 132);
+    table.add(getSetting(Pinochle.EAST),  580, 190, 450, 132);
+    table.add(getSetting(Pinochle.SOUTH), 300, 350, 450, 132);
+    table.add(getSetting(Pinochle.WEST),  20,  190, 450, 132);
+    buttons.setLayout(new FlowLayout());
     bottom.setLayout(new BorderLayout());
     bottom.add(buttons, java.awt.BorderLayout.CENTER);
     bottom.add(status,  java.awt.BorderLayout.SOUTH);
-    main.setLayout(bl);
+    main.setLayout(new BorderLayout());
     main.add(spacer[0], BorderLayout.NORTH);
     main.add(spacer[1], BorderLayout.EAST);
     main.add(spacer[2], BorderLayout.WEST);
@@ -124,7 +110,6 @@ public class GameView extends JFrame implements View, MouseListener {
     if (msgbox == null) {
       msgbox = new JPanel();
       msgbox.setLayout(new FlowLayout());
-      msgbox.setBounds(new Rectangle (0, 0, 84, 42));
       msgbox.setBackground(new Color(48,200,126));
       msgbox.add(trump);
     }
@@ -136,28 +121,44 @@ public class GameView extends JFrame implements View, MouseListener {
       switch (position) {
         case Pinochle.NORTH:
           setting[position] = new Setting(this.controller);
-          // x- from the left, y- from the top, w- width, h- height
-          setting[position].setBounds(new Rectangle(300, 10, 450, 132));
           setting[position].show();
           break;
         case Pinochle.SOUTH:
           setting[position] = new Setting(this.controller);
-          // x- from the left, y- from the top, w- width, h- height
-          setting[position].setBounds(new Rectangle(300, 350, 420, 132));
           break;
         case Pinochle.EAST:
           setting[position] = new Setting(this.controller);
-          // x- from the left, y- from the top, w- width, h- height
-          setting[position].setBounds(new Rectangle(580, 190, 420, 132));
           break;
         case Pinochle.WEST:
           setting[position] = new Setting(this.controller);
-          // x- from the left, y- from the top, w- width, h- height
-          setting[position].setBounds(new Rectangle(20, 190, 420, 132));
           break;
       }
     }
     return setting[position];
+  }
+
+  public void addPassButton() {
+    if (this.passButton == null) {
+      this.passButton = new JButton(new PassAction(this.controller));
+    }  
+    this.passButton.setEnabled(false);
+    this.buttons.add(this.passButton);
+    this.invalidate();
+    this.validate();
+    this.repaint(); 
+    this.main.revalidate();
+    this.main.repaint();
+    for (int i = 0; i < setting.length; i++) {
+      setting[i].refresh();
+    }
+  }
+
+  public void enablePassButton() {
+    this.passButton.setEnabled(true);
+  }
+
+  public void disablePassButton() {
+    this.passButton.setEnabled(false);
   }
 
   public void close() {
@@ -197,6 +198,19 @@ public class GameView extends JFrame implements View, MouseListener {
         trump.setIcon(new TrumpIcon(Pinochle.SPADES));
       }
     }
+  }
+
+  private class PassAction extends AbstractAction {
+    private GameController controller;
+
+    public PassAction(GameController controller) {
+      putValue(NAME, "Pass");
+      this.controller = controller;
+    }
+
+    public void actionPerformed(ActionEvent ae) {
+      this.controller.setPassable(true);
+    } 
   }
 
   private class ResetAction extends AbstractAction {
