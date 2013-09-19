@@ -22,7 +22,6 @@ public class Human extends Player {
   public void takeCard(Card c) {
     c.setFaceUp();
     this.hand.add(c);
-    //this.setting.display(this.hand); 
   }
 
   public int bid(int bid) {
@@ -60,9 +59,7 @@ public class Human extends Player {
     String suits[] = new String[]{"Hearts", "Clubs", "Diamonds", "Spades"};
     JFrame frame   = new JFrame("Trump");
     TrumpDialog td = new TrumpDialog();
-    //String trump   = (String) JOptionPane.showInputDialog(frame, 
-    //  "Name trump", "Trump", JOptionPane.QUESTION_MESSAGE, null, suits, suits[0]
-    //); 
+
     String trump = (String)td.getValue();
     if (trump.equals("Hearts"))   return Pinochle.HEARTS;
     if (trump.equals("Clubs"))    return Pinochle.CLUBS;
@@ -71,19 +68,24 @@ public class Human extends Player {
   }
 
   public Deck passCards(boolean bidder) {
-    Deck deck    = new Deck();
-    JFrame frame = new JFrame("Pass cards...");
-    int selected = 0;
+    Deck    deck     = new Deck();
+    boolean thinking = true;
+    JFrame  frame    = new JFrame("Pass cards...");
+    int     selected = 0;
+
     //XXX: the okay button should be disabled until three cards are selected
     //XXX: three should be dynamic -- selected from config....
-    while (hand.numSelected() < 3) {
-      try {
-        Thread.sleep(1000);
-      } catch (Exception e) {
-        e.printStackTrace();
+    //while (hand.numSelected() < 3) {
+    this.controller.addPassButton();
+    this.setting.refresh();
+    while (! this.controller.isPassable()) {
+      if (hand.numSelected() == 3) {
+        this.controller.enablePassButton();
+      } else {
+        this.controller.disablePassButton();
       }
+      for (int i = 0; i < 5000; i ++);
     }  
-    JOptionPane.showMessageDialog(frame, "Pass three cards to your partner....");
     for (Iterator<Card> iterator = hand.getCards().iterator(); iterator.hasNext(); ) {
       Card card = iterator.next();
       if (card.isSelected()) {
@@ -91,7 +93,6 @@ public class Human extends Player {
         iterator.remove();
       }
     }
-    System.out.println(getName()+" is passing: "+deck.toString());
     this.setting.refresh(this.hand);
     return deck;
   } 

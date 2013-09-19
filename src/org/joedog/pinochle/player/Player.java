@@ -38,6 +38,7 @@ public abstract class Player {
     } 
     this.hand.sort();
     this.setting.refresh(this.hand);
+    this.setting.refresh();
   }
 
   public void refresh() {

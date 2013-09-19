@@ -49,7 +49,7 @@ public class Computer extends Player {
     Deck deck = null;
     int trump = controller.getIntProperty("GameTrump");
     deck = meld.passables(bidder, 3, trump);
-    this.refresh();
+    this.setting.refresh();
     return deck;
   }
 
