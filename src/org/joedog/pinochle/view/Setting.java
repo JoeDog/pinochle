@@ -42,6 +42,17 @@ public class Setting extends JPanel implements MouseListener {
     this.notice.setText(text);
   }
 
+  public void refresh() {
+    for (Component c: setting.getComponents()) {
+      c.invalidate();
+      c.validate();
+      c.repaint();
+    }
+    this.setting.invalidate();
+    this.setting.validate();
+    this.setting.repaint();
+  }
+
   public void refresh(Hand hand) {
     int status = this.controller.gameStatus();
     if (status == GameController.MELD) {
@@ -78,7 +89,6 @@ public class Setting extends JPanel implements MouseListener {
     try {
       int index = layout.convertIndex(1);
       int count = setting.getComponentCount();
-      System.out.println("Count: "+count+" Index: "+index);
       if (index < 1) {
         return;
       }
