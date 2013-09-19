@@ -14,6 +14,7 @@ import java.awt.Toolkit;
 import javax.swing.WindowConstants;
 
 import javax.swing.UIManager;
+import javax.swing.SwingUtilities;
 
 /**
  * @author Jeffrey Fulmer
@@ -144,10 +145,10 @@ public class Main {
       UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
     }
     catch (javax.swing.UnsupportedLookAndFeelException e) {
-      System.err.println("Blurt requires java-1.6 or higher");
+      System.err.println("Pinochle requires java-1.6 or higher");
     }
     catch (ClassNotFoundException e) {
-      System.err.println("Blurt requires java-1.6 or higher");
+      System.err.println("Pinochle requires java-1.6 or higher");
     }
     catch (InstantiationException e) {
     }
