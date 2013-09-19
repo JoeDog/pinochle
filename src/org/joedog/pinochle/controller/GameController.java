@@ -8,6 +8,7 @@ import org.joedog.pinochle.player.*;
 public class GameController extends AbstractController {
   public  boolean alive             = true;
   private boolean running           = false;
+  private boolean passable          = false;
   public final static String TRUMP  = "0";
   public final static int DEAL      = 0;
   public final static int BID       = 1;
@@ -54,7 +55,27 @@ public class GameController extends AbstractController {
   public int getTrump() {
     return getIntProperty("GameTrump");
   }
+
+  public void setPassable(boolean passable) {
+    this.passable = passable;
+  }
+
+  public boolean isPassable() {
+    return passable;
+  }
+
+  public void addPassButton() {
+    runViewMethod("addPassButton");
+  }
   
+  public void enablePassButton() {
+    runViewMethod("enablePassButton");
+  }
+  
+  public void disablePassButton() {
+    runViewMethod("disablePassButton");
+  }
+
   public int save() {
     runViewMethod("save");
     runModelMethod("save");
