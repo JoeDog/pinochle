@@ -5,10 +5,12 @@ import java.awt.Color;
 import java.awt.Graphics2D;
 import java.awt.SplashScreen;
 
+
 public class Splash {
+  final   SplashScreen splash;
+
   private Graphics2D   g;
   private boolean      okay;
-  final   SplashScreen splash;
 
   public Splash() {
     okay   = true;
@@ -33,23 +35,26 @@ public class Splash {
   }
 
   public void setMessage(String message) {
-    if (!okay) return;
-    int sleep = 100;
+    int sleep = 400;
     int w     = 20;
     int h     = 315;
+
+    if (!okay) return;
+
     g.setComposite(AlphaComposite.Clear);
     g.fillRect(0,0,300,320);
     g.setPaintMode();
     g.setColor(Color.WHITE);
+
     if (message.equals("close")) {
-      sleep = 750;
+      sleep = 1000;
       g.drawString("Byron is ready ...", w, h);
     } else {
       g.drawString("Loading "+message+"...", w, h);
     }
     splash.update();
-    try {
-        Thread.sleep(sleep);
-    } catch(InterruptedException e) { }
+    // A poor man's sleep
+    long cT = System.currentTimeMillis();  
+    while (System.currentTimeMillis() - cT < sleep);
   }
 }
