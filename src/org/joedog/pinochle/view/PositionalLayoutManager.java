@@ -25,7 +25,6 @@ public class PositionalLayoutManager implements LayoutManager2 {
 
   @Override
   public void addLayoutComponent(Component comp, Object constraints) {
-    System.out.println("addLayoutComponent(Component comp, Object constraints)");
     if (constraints instanceof PositionalConstraints) {
       mapConstraints.put(comp, (PositionalConstraints) constraints);
     } else {
