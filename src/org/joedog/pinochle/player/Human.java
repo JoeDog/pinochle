@@ -3,6 +3,7 @@ package org.joedog.pinochle.player;
 import java.util.List;
 import java.util.ArrayList;
 import java.util.Iterator;
+import java.util.concurrent.TimeUnit;
 import javax.swing.JFrame;
 import javax.swing.JInternalFrame;
 import javax.swing.JOptionPane;
@@ -79,8 +80,10 @@ public class Human extends Player {
         this.controller.enablePassButton();
       } else {
         this.controller.disablePassButton();
-      }
-      for (int i = 0; i < 5000; i ++);
+      } 
+      try {
+        TimeUnit.SECONDS.sleep(1);
+      } catch (Exception e) {}
     }  
     for (Iterator<Card> iterator = hand.getCards().iterator(); iterator.hasNext(); ) {
       Card card = iterator.next();
@@ -99,7 +102,9 @@ public class Human extends Player {
     this.controller.addMeldButton();
     this.setting.refresh();
     while (! this.controller.isMeldable()) {
-      sleep(200);  
+      try { 
+        TimeUnit.SECONDS.sleep(1);;  
+      } catch (Exception e) {}
     }
     for (Iterator<Card> iterator = hand.getCards().iterator(); iterator.hasNext(); ) {
       Card card = iterator.next();
@@ -121,9 +126,5 @@ public class Human extends Player {
     this.setting.repaint();
   }
 
-  public void sleep(int milliseconds) {
-    long cT = System.currentTimeMillis();
-    while (System.currentTimeMillis() - cT < milliseconds);
-  }
 }
 
