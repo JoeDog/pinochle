@@ -1,5 +1,6 @@
 package org.joedog.pinochle.view;
 
+import java.util.concurrent.TimeUnit;
 import java.awt.AlphaComposite;
 import java.awt.Color;
 import java.awt.Graphics2D;
@@ -35,7 +36,6 @@ public class Splash {
   }
 
   public void setMessage(String message) {
-    int sleep = 400;
     int w     = 20;
     int h     = 315;
 
@@ -47,14 +47,13 @@ public class Splash {
     g.setColor(Color.WHITE);
 
     if (message.equals("close")) {
-      sleep = 1000;
-      g.drawString("Byron is ready ...", w, h);
+      g.drawString("Pinochle is ready ...", w, h);
     } else {
       g.drawString("Loading "+message+"...", w, h);
     }
     splash.update();
-    // A poor man's sleep
-    long cT = System.currentTimeMillis();  
-    while (System.currentTimeMillis() - cT < sleep);
+    try {
+      TimeUnit.SECONDS.sleep(1);
+    } catch (Exception e) {}
   }
 }
