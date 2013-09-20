@@ -38,19 +38,27 @@ public class Setting extends JPanel implements MouseListener {
     createPanel();
   }
 
-  public void setText(String text) {
-    this.notice.setText(name+" -- "+text);
+  public void setText(final String text) {
+    SwingUtilities.invokeLater(new Runnable() {
+      public void run() {
+        notice.setText(name+" -- "+text);
+      }
+    });
   }
 
   public void refresh() {
-    for (Component c: setting.getComponents()) {
-      c.invalidate();
-      c.validate();
-      c.repaint();
-    }
-    this.setting.invalidate();
-    this.setting.validate();
-    this.setting.repaint();
+    SwingUtilities.invokeLater(new Runnable() {
+      public void run() {
+        for (Component c: setting.getComponents()) {
+          c.invalidate();
+          c.validate();
+          c.repaint();
+        }
+        setting.invalidate();
+        setting.validate();
+        setting.repaint();
+      }
+    });
   }
 
   public void refresh(Hand hand) {
