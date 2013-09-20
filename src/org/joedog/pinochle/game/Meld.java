@@ -102,7 +102,6 @@ public class Meld {
     Deck deck = new Deck();
     System.out.println("Trump: "+Pinochle.suitname(trump));
     if (! bidder) {
-      System.out.println("I'm not the bidder....");
       /**
        * If our partner took the bid, then we want
        * to pass trump and aces UNLESS we have a run
@@ -129,7 +128,7 @@ public class Meld {
           if (marriage(trump, trump) > 1 && deck.count() < 2 && 
               round(Pinochle.KING) < 1 && round(Pinochle.QUEEN) < 1) {
           // XXX: is my 'else if' check sufficient???
-          System.out.println("Going to pass a marriage...");
+          //System.out.println("Going to pass a marriage...");
           Card king  = new Card(Pinochle.KING, trump);
           Card queen = new Card(Pinochle.QUEEN, trump);
           if (trump == Pinochle.SPADES || trump == Pinochle.DIAMONDS) {
@@ -176,7 +175,6 @@ public class Meld {
        * We won the bid; we're going to try to short
        * suit ourselves without passing meld
        */
-      System.out.println("I won the bid!");
       int suit = shortsuit(trump);
       // We'll start passing meldable cards...
       if (marriage(suit, trump) == 0 && round(Pinochle.KING) < 1 && round(Pinochle.QUEEN) < 1) {
@@ -193,7 +191,7 @@ public class Meld {
       } else
         if (marriage(suit, trump) > 1 && deck.count() < 2 &&
             round(Pinochle.KING) < 1 && round(Pinochle.QUEEN) < 1) {
-        System.out.println("Going to pass a marriage...");
+        //System.out.println("Going to pass a marriage...");
         Card king  = new Card(Pinochle.KING, suit);
         Card queen = new Card(Pinochle.QUEEN, suit);
         if (suit == Pinochle.SPADES || suit == Pinochle.DIAMONDS) {
@@ -202,9 +200,9 @@ public class Meld {
             // XXX: maybe we do but that's for later
             deck.add(hand.pass(king));
             deck.add(hand.pass(queen));
-            System.out.println("Gonna pass: "+king.toString());
+            //System.out.println("Gonna pass: "+king.toString());
             hand.remove(king);
-            System.out.println("Gonna pass: "+queen.toString());
+            //System.out.println("Gonna pass: "+queen.toString());
             hand.remove(queen);
           }
         }
@@ -212,21 +210,21 @@ public class Meld {
       Card ten = new Card(Pinochle.TEN, suit);
       while (deck.count() < num && hand.contains(ten) > 0) {
         deck.add(hand.pass(ten));  
-        System.out.println("Gonna pass: "+ten.toString());
+        //System.out.println("Gonna pass: "+ten.toString());
         hand.remove(ten);
       }
       if (round(Pinochle.JACK) < 1) {
         Card jack = new Card(Pinochle.JACK, suit);
         while (deck.count() < num && hand.contains(jack) > 0) {
           deck.add(hand.pass(jack));  
-          System.out.println("Gonna pass: "+jack.toString());
+          //System.out.println("Gonna pass: "+jack.toString());
           hand.remove(jack);
         }
       }
       Card nine = new Card(Pinochle.NINE, suit);
       while (deck.count() < num && hand.contains(nine) > 0) {
         deck.add(hand.pass(nine));  
-        System.out.println("Gonna pass: "+nine.toString());
+        //System.out.println("Gonna pass: "+nine.toString());
         hand.remove(nine);
       }
     }
@@ -251,7 +249,7 @@ public class Meld {
         hand.remove(card);
       }
     }  
-    System.out.println(deck.toString());
+    //System.out.println(deck.toString());
     return deck;
   }
 

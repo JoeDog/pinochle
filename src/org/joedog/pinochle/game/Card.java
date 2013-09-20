@@ -38,7 +38,6 @@ public class Card {
     this.id   = card.id;
     this.rank = card.rank;
     this.suit = card.suit;
-    System.out.println("this.id: "+this.id);
     createCard();
   }
 

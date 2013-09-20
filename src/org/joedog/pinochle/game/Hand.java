@@ -135,7 +135,6 @@ public class Hand {
     for (Iterator<Card> iterator = this.getCards().iterator(); iterator.hasNext(); ) {
       Card card = iterator.next();
       if (card.matches(c)) {
-        System.out.println("removing: "+card.toString()+" ("+card.getId()+")");
         iterator.remove();
         return; 
       }

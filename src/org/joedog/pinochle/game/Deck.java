@@ -35,7 +35,6 @@ public class Deck extends Pack {
         }
       }
     }
-    System.out.println(this.toString());
   }
 
   public void addCard(Card card) {
