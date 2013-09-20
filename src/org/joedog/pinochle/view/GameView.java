@@ -2,7 +2,6 @@ package org.joedog.pinochle.view;
 
 import org.joedog.pinochle.controller.*;
 import org.joedog.pinochle.view.actions.*;
-import org.joedog.pinochle.util.*;
 import org.joedog.pinochle.player.*;
 import org.joedog.pinochle.game.*;
 
@@ -28,6 +27,7 @@ import javax.swing.JPanel;
 import javax.swing.JButton;
 import javax.swing.JLabel;
 import javax.swing.WindowConstants;
+import javax.swing.SwingUtilities;
 
 public class GameView extends JFrame implements View, MouseListener {
   private JPanel         main        = new JPanel();
@@ -147,38 +147,68 @@ public class GameView extends JFrame implements View, MouseListener {
   }
 
   public void addPassButton() {
-    if (this.passButton == null) {
-      this.passButton = new JButton(new PassAction(this.controller));
-    }  
-    this.passButton.setEnabled(false);
-    this.buttons.add(this.passButton);
-    this.invalidate();
-    this.validate();
-    this.repaint(); 
-    this.main.revalidate();
-    this.main.repaint();
-    for (int i = 0; i < setting.length; i++) {
-      setting[i].refresh();
-    }
+    SwingUtilities.invokeLater(new Runnable() {
+      public void run() {
+        if (passButton == null) {
+          passButton = new JButton(new PassAction(controller));
+        }  
+        passButton.setEnabled(false);
+        buttons.add(passButton);
+        invalidate();
+        validate();
+        repaint(); 
+        main.revalidate();
+        main.repaint();
+        for (int i = 0; i < setting.length; i++) {
+          setting[i].refresh();
+        }
+      }
+    });
+    this.setStatus("Pass 3 cards to your partner...");
   }
 
   public void enablePassButton() {
-    this.passButton.setEnabled(true);
+    if (SwingUtilities.isEventDispatchThread()) {
+      passButton.setEnabled(true);
+    } else {
+      SwingUtilities.invokeLater(new Runnable() {
+        public void run() {
+          passButton.setEnabled(true);
+        }
+      });
+    }
   }
 
   public void disablePassButton() {
-    this.passButton.setEnabled(false);
+    if (SwingUtilities.isEventDispatchThread()) {
+      passButton.setEnabled(false);
+    } else {
+      SwingUtilities.invokeLater(new Runnable() {
+        public void run() {
+          passButton.setEnabled(false);
+        }
+      });
+    }
   }
 
   public void addMeldButton() {
-    if (this.meldButton == null) {
-      this.meldButton = new JButton(new MeldAction(this.controller));
-    }  
-    this.buttons.removeAll();
-    this.buttons.add(this.meldButton);
-    for (int i = 0; i < setting.length; i++) {
-      setting[i].refresh();
-    }
+    SwingUtilities.invokeLater(new Runnable() {
+      public void run() {
+        if (meldButton == null) {
+          meldButton = new JButton(new MeldAction(controller));
+        }  
+        buttons.removeAll();
+        buttons.add(meldButton);
+        System.out.println("Adding meld button....");
+        for (int i = 0; i < setting.length; i++) {
+          setting[i].refresh();
+        }
+        buttons.invalidate();
+        buttons.validate();
+        buttons.repaint();
+      }
+    });
+    this.setStatus("Select cards to meld...");
   }
 
   public void close() {
