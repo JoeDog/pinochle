@@ -11,6 +11,7 @@ import java.awt.LayoutManager;
 import java.util.HashMap;
 import javax.swing.JFrame;
 import javax.swing.JPanel;
+import javax.swing.SwingUtilities;
 
 public class StatusBar extends JPanel implements LayoutManager {
   private   int     gap;
@@ -27,10 +28,10 @@ public class StatusBar extends JPanel implements LayoutManager {
     this.message     = new String("Ready...");
   }
   
-  public void setMessage (String message) {
+  public void setMessage (final String message) {
+    this.message = message;
     SwingUtilities.invokeLater(new Runnable() {
       public void run() {
-        message = message;
         repaint();
       }
     });
