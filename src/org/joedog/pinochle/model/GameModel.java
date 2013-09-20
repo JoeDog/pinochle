@@ -3,7 +3,6 @@ package org.joedog.pinochle.model;
 import java.util.Properties;
 
 import org.joedog.pinochle.controller.*;
-import org.joedog.pinochle.util.*;
 
 public class GameModel extends AbstractModel {
   private Configuration conf  = null;
