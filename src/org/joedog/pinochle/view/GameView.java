@@ -40,6 +40,7 @@ public class GameView extends JFrame implements View, MouseListener {
   public  Setting[]      setting     = new Setting[4]; 
   private StatusBar      status      = new StatusBar(); 
   private JButton        passButton  = null;
+  private JButton        meldButton  = null;
   private MenuView       menu;
   private GameController controller;
   private GameActions    actions;
@@ -65,16 +66,16 @@ public class GameView extends JFrame implements View, MouseListener {
 
   public void display() {
     int id = 0;
-    this.setPreferredSize(new Dimension(1024,638));
+    this.setPreferredSize(new Dimension(1024,634));
 
     for (int i=0; i < 3; i++)
       spacer[i] = new JLabel("    ");
 
     table.add(getMsgBox(), 0, 0, 84, 42);
-    table.add(getSetting(Pinochle.NORTH), 300, 10,  450, 132);
-    table.add(getSetting(Pinochle.EAST),  580, 190, 450, 132);
-    table.add(getSetting(Pinochle.SOUTH), 300, 350, 450, 132);
-    table.add(getSetting(Pinochle.WEST),  20,  190, 450, 132);
+    table.add(getSetting(Pinochle.NORTH), 300, 10,  360, 132);
+    table.add(getSetting(Pinochle.EAST),  580, 190, 360, 132);
+    table.add(getSetting(Pinochle.SOUTH), 300, 350, 360, 132);
+    table.add(getSetting(Pinochle.WEST),  20,  190, 360, 132);
     buttons.setLayout(new FlowLayout());
     bottom.setLayout(new BorderLayout());
     bottom.add(buttons, java.awt.BorderLayout.CENTER);
@@ -121,16 +122,24 @@ public class GameView extends JFrame implements View, MouseListener {
       switch (position) {
         case Pinochle.NORTH:
           setting[position] = new Setting(this.controller);
+          //setting[position].setBackground(Color.yellow);
+          setting[position].setName(controller.getName(position));
           setting[position].show();
           break;
         case Pinochle.SOUTH:
           setting[position] = new Setting(this.controller);
+          setting[position].setName(controller.getName(position));
+          //setting[position].setBackground(Color.yellow);
           break;
         case Pinochle.EAST:
           setting[position] = new Setting(this.controller);
+          setting[position].setName(controller.getName(position));
+          //setting[position].setBackground(Color.yellow);
           break;
         case Pinochle.WEST:
           setting[position] = new Setting(this.controller);
+          setting[position].setName(controller.getName(position));
+          //setting[position].setBackground(Color.yellow);
           break;
       }
     }
@@ -159,6 +168,17 @@ public class GameView extends JFrame implements View, MouseListener {
 
   public void disablePassButton() {
     this.passButton.setEnabled(false);
+  }
+
+  public void addMeldButton() {
+    if (this.meldButton == null) {
+      this.meldButton = new JButton(new MeldAction(this.controller));
+    }  
+    this.buttons.removeAll();
+    this.buttons.add(this.meldButton);
+    for (int i = 0; i < setting.length; i++) {
+      setting[i].refresh();
+    }
   }
 
   public void close() {
@@ -210,6 +230,19 @@ public class GameView extends JFrame implements View, MouseListener {
 
     public void actionPerformed(ActionEvent ae) {
       this.controller.setPassable(true);
+    } 
+  }
+
+  private class MeldAction extends AbstractAction {
+    private GameController controller;
+
+    public MeldAction(GameController controller) {
+      putValue(NAME, "Meld");
+      this.controller = controller;
+    }
+
+    public void actionPerformed(ActionEvent ae) {
+      this.controller.setMeldable(true);
     } 
   }
 

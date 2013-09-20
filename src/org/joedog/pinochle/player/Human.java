@@ -51,10 +51,6 @@ public class Human extends Player {
     return myBid;
   }
 
-  public int meld() {
-    return 8;
-  }
-
   public int nameTrump() {
     String suits[] = new String[]{"Hearts", "Clubs", "Diamonds", "Spades"};
     JFrame frame   = new JFrame("Trump");
@@ -97,12 +93,37 @@ public class Human extends Player {
     return deck;
   } 
 
+  public int meld() {
+    Hand tmp  = new Hand();
+    int trump = controller.getIntProperty("GameTrump");
+    this.controller.addMeldButton();
+    this.setting.refresh();
+    while (! this.controller.isMeldable()) {
+      sleep(200);  
+    }
+    for (Iterator<Card> iterator = hand.getCards().iterator(); iterator.hasNext(); ) {
+      Card card = iterator.next();
+      if (card.isSelected()) {
+        tmp.add(card);  
+      }
+    }
+
+    Meld m = new Meld(tmp, trump);
+    this.setting.setText("Meld: "+m.getMeld());
+    return m.getMeld();
+  }
+
   public void finish (int status) {
   }
 
   public void takeTurn() {
     this.hand.remove(0);
     this.setting.repaint();
+  }
+
+  public void sleep(int milliseconds) {
+    long cT = System.currentTimeMillis();
+    while (System.currentTimeMillis() - cT < milliseconds);
   }
 }
 

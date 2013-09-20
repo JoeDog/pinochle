@@ -19,7 +19,7 @@ public class Setting extends JPanel implements MouseListener {
   private JLabel notice  = null;
 
   public Setting(GameController controller) {
-    this.name = "default";
+    this.name = "";
     this.controller = controller;
     this.setLayout(new BorderLayout());
     this.setBackground(new Color(48,200,126));
@@ -39,7 +39,7 @@ public class Setting extends JPanel implements MouseListener {
   }
 
   public void setText(String text) {
-    this.notice.setText(text);
+    this.notice.setText(name+" -- "+text);
   }
 
   public void refresh() {
@@ -108,7 +108,7 @@ public class Setting extends JPanel implements MouseListener {
 
   public void setName(String name) {
     this.name = name;
-    this.repaint();
+    this.refresh();
   }
 
   public Dimension size() {
@@ -117,6 +117,7 @@ public class Setting extends JPanel implements MouseListener {
 
   public void mousePressed(MouseEvent e) {
     int status   = this.controller.gameStatus();
+    this.refresh();
     CardPanel cp = (CardPanel)e.getComponent();
     //if (status == GameController.PASS) {
       Boolean constraint = layout.getConstraints(cp);

@@ -9,6 +9,8 @@ public class GameController extends AbstractController {
   public  boolean alive             = true;
   private boolean running           = false;
   private boolean passable          = false;
+  private boolean meldable          = false;
+  //private boolean playable        = false;
   public final static String TRUMP  = "0";
   public final static int DEAL      = 0;
   public final static int BID       = 1;
@@ -74,6 +76,18 @@ public class GameController extends AbstractController {
   
   public void disablePassButton() {
     runViewMethod("disablePassButton");
+  }
+
+  public void addMeldButton() {
+    runViewMethod("addMeldButton");
+  }
+  
+  public void setMeldable(boolean meldable) {
+    this.meldable = meldable;
+  }
+
+  public boolean isMeldable() {
+    return meldable;
   }
 
   public int save() {
@@ -222,6 +236,21 @@ public class GameController extends AbstractController {
       players[i].refresh();
     } 
     return;
+  }
+
+  public String getName (int player) {
+    switch (player) {
+      case Pinochle.NORTH:
+        return (String)getModelProperty("PlayerNorthName");
+      case Pinochle.SOUTH:
+        return (String)getModelProperty("PlayerSouthName");
+      case Pinochle.EAST:  
+        return (String)getModelProperty("PlayerEastName");
+      case Pinochle.WEST:  
+        return (String)getModelProperty("PlayerWestName");
+      default:
+        return "";
+    }
   }
 
   public void setStatus (String status) {

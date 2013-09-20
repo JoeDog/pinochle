@@ -279,7 +279,13 @@ public class Meld {
       hand.meld(queen, num);
       hand.meld(jack,  num);
     }
-    return ((a+t+k+q+j) == 10) ? 150 : 15;
+    /** 
+     * KLUDGE ALERT
+     * Runs are worth 15 and 150 but we'll
+     * count them  11 and 142 because this 
+     * class will add the marriage values
+     */ 
+    return ((a+t+k+q+j) == 10) ? 142 : 11; 
   }
 
   public int nines(int trump) {
