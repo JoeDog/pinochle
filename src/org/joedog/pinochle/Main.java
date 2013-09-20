@@ -11,6 +11,8 @@ import javax.swing.JFrame;
 import java.awt.BorderLayout;
 import java.awt.Dimension;
 import java.awt.Toolkit;
+import java.util.concurrent.TimeUnit;
+import java.lang.InterruptedException;
 import javax.swing.WindowConstants;
 
 import javax.swing.UIManager;
@@ -88,21 +90,6 @@ public class Main {
           break;
         case GameController.BID:
           controller.getBids(players);
-          /*for (int y = 0; y < 12; y++) {
-            for (int i = 0; i < players.length; i++) {
-              try {
-                Thread.sleep(1000);
-              } catch (Exception e) {
-                e.printStackTrace();
-              }
-              players[i].takeTurn();
-            }
-          }*/
-          //try {
-          //  Thread.sleep(18000);
-          //} catch (Exception e) {
-          //  e.printStackTrace();
-          //}
           break;
         case GameController.PASS:
           controller.passCards(players);
@@ -110,10 +97,8 @@ public class Main {
         case GameController.MELD:
           controller.getMeld(players);
           try {
-            Thread.sleep(82000);
-          } catch (Exception e) {
-            e.printStackTrace();
-          }
+            TimeUnit.SECONDS.sleep(90);
+          } catch (java.lang.InterruptedException ie) {}
           System.exit(0);
           break;
         case GameController.PLAY:
@@ -155,6 +140,15 @@ public class Main {
     catch (IllegalAccessException e) {
     }
     Main pinochle = new Main();
+    /**
+     Commented out because this results in a thread-locked mess:
+     Exception in thread "AWT-EventQueue-0" java.lang.OutOfMemoryError: Java heap space
+    SwingUtilities.invokeLater(new Runnable() {
+      public void run() {
+        Main pinochle = new Main();
+      }
+    });
+    */
   }
 }
 
