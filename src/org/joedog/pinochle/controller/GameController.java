@@ -1,7 +1,7 @@
 package org.joedog.pinochle.controller;
 
+import java.util.concurrent.TimeUnit;
 import org.joedog.pinochle.view.*;
-import org.joedog.pinochle.util.*;
 import org.joedog.pinochle.game.*;
 import org.joedog.pinochle.player.*;
 
@@ -102,10 +102,8 @@ public class GameController extends AbstractController {
     this.save();
     this.alive = false;
     try {
-      Thread.sleep(500);
-    } catch (Exception e) {
-      e.printStackTrace();
-    }
+      TimeUnit.SECONDS.sleep(1);
+    } catch (Exception e) {}
     System.exit(0);
   }
 
@@ -231,9 +229,18 @@ public class GameController extends AbstractController {
   public void getMeld(Player[] players) {
     int score = 0;
     for (int i = 0; i < players.length; i++) {
-      score = players[i].meld();
-      System.out.println(players[i].getName()+" melded: "+score);
-      players[i].refresh();
+      if (players[i].getType() == Player.HUMAN) {
+        score = players[i].meld();
+        System.out.println(players[i].getName()+" melded: "+score);
+        players[i].refresh();
+      }
+    } 
+    for (int i = 0; i < players.length; i++) {
+      if (players[i].getType() == Player.COMPUTER) {
+        score = players[i].meld();
+        System.out.println(players[i].getName()+" melded: "+score);
+        players[i].refresh();
+      }
     } 
     return;
   }
