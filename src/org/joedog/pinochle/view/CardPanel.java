@@ -22,8 +22,6 @@ public class CardPanel extends JPanel {
     this.id      = this.card.getId();
     if (! included()) {
       setting.add(this);
-    } else {
-      System.out.println("Already included...");
     }
   }
 
