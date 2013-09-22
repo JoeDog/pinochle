@@ -66,7 +66,7 @@ public class Setting extends JPanel implements MouseListener {
     if (status == GameController.MELD) {
       Hand tmp = new Hand();
       for (Card c: hand.getCards()) {
-        if (c.melded() || c.isFaceUp()) {
+        if (c.melded()/* || c.isFaceUp()*/) {
           tmp.add(c);
         }
       }

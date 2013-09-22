@@ -12,7 +12,7 @@ public class NewAction implements ActionListener {
   }
 
   public void actionPerformed (ActionEvent e) {
-    //this.controller.newMatch();
+    this.controller.newGame();
   }
 }
 

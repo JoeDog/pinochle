@@ -4,6 +4,7 @@ import java.util.concurrent.TimeUnit;
 import org.joedog.pinochle.view.*;
 import org.joedog.pinochle.game.*;
 import org.joedog.pinochle.player.*;
+import org.joedog.pinochle.model.Score;
 
 public class GameController extends AbstractController {
   public  boolean alive             = true;
@@ -23,6 +24,12 @@ public class GameController extends AbstractController {
   private boolean over = false;
 
   public GameController () {
+    setModelProperty("GameStatus", DEAL);
+  }
+
+  public void newGame() {
+    setStatus("New game!");
+    runViewMethod("resetScore");
     setModelProperty("GameStatus", DEAL);
   }
 
@@ -228,9 +235,16 @@ public class GameController extends AbstractController {
 
   public void getMeld(Player[] players) {
     int score = 0;
+    int ns    = 0;
+    int ew    = 0;
     for (int i = 0; i < players.length; i++) {
       if (players[i].getType() == Player.HUMAN) {
         score = players[i].meld();
+        if (i == Pinochle.NORTH || i == Pinochle.SOUTH) {
+          ns += score;
+        } else {
+          ew += score;
+        }
         System.out.println(players[i].getName()+" melded: "+score);
         players[i].refresh();
       }
@@ -238,10 +252,18 @@ public class GameController extends AbstractController {
     for (int i = 0; i < players.length; i++) {
       if (players[i].getType() == Player.COMPUTER) {
         score = players[i].meld();
+        if (i == Pinochle.NORTH || i == Pinochle.SOUTH) {
+          ns += score;
+        } else {
+          ew += score;
+        }
         System.out.println(players[i].getName()+" melded: "+score);
         players[i].refresh();
       }
     } 
+    System.out.println(players[Pinochle.NORTH].getName()+"/"+players[Pinochle.SOUTH].getName()+": "+ns);
+    System.out.println(players[Pinochle.EAST].getName()+"/"+players[Pinochle.WEST].getName()+": "+ew);
+    setViewProperty("MeldScore", new Score(ns, ew));
     return;
   }
 

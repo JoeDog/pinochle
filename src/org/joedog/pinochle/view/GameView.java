@@ -1,6 +1,7 @@
 package org.joedog.pinochle.view;
 
 import org.joedog.pinochle.controller.*;
+import org.joedog.pinochle.model.*;
 import org.joedog.pinochle.view.actions.*;
 import org.joedog.pinochle.player.*;
 import org.joedog.pinochle.game.*;
@@ -39,6 +40,7 @@ public class GameView extends JFrame implements View, MouseListener {
   private JLabel[]       spacer      = new JLabel[3];
   public  Setting[]      setting     = new Setting[4]; 
   private StatusBar      status      = new StatusBar(); 
+  private ScorePad       pad         = null;
   private JButton        passButton  = null;
   private JButton        meldButton  = null;
   private MenuView       menu;
@@ -66,16 +68,17 @@ public class GameView extends JFrame implements View, MouseListener {
 
   public void display() {
     int id = 0;
-    this.setPreferredSize(new Dimension(1024,634));
+    this.setPreferredSize(new Dimension(970,630));
 
     for (int i=0; i < 3; i++)
       spacer[i] = new JLabel("    ");
 
     table.add(getMsgBox(), 0, 0, 84, 42);
-    table.add(getSetting(Pinochle.NORTH), 300, 10,  360, 132);
-    table.add(getSetting(Pinochle.EAST),  580, 190, 360, 132);
-    table.add(getSetting(Pinochle.SOUTH), 300, 350, 360, 132);
-    table.add(getSetting(Pinochle.WEST),  20,  190, 360, 132);
+    table.add(getSetting(Pinochle.NORTH), 290, 10,  355, 132);
+    table.add(getSetting(Pinochle.EAST),  570, 180, 355, 132);
+    table.add(getSetting(Pinochle.SOUTH), 290, 340, 355, 132);
+    table.add(getSetting(Pinochle.WEST),   20, 180, 355, 132);
+    table.add(getScorePad(),  4, 350, 240, 130);
     buttons.setLayout(new FlowLayout());
     bottom.setLayout(new BorderLayout());
     bottom.add(buttons, java.awt.BorderLayout.CENTER);
@@ -115,6 +118,14 @@ public class GameView extends JFrame implements View, MouseListener {
       msgbox.add(trump);
     }
     return msgbox;
+  }
+
+  public ScorePad getScorePad() {
+    if (this.pad == null) {
+      this.pad = new ScorePad(this.controller);
+    }
+    this.controller.addView(this.pad);
+    return this.pad;
   }
 
   public Setting getSetting(int position) {

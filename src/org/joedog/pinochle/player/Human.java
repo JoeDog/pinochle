@@ -114,6 +114,12 @@ public class Human extends Player {
     }
 
     Meld m = new Meld(tmp, trump);
+    for (Iterator<Card> iterator = tmp.getCards().iterator(); iterator.hasNext(); ) {
+      Card card = iterator.next();
+      if (card.melded()) {
+        this.hand.meld(card);
+      }
+    } 
     this.setting.setText("Meld: "+m.getMeld());
     return m.getMeld();
   }

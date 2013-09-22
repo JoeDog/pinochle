@@ -31,12 +31,12 @@ public class Main {
 
   public Main() {
     this.splash     = new Splash();
-    this.controller = new GameController();
     splash.setMessage("Game controller");
-    this.view       = new GameView(controller);
-    splash.setMessage("initializing data");
+    this.controller = new GameController();
+    splash.setMessage("Game data");
     this.model      = new GameModel();
-    splash.setMessage("initializing panel");
+    splash.setMessage("Game view");
+    this.view       = new GameView(controller);
     this.actions    = new GameActions(controller);
 
     controller.addView(view);
@@ -84,6 +84,7 @@ public class Main {
     int x = 0;
     while (status != GameController.OVER) {
       status = controller.gameStatus();
+      System.out.println("GAME STATUS: "+status);
       switch (status) {
         case GameController.DEAL:
           controller.newDeal(players);
@@ -118,11 +119,8 @@ public class Main {
       players[turn%2].takeTurn(); 
       */
       turn++;
+      System.out.print("+");
     }
-    //deck = new Deck(); // Just using this for deck debugging
-    //players[0].finish(status);
-    //players[1].finish(status);
-    return;
   }
 
   public static void main(String[] args) {
