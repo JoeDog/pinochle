@@ -2,6 +2,8 @@ package org.joedog.pinochle.view.actions;
 
 import java.awt.event.ActionListener;
 import java.awt.event.ActionEvent;
+import javax.swing.SwingUtilities;
+
 import org.joedog.pinochle.controller.GameController;
 
 public class NewAction implements ActionListener {
@@ -12,7 +14,12 @@ public class NewAction implements ActionListener {
   }
 
   public void actionPerformed (ActionEvent e) {
-    this.controller.newGame();
+    SwingUtilities.invokeLater(new Runnable() {
+      public void run() {
+        controller.newGame();
+      }
+    });
+
   }
 }
 

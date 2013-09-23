@@ -2,9 +2,12 @@ package org.joedog.pinochle.view;
 
 import java.awt.Component;
 import java.awt.Color;
+import java.awt.Font;
 import java.awt.Dimension;
 import java.awt.BorderLayout;
 import javax.swing.BorderFactory;
+import javax.swing.border.Border;
+import javax.swing.border.EmptyBorder;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JTable;
@@ -13,7 +16,6 @@ import javax.swing.JScrollPane;
 import javax.swing.JTextField;
 import javax.swing.DefaultCellEditor;
 import javax.swing.SwingConstants;
-//import javax.swing.border.*;
 import javax.swing.table.TableColumn;
 import javax.swing.table.TableCellRenderer;
 import javax.swing.table.TableModel;
@@ -59,40 +61,29 @@ public class ScorePad extends JPanel implements View, TableModelListener {
     this.model.addTableModelListener(this);
     if (this.table == null) {
       this.table = new JTable(model);
+      table.setShowGrid(true);
+      table.setShowVerticalLines(true);
       table.setBackground(new Color(239,236,157));
       table.setGridColor(new Color(123,145,83));
-      //JTableHeader header = table.getTableHeader();
-      //header.setBackground(new Color(239,236,157));
-      final TableCellRenderer tcrOs = table.getTableHeader().getDefaultRenderer();
+      JTableHeader header = table.getTableHeader();
+      final TableCellRenderer defaultRenderer = table.getTableHeader().getDefaultRenderer();
       table.getTableHeader().setDefaultRenderer(new TableCellRenderer() {
-        { 
-          setOpaque(true);
-        }
         @Override
         public Component getTableCellRendererComponent(
-          JTable table, Object value, boolean isSelected, boolean hasFocus, int row, int column) {
-          JLabel lbl = (JLabel) tcrOs.getTableCellRendererComponent(
-            table, value, isSelected, hasFocus, row, column
-          );
-          lbl.setForeground(Color.black);
-          lbl.setBorder(BorderFactory.createCompoundBorder(
-            lbl.getBorder(), BorderFactory.createEmptyBorder(0, 5, 0, 0))
-          );
-          lbl.setHorizontalAlignment(SwingConstants.RIGHT);
-          if (isSelected) {
-            lbl.setForeground(new Color(123, 145,83));
-            lbl.setBackground(Color.yellow);
-          } else {
-            lbl.setForeground(Color.black);
-            lbl.setBackground(new Color(239,236,157));
-          }
-          return lbl;
+                         JTable jTable, Object o, boolean b, boolean b1, int row, int column) {
+          JLabel parent = (JLabel) defaultRenderer.getTableCellRendererComponent(jTable, o, b, b1, row, column);
+          //Border border = BorderFactory.createLineBorder(new Color(123,145,83), 1);
+          //Border border = BorderFactory.createEmptyBorder(2,2,2,2);
+          Border border = BorderFactory.createMatteBorder(0, 0, 1, 1, new Color(123,145,83));
+          parent.setBorder(border);
+          parent.setBackground(new Color(239,236,157));
+          parent.setHorizontalAlignment(SwingConstants.RIGHT);
+          parent.setFont(new Font("default", Font.BOLD, 12));
+          return parent;
         }
       });
-      table.getTableHeader().setReorderingAllowed(false);
-      table.getTableHeader().setResizingAllowed(false);
-      table.getTableHeader().setOpaque(true);
     }
+
     TableColumn nameColumn = table.getColumnModel().getColumn(0);
     if (this.panel == null) {
       panel = new JScrollPane(table);
