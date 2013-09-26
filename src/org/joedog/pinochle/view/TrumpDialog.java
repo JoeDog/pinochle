@@ -2,19 +2,20 @@ package org.joedog.pinochle.view;
 
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.beans.PropertyChangeEvent;
 import javax.swing.Icon;
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import javax.swing.JDialog;
 import javax.swing.JFrame;
 import javax.swing.JOptionPane;
+import javax.swing.SwingUtilities;
 
 import org.joedog.pinochle.game.Pinochle;
 
-public class TrumpDialog extends JOptionPane {
+public class TrumpDialog extends JOptionPane implements View {
 
   public TrumpDialog() {
-    JFrame frame = new JFrame();
     this.setMessage("Select Trump");
     this.setMessageType(JOptionPane.INFORMATION_MESSAGE);
     String [] suits = {"Hearts", "Clubs", "Diamonds", "Spades"};
@@ -27,8 +28,14 @@ public class TrumpDialog extends JOptionPane {
       objects[i] = getButton(this, suits[i], icons[i]);
     }
     this.setOptions(objects);
-    JDialog dialog = this.createDialog(frame, "Select Trump");
-    dialog.setVisible(true);
+    final JDialog dialog = this.createDialog(null, "Select Trump");
+    dialog.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
+    dialog.setLocationRelativeTo(null);
+    SwingUtilities.invokeLater(new Runnable() {
+      public void run() {
+        dialog.setVisible(true);
+      }
+    });
   }
 
   public static JButton getButton(final JOptionPane optionPane, final String text, Icon icon) {
@@ -42,9 +49,9 @@ public class TrumpDialog extends JOptionPane {
     return button;
   }
 
-  /*public static void main (String args[]) {
-    TrumpDialog td = new TrumpDialog();
-    Object value   = td.getValue();
-    System.out.println((String)value);
-  }*/
+  public void modelPropertyChange(PropertyChangeEvent e) {
+    if (e.getNewValue() == null) return;
+  }
 }
+
+
