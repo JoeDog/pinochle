@@ -16,7 +16,7 @@ public class NewAction implements ActionListener {
   public void actionPerformed (ActionEvent e) {
     SwingUtilities.invokeLater(new Runnable() {
       public void run() {
-        controller.newGame();
+        controller.resetGame();
       }
     });
 

@@ -27,16 +27,16 @@ public class GameController extends AbstractController {
     setModelProperty("GameStatus", DEAL);
   }
 
-  public void newGame() {
+  public void resetGame() {
+    this.over = true;
     setStatus("New game!");
     runViewMethod("resetScore");
     setModelProperty("GameStatus", ""+DEAL);
-    int status  = ((Integer)getModelProperty("GameStatus")).intValue();
-    System.out.println("status in my controller: "+status);
   }
 
   public synchronized void start () {
     this.running  = true;
+    this.over = false;
   }
 
   public boolean isRunning() {
@@ -117,6 +117,9 @@ public class GameController extends AbstractController {
   }
 
   public synchronized int gameStatus () {
+    if (this.over) {
+      return DEAL;
+    }
     int status  = ((Integer)getModelProperty("GameStatus")).intValue();
     switch (status) {
       case DEAL:
@@ -145,7 +148,8 @@ public class GameController extends AbstractController {
   }
 
   public void newDeal(Player[] players) {
-    int turn = 0;
+    int turn  = 0;
+    this.over = false;
     Deck deck = new Deck(1);
     deck.shuffle();
     while (turn < deck.count()) {
@@ -266,7 +270,15 @@ public class GameController extends AbstractController {
     System.out.println(players[Pinochle.NORTH].getName()+"/"+players[Pinochle.SOUTH].getName()+": "+ns);
     System.out.println(players[Pinochle.EAST].getName()+"/"+players[Pinochle.WEST].getName()+": "+ew);
     setViewProperty("MeldScore", new Score(ns, ew));
+    setModelProperty("GameStatus", ""+PLAY);
     return;
+  }
+
+  public void playHand(Player[] players) {
+    for (int i = 0; i < players.length; i++) {
+      players[i].clearMeld();
+      players[i].refresh();
+    }
   }
 
   public String getName (int player) {

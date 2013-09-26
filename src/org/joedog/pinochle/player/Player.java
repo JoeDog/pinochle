@@ -69,6 +69,22 @@ public abstract class Player {
     this.hand.display();
   }
 
+  /**
+   * This is a programmer's helper; it will
+   * never be called in the final product....
+   */
+  public void clearHand() {
+    while (this.hand.size() > 0) {
+      this.hand.remove(0);
+    }  
+  }
+
+  public void clearMeld() {
+    for (Card card: this.hand.getCards()) {
+      card.unmeld();
+    }
+  }
+
   public String getName() {
     return this.name;
   }

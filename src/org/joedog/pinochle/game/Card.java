@@ -97,6 +97,10 @@ public class Card {
     this.melded = true;
   }
 
+  public void unmeld() {
+    this.melded = false;
+  }
+
   public void turnOver() {
     this.faceup = !this.faceup;
   }

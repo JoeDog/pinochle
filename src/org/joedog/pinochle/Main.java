@@ -115,25 +115,30 @@ public class Main extends JFrame {
   
     while (status != GameController.OVER) {
       status = controller.gameStatus();
-      System.out.println("STATUS: "+status+"!!!!!!!!!!!!!!!!");
       switch (status) {
         case GameController.DEAL:
+          System.out.println("DEAL________________________________________________________");
           controller.newDeal(players);
           break;
         case GameController.BID:
+          System.out.println("BID_________________________________________________________");
           controller.getBids(players);
           break;
         case GameController.PASS:
+          System.out.println("PASS________________________________________________________");
           controller.passCards(players);
           break;
         case GameController.MELD:
+          System.out.println("MELD________________________________________________________");
           controller.getMeld(players);
+          break;
+        case GameController.PLAY:
+          System.out.println("PLAY________________________________________________________");
+          controller.playHand(players);
           try {
             TimeUnit.SECONDS.sleep(90);
           } catch (java.lang.InterruptedException ie) {}
-          System.exit(0);
-          break;
-        case GameController.PLAY:
+          //System.exit(0); 
           break;
         case GameController.SCORE:
           break;
