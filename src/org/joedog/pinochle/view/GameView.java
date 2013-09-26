@@ -30,7 +30,7 @@ import javax.swing.JLabel;
 import javax.swing.WindowConstants;
 import javax.swing.SwingUtilities;
 
-public class GameView extends JFrame implements View, MouseListener {
+public class GameView extends JPanel implements View, MouseListener {
   private JPanel         main        = new JPanel();
   private Table          table       = new Table();
   private JPanel         bottom      = new JPanel();
@@ -43,17 +43,12 @@ public class GameView extends JFrame implements View, MouseListener {
   private ScorePad       pad         = null;
   private JButton        passButton  = null;
   private JButton        meldButton  = null;
-  private MenuView       menu;
   private GameController controller;
-  private GameActions    actions;
   private int width;
   private int height;
 
   public GameView (GameController controller) {
-    super("Pinochle");
     this.controller = controller;
-    this.actions    = new GameActions(this.controller);
-    this.menu       = new MenuView(this.actions);
   }
 
   public void setStatus(String message) {
@@ -66,9 +61,8 @@ public class GameView extends JFrame implements View, MouseListener {
     }
   }
 
-  public void display() {
+  public void createPanel() {
     int id = 0;
-    this.setPreferredSize(new Dimension(970,630));
 
     for (int i=0; i < 3; i++)
       spacer[i] = new JLabel("    ");
@@ -83,28 +77,12 @@ public class GameView extends JFrame implements View, MouseListener {
     bottom.setLayout(new BorderLayout());
     bottom.add(buttons, java.awt.BorderLayout.CENTER);
     bottom.add(status,  java.awt.BorderLayout.SOUTH);
-    main.setLayout(new BorderLayout());
-    main.add(spacer[0], BorderLayout.NORTH);
-    main.add(spacer[1], BorderLayout.EAST);
-    main.add(spacer[2], BorderLayout.WEST);
-    main.add(table,     BorderLayout.CENTER);
-    main.add(bottom,    BorderLayout.SOUTH);
-
-    Dimension dim  = Toolkit.getDefaultToolkit().getScreenSize();
-    this.getContentPane().add(main, BorderLayout.CENTER);
-    this.setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
-    this.setJMenuBar(menu);
-    this.pack();
-    int x = controller.getIntProperty("MainX");
-    int y = controller.getIntProperty("MainY");
-    if (x == 0 && y == 0) {
-      int w = this.getSize().width;
-      int h = this.getSize().height;
-      x = (dim.width-w)/2;
-      y = (dim.height-h)/2;
-    }
-    this.setLocation(x, y);
-    this.setVisible(true);
+    this.setLayout(new BorderLayout());
+    this.add(spacer[0], BorderLayout.NORTH);
+    this.add(spacer[1], BorderLayout.EAST);
+    this.add(spacer[2], BorderLayout.WEST);
+    this.add(table,     BorderLayout.CENTER);
+    this.add(bottom,    BorderLayout.SOUTH);
   }
 
   public JPanel getMsgBox() {
@@ -126,6 +104,10 @@ public class GameView extends JFrame implements View, MouseListener {
     }
     this.controller.addView(this.pad);
     return this.pad;
+  }
+
+  public Setting getSetting(Integer position) {
+    return this.getSetting((int)position);
   }
 
   public Setting getSetting(int position) {
