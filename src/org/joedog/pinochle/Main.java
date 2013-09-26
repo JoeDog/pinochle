@@ -21,15 +21,17 @@ import javax.swing.SwingUtilities;
 /**
  * @author Jeffrey Fulmer
  */
-public class Main {
+public class Main extends JFrame {
   private GameController controller;
   private GameActions    actions;
   private GameView       view;
   private GameModel      model;
+  private GameMenu       menu;
   private Splash         splash;
   private PlayerFactory  factory;
 
   public Main() {
+     super("Pinochle");
     this.splash     = new Splash();
     splash.setMessage("Game controller");
     this.controller = new GameController();
@@ -37,24 +39,47 @@ public class Main {
     this.model      = new GameModel();
     splash.setMessage("Game view");
     this.view       = new GameView(controller);
-    this.actions    = new GameActions(controller);
+    splash.setMessage("Initializing actions");
+    this.actions    = new GameActions(this.controller);
+    this.menu       = new GameMenu(this.actions);
 
     controller.addView(view);
     controller.addModel(model);
 
     splash.close();
-    view.display(); 
 
+    view.createPanel();
+    this.display();
+
+    Player [] players = this.getPlayers();
     for ( ;; ) {
-      while (controller.alive){this.play();}
+      while (controller.alive){this.play(players);}
       view.close();
       System.exit(0);
     }
   }
 
-  public synchronized void play () {
-    int turn          = 0;
-    int status        = GameController.DEAL;
+  public void display() {
+    this.setPreferredSize(new Dimension(970,630));
+
+    Dimension dim  = Toolkit.getDefaultToolkit().getScreenSize();
+    this.getContentPane().add(view, BorderLayout.CENTER);
+    this.setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
+    this.setJMenuBar(menu);
+    this.pack();
+    int x = controller.getIntProperty("MainX");
+    int y = controller.getIntProperty("MainY");
+    if (x == 0 && y == 0) {
+      int w = this.getSize().width;
+      int h = this.getSize().height;
+      x = (dim.width-w)/2;
+      y = (dim.height-h)/2;
+    }
+    this.setLocation(x, y);
+    this.setVisible(true);
+  }
+
+  public Player [] getPlayers () {
     this.factory      = new PlayerFactoryImpl();
     Player [] players = {
       factory.getPlayer(this.controller, Player.COMPUTER),
@@ -80,11 +105,17 @@ public class Main {
       }
       players[i].setup(view.getSetting(i), i, name);
     }
-
-    int x = 0;
+    return players;
+  }
+  
+  public synchronized void play(Player[] players) {
+    int x      = 0;
+    int turn   = 0;
+    int status = GameController.DEAL;
+  
     while (status != GameController.OVER) {
       status = controller.gameStatus();
-      System.out.println("GAME STATUS: "+status);
+      System.out.println("STATUS: "+status+"!!!!!!!!!!!!!!!!");
       switch (status) {
         case GameController.DEAL:
           controller.newDeal(players);
@@ -119,7 +150,6 @@ public class Main {
       players[turn%2].takeTurn(); 
       */
       turn++;
-      System.out.print("+");
     }
   }
 
