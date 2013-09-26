@@ -30,7 +30,9 @@ public class GameController extends AbstractController {
   public void newGame() {
     setStatus("New game!");
     runViewMethod("resetScore");
-    setModelProperty("GameStatus", DEAL);
+    setModelProperty("GameStatus", ""+DEAL);
+    int status  = ((Integer)getModelProperty("GameStatus")).intValue();
+    System.out.println("status in my controller: "+status);
   }
 
   public synchronized void start () {
