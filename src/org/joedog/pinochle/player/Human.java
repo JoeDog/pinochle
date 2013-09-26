@@ -35,8 +35,7 @@ public class Human extends Player {
       bids[i] = ""+tmp;
       tmp++;
     }
-    JFrame frame = new JFrame("Bid");
-    String num   = (String) JOptionPane.showInputDialog(frame, 
+    String num   = (String) JOptionPane.showInputDialog(null, 
       "Bid", "Bid", JOptionPane.QUESTION_MESSAGE, null, bids, bids[0]
     );
     try {
@@ -57,6 +56,7 @@ public class Human extends Player {
     JFrame frame   = new JFrame("Trump");
     TrumpDialog td = new TrumpDialog();
 
+    //XXX: this is probably a Bad Idea to instantiate this here
     String trump = (String)td.getValue();
     if (trump.equals("Hearts"))   return Pinochle.HEARTS;
     if (trump.equals("Clubs"))    return Pinochle.CLUBS;
