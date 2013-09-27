@@ -117,23 +117,18 @@ public class Main extends JFrame {
       status = controller.gameStatus();
       switch (status) {
         case GameController.DEAL:
-          System.out.println("DEAL________________________________________________________");
           controller.newDeal(players);
           break;
         case GameController.BID:
-          System.out.println("BID_________________________________________________________");
           controller.getBids(players);
           break;
         case GameController.PASS:
-          System.out.println("PASS________________________________________________________");
           controller.passCards(players);
           break;
         case GameController.MELD:
-          System.out.println("MELD________________________________________________________");
           controller.getMeld(players);
           break;
         case GameController.PLAY:
-          System.out.println("PLAY________________________________________________________");
           controller.playHand(players);
           try {
             TimeUnit.SECONDS.sleep(90);
