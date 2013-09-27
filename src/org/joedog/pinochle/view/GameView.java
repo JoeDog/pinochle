@@ -33,6 +33,7 @@ import javax.swing.SwingUtilities;
 public class GameView extends JPanel implements View, MouseListener {
   private JPanel         main        = new JPanel();
   private Table          table       = new Table();
+  private TrickArea      trick       = null;
   private JPanel         bottom      = new JPanel();
   private JPanel         buttons     = new JPanel();
   private JPanel         msgbox;
@@ -67,12 +68,17 @@ public class GameView extends JPanel implements View, MouseListener {
 
     for (int i=0; i < 3; i++)
       spacer[i] = new JLabel("    ");
+   
+    if (trick == null) {
+      trick = new TrickArea(this.controller);
+    }
 
     table.add(getMsgBox(), 0, 0, 84, 42);
     table.add(getSetting(Pinochle.NORTH), 290, 10,  355, 132);
     table.add(getSetting(Pinochle.EAST),  570, 180, 355, 132);
     table.add(getSetting(Pinochle.SOUTH), 290, 340, 355, 132);
     table.add(getSetting(Pinochle.WEST),   20, 180, 355, 132);
+    table.add(trick, 380, 180, 180, 180);
     table.add(getScorePad(),  4, 350, 240, 130);
     buttons.setLayout(new FlowLayout());
     bottom.setLayout(new BorderLayout());
