@@ -19,6 +19,7 @@ public class Card {
   boolean faceup   = false;
   boolean selected = false;
   boolean melded   = false;
+  boolean counter  = false;
   
   public Card(int rank, int suit) {
     this.id   = -1;
@@ -59,6 +60,10 @@ public class Card {
 
   public ImageIcon getIcon() {
     return new ImageIcon(this.getImageUrl(), this.getImageUrlString());
+  }
+
+  public boolean isCounter() {
+    return this.counter;
   }
 
   public boolean isFaceDown() {
@@ -164,6 +169,9 @@ public class Card {
   }
   
   private void createCard() {
+    if (this.rank > Pinochle.QUEEN) {
+      this.counter = true;
+    }
     if (this.face == null) {
       face = getClass().getClassLoader().getResource(
         "org/joedog/pinochle/images/cards/"+
