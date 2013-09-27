@@ -82,6 +82,9 @@ public abstract class Player {
   public void clearMeld() {
     for (Card card: this.hand.getCards()) {
       card.unmeld();
+      if (this.type == COMPUTER) {
+        card.setFaceDown();
+      }
     }
   }
 
@@ -91,6 +94,10 @@ public abstract class Player {
 
   public int getType () {
     return this.type;
+  }
+
+  public Hand getHand() {
+    return this.hand;
   }
 
   public abstract void takeTurn();
