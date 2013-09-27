@@ -43,6 +43,7 @@ public class GameView extends JPanel implements View, MouseListener {
   private ScorePad       pad         = null;
   private JButton        passButton  = null;
   private JButton        meldButton  = null;
+  private JButton        playButton  = null;
   private GameController controller;
   private int width;
   private int height;
@@ -192,7 +193,6 @@ public class GameView extends JPanel implements View, MouseListener {
         }  
         buttons.removeAll();
         buttons.add(meldButton);
-        System.out.println("Adding meld button....");
         for (int i = 0; i < setting.length; i++) {
           setting[i].refresh();
         }
@@ -202,6 +202,25 @@ public class GameView extends JPanel implements View, MouseListener {
       }
     });
     this.setStatus("Select cards to meld...");
+  }
+
+  public void addPlayButton() {
+    SwingUtilities.invokeLater(new Runnable() {
+      public void run() {
+        if (playButton == null) {
+          playButton = new JButton(new PlayAction(controller));
+        }  
+        buttons.removeAll();
+        buttons.add(playButton);
+        for (int i = 0; i < setting.length; i++) {
+          setting[i].refresh();
+        }
+        buttons.invalidate();
+        buttons.validate();
+        buttons.repaint();
+      }
+    });
+    this.setStatus("Push 'Play' to begin the hand...");
   }
 
   public void close() {
@@ -225,19 +244,15 @@ public class GameView extends JPanel implements View, MouseListener {
     if (e.getPropertyName().equals(controller.TRUMP)) {
       trump.setText(controller.getProperty("GameBid"));
       if (e.getNewValue().equals("0")) {
-        System.out.println("Setting HEARTS");
         trump.setIcon(new TrumpIcon(Pinochle.HEARTS));
       }
       if (e.getNewValue().equals("1")) {
-        System.out.println("Setting CLUBS");
         trump.setIcon(new TrumpIcon(Pinochle.CLUBS));
       }
       if (e.getNewValue().equals("2")) {
-        System.out.println("Setting DIAMONDS");
         trump.setIcon(new TrumpIcon(Pinochle.DIAMONDS));
       }
       if (e.getNewValue().equals("3")) {
-        System.out.println("Setting SPADES");
         trump.setIcon(new TrumpIcon(Pinochle.SPADES));
       }
     }
@@ -266,6 +281,20 @@ public class GameView extends JPanel implements View, MouseListener {
 
     public void actionPerformed(ActionEvent ae) {
       this.controller.setMeldable(true);
+      this.controller.pause(false);
+    } 
+  }
+
+  private class PlayAction extends AbstractAction {
+    private GameController controller;
+
+    public PlayAction(GameController controller) {
+      putValue(NAME, "Play");
+      this.controller = controller;
+    }
+
+    public void actionPerformed(ActionEvent ae) {
+      this.controller.pause(false);
     } 
   }
 
