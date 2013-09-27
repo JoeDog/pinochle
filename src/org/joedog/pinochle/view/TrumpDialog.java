@@ -31,11 +31,7 @@ public class TrumpDialog extends JOptionPane implements View {
     final JDialog dialog = this.createDialog(null, "Select Trump");
     dialog.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
     dialog.setLocationRelativeTo(null);
-    SwingUtilities.invokeLater(new Runnable() {
-      public void run() {
-        dialog.setVisible(true);
-      }
-    });
+    dialog.setVisible(true);
   }
 
   public static JButton getButton(final JOptionPane optionPane, final String text, Icon icon) {
