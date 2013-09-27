@@ -1,12 +1,14 @@
 package org.joedog.pinochle.controller;
 
 import java.util.concurrent.TimeUnit;
+import java.util.concurrent.atomic.AtomicBoolean;
 import org.joedog.pinochle.view.*;
 import org.joedog.pinochle.game.*;
 import org.joedog.pinochle.player.*;
 import org.joedog.pinochle.model.Score;
 
 public class GameController extends AbstractController {
+  private AtomicBoolean hiatus      = new AtomicBoolean(false);
   public  boolean alive             = true;
   private boolean running           = false;
   private boolean passable          = false;
@@ -251,7 +253,6 @@ public class GameController extends AbstractController {
         } else {
           ew += score;
         }
-        System.out.println(players[i].getName()+" melded: "+score);
         players[i].refresh();
       }
     } 
@@ -263,18 +264,22 @@ public class GameController extends AbstractController {
         } else {
           ew += score;
         }
-        System.out.println(players[i].getName()+" melded: "+score);
         players[i].refresh();
       }
     } 
-    System.out.println(players[Pinochle.NORTH].getName()+"/"+players[Pinochle.SOUTH].getName()+": "+ns);
-    System.out.println(players[Pinochle.EAST].getName()+"/"+players[Pinochle.WEST].getName()+": "+ew);
     setViewProperty("MeldScore", new Score(ns, ew));
     setModelProperty("GameStatus", ""+PLAY);
+    this.pause(true);
+    runViewMethod("addPlayButton");
     return;
   }
 
   public void playHand(Player[] players) {
+    while (this.isPaused()) {
+      try {
+        TimeUnit.SECONDS.sleep(1);
+      } catch (Exception e) {}
+    }
     for (int i = 0; i < players.length; i++) {
       players[i].clearMeld();
       players[i].refresh();
@@ -304,4 +309,11 @@ public class GameController extends AbstractController {
     return (String)getModelProperty("GameString");
   }
 
+  public void pause(boolean b) {
+    hiatus.set(b);
+  }
+
+  public boolean isPaused() {
+    return hiatus.get();
+  }
 }
