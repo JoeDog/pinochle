@@ -119,7 +119,7 @@ public class Hand {
     Collections.sort(hand, cc); 
     for (int i = 0; i < hand.size(); i++) { 
       Card c = (Card)hand.get(i);
-      String m = (c.melded()==true) ? "* " : "";
+      String m = (c.melded()==true) ? "[*] " : "";
       str = str + c.toString()+" "+m;
     }
     return str;
