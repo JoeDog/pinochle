@@ -21,65 +21,27 @@ import javax.swing.SwingUtilities;
 /**
  * @author Jeffrey Fulmer
  */
-public class Main extends JFrame {
-  private GameController controller;
-  private GameActions    actions;
-  private GameView       view;
-  private GameModel      model;
-  private GameMenu       menu;
+public class Main {
+  private static GameController controller;
+  private static GameActions    actions;
+  private static GameView       view;
+  private static GameModel      model;
+  private static GameMenu       menu;
   private Splash         splash;
   private PlayerFactory  factory;
 
   public Main() {
-     super("Pinochle");
+   /**
     this.splash     = new Splash();
     splash.setMessage("Game controller");
-    this.controller = new GameController();
-    splash.setMessage("Game data");
-    this.model      = new GameModel();
     splash.setMessage("Game view");
-    this.view       = new GameView(controller);
+    splash.setMessage("Game data");
     splash.setMessage("Initializing actions");
-    this.actions    = new GameActions(this.controller);
-    this.menu       = new GameMenu(this.actions);
-
-    controller.addView(view);
-    controller.addModel(model);
-
     splash.close();
-
-    view.createPanel();
-    this.display();
-
-    Player [] players = this.getPlayers();
-    for ( ;; ) {
-      while (controller.alive){this.play(players);}
-      view.close();
-      System.exit(0);
-    }
+    */
   }
 
-  public void display() {
-    this.setPreferredSize(new Dimension(970,630));
-
-    Dimension dim  = Toolkit.getDefaultToolkit().getScreenSize();
-    this.getContentPane().add(view, BorderLayout.CENTER);
-    this.setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
-    this.setJMenuBar(menu);
-    this.pack();
-    int x = controller.getIntProperty("MainX");
-    int y = controller.getIntProperty("MainY");
-    if (x == 0 && y == 0) {
-      int w = this.getSize().width;
-      int h = this.getSize().height;
-      x = (dim.width-w)/2;
-      y = (dim.height-h)/2;
-    }
-    this.setLocation(x, y);
-    this.setVisible(true);
-  }
-
-  public Player [] getPlayers () {
+  public Player [] getPlayers (GameController controller) {
     this.factory      = new PlayerFactoryImpl();
     Player [] players = {
       factory.getPlayer(this.controller, Player.COMPUTER),
@@ -89,6 +51,7 @@ public class Main extends JFrame {
     };
     for (int i = 0; i < players.length; i++) {
       String name = "default";
+      if (controller == null) System.out.println("null controller");
       switch (i) {
         case Pinochle.NORTH:
           name = controller.getProperty("PlayerNorthName");
@@ -108,11 +71,11 @@ public class Main extends JFrame {
     return players;
   }
   
-  public synchronized void play(Player[] players) {
+  public synchronized void play(GameController controller, Player[] players) {
     int x      = 0;
     int turn   = 0;
     int status = GameController.DEAL;
-  
+
     while (status != GameController.OVER) {
       status = controller.gameStatus();
       switch (status) {
@@ -153,6 +116,29 @@ public class Main extends JFrame {
     }
   }
 
+  private static void createAndShowGui(GameController controller, GameView view) {
+    JFrame   frame = new JFrame("Pinochle");
+    GameMenu menu  = new GameMenu(new GameActions(controller));
+    frame.setJMenuBar(menu);
+    frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+    frame.setContentPane(view.createContentPane());
+    frame.setPreferredSize(new Dimension(970,630));
+    frame.setSize(970, 630);
+    Dimension dim  = Toolkit.getDefaultToolkit().getScreenSize();
+    int x = controller.getIntProperty("MainX");
+    int y = controller.getIntProperty("MainY");
+    if (x == 0 && y == 0) {
+      int w = frame.getSize().width;
+      int h = frame.getSize().height;
+      x = (dim.width-w)/2;
+      y = (dim.height-h)/2;
+    }
+    frame.pack();
+    frame.setLocation(x, y);
+    frame.setVisible(true);
+    frame.setVisible(true);
+  }
+
   public static void main(String[] args) {
     try {
       UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
@@ -167,16 +153,25 @@ public class Main extends JFrame {
     }
     catch (IllegalAccessException e) {
     }
-    Main pinochle = new Main();
-    /**
-     Commented out because this results in a thread-locked mess:
-     Exception in thread "AWT-EventQueue-0" java.lang.OutOfMemoryError: Java heap space
+    if (controller == null) {
+      controller = new GameController();
+    }
+    if (model == null) {
+      model = new GameModel();
+    }
+    if (view == null) {
+      view = new GameView(controller);
+    }
+    controller.addView(view);
+    controller.addModel(model);
     SwingUtilities.invokeLater(new Runnable() {
       public void run() {
-        Main pinochle = new Main();
+        createAndShowGui(controller, view);
       }
     });
-    */
+    Main main = new Main();
+    Player[] players = main.getPlayers(controller);
+    main.play(controller, players);
   }
 }
 
