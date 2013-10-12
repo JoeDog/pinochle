@@ -7,6 +7,7 @@ import org.joedog.pinochle.player.*;
 import org.joedog.pinochle.game.*;
 
 import java.awt.Color;
+import java.awt.Container;
 import java.awt.Dimension;
 import java.awt.FlowLayout;
 import java.awt.BorderLayout;
@@ -63,12 +64,13 @@ public class GameView extends JPanel implements View, MouseListener {
     }
   }
 
-  public void createPanel() {
+  public Container createContentPane() {
     int id = 0;
-
     for (int i=0; i < 3; i++)
       spacer[i] = new JLabel("    ");
-   
+    if (main  == null) {
+      main = new JPanel();
+    }
     if (trick == null) {
       trick = new TrickArea(this.controller);
     }
@@ -84,12 +86,13 @@ public class GameView extends JPanel implements View, MouseListener {
     bottom.setLayout(new BorderLayout());
     bottom.add(buttons, java.awt.BorderLayout.CENTER);
     bottom.add(status,  java.awt.BorderLayout.SOUTH);
-    this.setLayout(new BorderLayout());
-    this.add(spacer[0], BorderLayout.NORTH);
-    this.add(spacer[1], BorderLayout.EAST);
-    this.add(spacer[2], BorderLayout.WEST);
-    this.add(table,     BorderLayout.CENTER);
-    this.add(bottom,    BorderLayout.SOUTH);
+    main.setLayout(new BorderLayout());
+    main.add(spacer[0], BorderLayout.NORTH);
+    main.add(spacer[1], BorderLayout.EAST);
+    main.add(spacer[2], BorderLayout.WEST);
+    main.add(table,     BorderLayout.CENTER);
+    main.add(bottom,    BorderLayout.SOUTH);
+    return main;
   }
 
   public JPanel getMsgBox() {
