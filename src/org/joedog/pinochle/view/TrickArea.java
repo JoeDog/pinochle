@@ -11,7 +11,7 @@ class TrickArea extends JPanel implements View {
 
   public TrickArea(GameController controller) {
     this.controller = controller;
-    this.setBackground(Color.red);
+    this.setBackground(new Color(48,200,126));
   }
 
   public void modelPropertyChange(PropertyChangeEvent e) {
