@@ -50,7 +50,12 @@ public class GameController extends AbstractController {
   }
 
   public String getProperty(String property) {
-    return (String)getModelProperty(property); 
+    String str = (String)getModelProperty(property); 
+    if (str == null) {
+      return "";
+    } else {
+      return str;
+    }
   }
 
   public int getIntProperty(String property) {
