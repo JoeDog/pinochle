@@ -38,6 +38,7 @@ public class Computer extends Player {
   }
 
   public int nameTrump() {
+    this.bidder = true;
     if (this.assessment != null) {
       return assessment.getTrump();
     }
