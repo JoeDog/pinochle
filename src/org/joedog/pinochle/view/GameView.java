@@ -232,6 +232,20 @@ public class GameView extends JPanel implements View, MouseListener {
     this.setStatus("Push 'Play' to begin the hand...");
   }
 
+  public synchronized void resetButtons() {
+    SwingUtilities.invokeLater(new Runnable() {
+      public void run() {
+        buttons.removeAll();
+        buttons.invalidate();
+        buttons.validate();
+        buttons.repaint();
+      }
+    });
+    for (int i = 0; i < setting.length; i++) {
+      setting[i].refresh();
+    }
+  }
+
   public void close() {
     this.controller.setProperty("MainX",  Integer.toString(this.getX()));
     this.controller.setProperty("MainY",  Integer.toString(this.getY()));
@@ -290,7 +304,6 @@ public class GameView extends JPanel implements View, MouseListener {
 
     public void actionPerformed(ActionEvent ae) {
       this.controller.setMeldable(true);
-      this.controller.pause(false);
     } 
   }
 
@@ -303,7 +316,6 @@ public class GameView extends JPanel implements View, MouseListener {
     }
 
     public void actionPerformed(ActionEvent ae) {
-      this.controller.pause(false);
     } 
   }
 

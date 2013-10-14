@@ -127,23 +127,13 @@ public class Setting extends JPanel implements MouseListener {
     int status   = this.controller.gameStatus();
     this.refresh();
     CardPanel cp = (CardPanel)e.getComponent();
-    //if (status == GameController.PASS) {
-      Boolean constraint = layout.getConstraints(cp);
-      try {
-        if (constraint == null || constraint == OverlapLayout.POP_DOWN) {
-          layout.addLayoutComponent(cp, OverlapLayout.POP_UP);
-          cp.select(true);
-        } else {
-          layout.addLayoutComponent(cp, OverlapLayout.POP_DOWN);
-          cp.select(false);
-        }
-      } catch (java.lang.ArrayIndexOutOfBoundsException ex){ /* error! bad input to the function*/
-        System.err.println(ex.toString());
-      }
-      cp.getParent().invalidate();
-      cp.getParent().validate();
-      this.revalidate();
-    //}
+    if (status < GameController.PLAY) {
+      cardAction(cp);
+    }
+    if (status == GameController.PLAY) {
+      cardAction(cp);
+      System.out.println(cp.getCard().toString());
+    }
   }
 
   public void mouseMoved(MouseEvent e) {}
@@ -151,5 +141,28 @@ public class Setting extends JPanel implements MouseListener {
   public void mouseEntered(MouseEvent e) {}
   public void mouseExited(MouseEvent e) {}
   public void mouseReleased(MouseEvent e) {}
+
+
+  private void cardAction(final CardPanel cp) {
+    SwingUtilities.invokeLater(new Runnable() {
+      public void run() {
+        Boolean constraint = layout.getConstraints(cp);
+        try {
+          if (constraint == null || constraint == OverlapLayout.POP_DOWN) {
+            layout.addLayoutComponent(cp, OverlapLayout.POP_UP);
+            cp.select(true);
+          } else {
+            layout.addLayoutComponent(cp, OverlapLayout.POP_DOWN);
+            cp.select(false);
+          }
+        } catch (java.lang.ArrayIndexOutOfBoundsException ex){ /* error! bad input to the function*/
+          System.err.println(ex.toString());
+        }
+        cp.getParent().invalidate();
+        cp.getParent().validate();
+        revalidate();
+      }
+    });
+  }
 }
 
