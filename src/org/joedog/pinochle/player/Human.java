@@ -55,6 +55,7 @@ public class Human extends Player {
     String suits[] = new String[]{"Hearts", "Clubs", "Diamonds", "Spades"};
     JFrame frame   = new JFrame("Trump");
     TrumpDialog td = new TrumpDialog();
+    this.bidder    = true;
 
     //XXX: this is probably a Bad Idea to instantiate this here
     String trump = (String)td.getValue();
@@ -98,6 +99,7 @@ public class Human extends Player {
 
   public int meld() {
     Hand tmp  = new Hand();
+
     int trump = controller.getIntProperty("GameTrump");
     this.controller.addMeldButton();
     this.setting.refresh();
