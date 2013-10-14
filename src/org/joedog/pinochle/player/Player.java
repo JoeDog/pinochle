@@ -18,6 +18,7 @@ public abstract class Player {
   public int        maxBid;
   public int        myBid;
   public Assessment assessment;
+  public boolean    bidder = false;
 
   public Player () {
     newHand();
@@ -67,6 +68,10 @@ public abstract class Player {
 
   public void showHand() {
     this.hand.display();
+  }
+
+  public boolean wonBid() {
+    return this.bidder;
   }
 
   /**
