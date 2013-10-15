@@ -1,5 +1,6 @@
 package org.joedog.pinochle.controller;
 
+import java.lang.Thread;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicBoolean;
 import org.joedog.pinochle.view.*;
@@ -9,6 +10,7 @@ import org.joedog.pinochle.model.Score;
 
 public class GameController extends AbstractController {
   private AtomicBoolean hiatus      = new AtomicBoolean(false);
+  private Thread  thread;
   public  boolean alive             = true;
   private boolean running           = false;
   private boolean passable          = false;
@@ -30,10 +32,14 @@ public class GameController extends AbstractController {
   }
 
   public void resetGame() {
-    this.over = true;
+    this.over     = false;
+    this.meldable = false;
+    this.passable = false;
     setStatus("New game!");
+    runViewMethod("resetButtons");
     runViewMethod("resetScore");
     setModelProperty("GameStatus", ""+DEAL);
+    this.thread.stop();
   }
 
   public synchronized void start () {
@@ -312,6 +318,10 @@ public class GameController extends AbstractController {
 
   public String getGameString () {
     return (String)getModelProperty("GameString");
+  }
+
+  public void addThread(Thread thread) {
+    this.thread = thread;
   }
 
   public void pause(boolean b) {
