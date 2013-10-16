@@ -1,6 +1,6 @@
 package org.joedog.pinochle.view;
 
-import org.joedog.pinochle.controller.*;
+import org.joedog.pinochle.control.*;
 import org.joedog.pinochle.model.*;
 import org.joedog.pinochle.view.actions.*;
 import org.joedog.pinochle.player.*;

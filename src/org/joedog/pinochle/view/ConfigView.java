@@ -27,7 +27,7 @@ import javax.swing.JTextField;
 import javax.swing.WindowConstants;
 import javax.swing.event.*;
 
-import org.joedog.pinochle.controller.*;
+import org.joedog.pinochle.control.*;
 import org.joedog.pinochle.view.actions.*;
 
 public class ConfigView extends JFrame {

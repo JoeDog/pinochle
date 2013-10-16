@@ -7,7 +7,7 @@ import java.util.concurrent.TimeUnit;
 import javax.swing.JFrame;
 import javax.swing.JInternalFrame;
 import javax.swing.JOptionPane;
-import org.joedog.pinochle.controller.GameController;
+import org.joedog.pinochle.control.GameController;
 import org.joedog.pinochle.game.*;
 import org.joedog.pinochle.view.Setting;
 import org.joedog.pinochle.view.TrumpDialog;

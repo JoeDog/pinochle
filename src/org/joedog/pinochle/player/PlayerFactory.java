@@ -1,6 +1,6 @@
 package org.joedog.pinochle.player;
 
-import org.joedog.pinochle.controller.GameController;
+import org.joedog.pinochle.control.GameController;
 
 public interface PlayerFactory {
 

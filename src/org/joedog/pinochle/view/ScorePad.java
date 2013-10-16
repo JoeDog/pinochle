@@ -23,7 +23,7 @@ import javax.swing.event.TableModelEvent;
 import javax.swing.event.TableModelListener;
 import java.beans.PropertyChangeEvent;
 
-import org.joedog.pinochle.controller.GameController;
+import org.joedog.pinochle.control.GameController;
 import org.joedog.pinochle.game.Pinochle;
 import org.joedog.pinochle.model.Score;
 import org.joedog.pinochle.model.ScoreTableModel;

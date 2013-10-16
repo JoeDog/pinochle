@@ -1,6 +1,6 @@
 package org.joedog.pinochle;
 
-import org.joedog.pinochle.controller.*;
+import org.joedog.pinochle.control.*;
 import org.joedog.pinochle.model.*;
 import org.joedog.pinochle.game.*;
 import org.joedog.pinochle.player.*;
@@ -11,7 +11,6 @@ import javax.swing.JFrame;
 import java.awt.BorderLayout;
 import java.awt.Dimension;
 import java.awt.Toolkit;
-//import java.lang.InterruptedException;
 import javax.swing.WindowConstants;
 
 import javax.swing.UIManager;

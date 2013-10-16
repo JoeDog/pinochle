@@ -4,7 +4,7 @@ import java.awt.event.ActionListener;
 import java.awt.event.ActionEvent;
 import javax.swing.SwingUtilities;
 
-import org.joedog.pinochle.controller.GameController;
+import org.joedog.pinochle.control.GameController;
 
 public class NewAction implements ActionListener {
   private GameController controller;

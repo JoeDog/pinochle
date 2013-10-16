@@ -2,7 +2,7 @@ package org.joedog.pinochle.view.actions;
 
 import java.awt.event.ActionListener;
 import java.awt.event.ActionEvent;
-import org.joedog.pinochle.controller.GameController;
+import org.joedog.pinochle.control.GameController;
 import org.joedog.pinochle.view.ConfigView;
 
 public class ConfigAction implements ActionListener {

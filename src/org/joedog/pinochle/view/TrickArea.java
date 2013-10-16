@@ -4,7 +4,7 @@ import java.awt.Color;
 import javax.swing.JPanel;
 import java.beans.PropertyChangeEvent;
 
-import org.joedog.pinochle.controller.*;
+import org.joedog.pinochle.control.*;
 
 class TrickArea extends JPanel implements View {
   private GameController controller;

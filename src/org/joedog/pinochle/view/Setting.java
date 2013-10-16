@@ -7,7 +7,7 @@ import javax.swing.JLabel;
 import javax.swing.SwingUtilities;
 import org.joedog.pinochle.view.OverlapLayout;
 import org.joedog.pinochle.game.*;
-import org.joedog.pinochle.controller.GameController;
+import org.joedog.pinochle.control.GameController;
 
 public class Setting extends JPanel implements MouseListener {
   private String         name;
