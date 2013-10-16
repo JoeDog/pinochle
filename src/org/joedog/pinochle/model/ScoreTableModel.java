@@ -21,8 +21,16 @@ public class ScoreTableModel extends AbstractTableModel {
   }
 
   public ScoreTableModel(String ua, String ub, String ta, String tb) {
-    headers[0] = ua.substring(0, 1)+"/"+ub.substring(0,1);  
-    headers[1] = ta.substring(0, 1)+"/"+tb.substring(0,1);
+    if (ua == null || ua.length() < 1 || ub == null || ub.length() < 1) {
+      headers[0] = "Us";  
+    } else {
+      headers[0] = ua.substring(0, 1)+"/"+ub.substring(0,1);  
+    }
+    if (ua == null || ua.length() < 1 || ub == null || ub.length() < 1) {
+      headers[1] = "Them";
+    } else {
+      headers[1] = ta.substring(0, 1)+"/"+tb.substring(0,1);
+    }
   }
 
   public void resetScore() {
