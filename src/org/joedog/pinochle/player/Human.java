@@ -130,9 +130,15 @@ public class Human extends Player {
   }
 
   public void takeTurn() {
-    this.hand.remove(0);
-    this.setting.repaint();
+    while (! this.controller.isPlayable()) {
+      try { 
+        TimeUnit.SECONDS.sleep(1);;  
+      } catch (Exception e) {}
+    }
+    Card card = this.setting.getCard();
+    System.out.println("Playing: "+card.toString());
+    this.hand.remove(card);
+    this.setting.refresh();
   }
-
 }
 

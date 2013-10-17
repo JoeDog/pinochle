@@ -12,6 +12,7 @@ import org.joedog.pinochle.control.GameController;
 public class Setting extends JPanel implements MouseListener {
   private String         name;
   private Hand           hand       = null;
+  private Card           card       = null;
   private int            size       = 0;
   private OverlapLayout  layout     = null;
   private GameController controller = null;
@@ -119,6 +120,10 @@ public class Setting extends JPanel implements MouseListener {
     this.refresh();
   }
 
+  public Card getCard() {
+    return this.card;
+  }
+
   public Dimension size() {
     return new Dimension(400, 400);
   }
@@ -132,7 +137,8 @@ public class Setting extends JPanel implements MouseListener {
     }
     if (status == GameController.PLAY) {
       cardAction(cp);
-      System.out.println(cp.getCard().toString());
+      this.card = cp.getCard();
+      this.controller.setPlayable(true);
     }
   }
 

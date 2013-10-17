@@ -9,13 +9,13 @@ import org.joedog.pinochle.player.*;
 import org.joedog.pinochle.model.Score;
 
 public class GameController extends AbstractController {
-  private AtomicBoolean hiatus      = new AtomicBoolean(false);
   private Thread  thread;
+  private AtomicBoolean hiatus      = new AtomicBoolean(false);
   public  boolean alive             = true;
   private boolean running           = false;
   private boolean passable          = false;
   private boolean meldable          = false;
-  //private boolean playable        = false;
+  private boolean playable          = false;
   public final static String TRUMP  = "0";
   public final static int DEAL      = 0;
   public final static int BID       = 1;
@@ -112,6 +112,14 @@ public class GameController extends AbstractController {
     return meldable;
   }
 
+  public void setPlayable(boolean playable) {
+    this.playable = playable;
+  }
+
+  public boolean isPlayable() {
+    return playable;
+  }
+
   public int save() {
     runViewMethod("save");
     runModelMethod("save");
@@ -161,7 +169,8 @@ public class GameController extends AbstractController {
   }
 
   public void newDeal(Player[] players) {
-    int turn  = 0;
+    int turn  = this.getIntProperty("Dealer");
+    int next  = (turn < players.length-1)? turn + 1 : 0;
     this.over = false;
     Deck deck = new Deck(1);
     deck.shuffle();
@@ -174,17 +183,16 @@ public class GameController extends AbstractController {
      * see the cards in order to bid, but selection
      * for pass works....
      */
-    //for (int i = 0; i < players.length; i++) {
-    //  players[i].refresh();
-    //}
-    setModelProperty("GameTrump",  "-1");
-    setModelProperty("GameStatus", ""+BID);
+    setModelProperty("GameTrump",    "-1");
+    setModelProperty("GameStatus",   ""+BID);
+    setModelProperty("ActivePlayer", ""+next);
+    setModelProperty("Dealer",       ""+next);
     return;
   }
 
   public void getBids(Player[] players) {
-    int bid       = 15; // XXX: Need to get this from the model - (min bid - 1)
-    int turn      = 0;  // XXX: Need to pass in an incrementing value
+    int bid       = (getIntProperty("MinimumBid") - 1);
+    int turn      = 0;  
     int sum       = 0;  // sum of the number of passes
     int mark      = 0;
     int [] passes = new int[players.length];
@@ -211,16 +219,16 @@ public class GameController extends AbstractController {
     }
     int trump = players[mark].nameTrump();
     String t  = ""+trump;
-    setModelProperty("GameBid",    ""+bid);
-    setModelProperty("GameBidder", ""+mark);
-    setModelProperty("GameTrump",  ""+trump);
-    setModelProperty("GameStatus", ""+PASS);
+    setModelProperty("GameBid",      ""+bid);
+    setModelProperty("ActivePlayer", ""+mark);
+    setModelProperty("GameTrump",    ""+trump);
+    setModelProperty("GameStatus",   ""+PASS);
     return;
   }
 
   public void passCards(Player[] players) {
     //XXX: some variations won't pass
-    int bidder = this.getIntProperty("GameBidder");
+    int bidder = this.getIntProperty("ActivePlayer");
     Deck a     = null;
     Deck b     = null;
     switch (bidder) {
@@ -286,6 +294,7 @@ public class GameController extends AbstractController {
   }
 
   public void playHand(Player[] players) {
+    int turn = getIntProperty("ActivePlayer");
     while (this.isPaused()) {
       try {
         TimeUnit.SECONDS.sleep(1);
@@ -294,6 +303,10 @@ public class GameController extends AbstractController {
     for (int i = 0; i < players.length; i++) {
       players[i].clearMeld();
       players[i].refresh();
+    }
+    while (! over) {
+      setStatus(players[turn].getName()+" it's your turn");
+      //players[turn%players.length].takeTurn();
     }
   }
 

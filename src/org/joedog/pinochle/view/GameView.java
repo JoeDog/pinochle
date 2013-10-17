@@ -316,6 +316,7 @@ public class GameView extends JPanel implements View, MouseListener {
     }
 
     public void actionPerformed(ActionEvent ae) {
+      this.controller.pause(false);
     } 
   }
 

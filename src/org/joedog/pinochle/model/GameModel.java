@@ -1,12 +1,15 @@
 package org.joedog.pinochle.model;
 
 import java.util.Properties;
+import org.joedog.pinochle.game.Pinochle;
 import org.joedog.pinochle.control.*;
 
 public class GameModel extends AbstractModel {
   private Configuration conf  = null;
   private int    decks;
   private int    status;
+  private String dealer;
+  private String active;
   private String trump; 
   private String bid;
   private String bidder;
@@ -18,6 +21,8 @@ public class GameModel extends AbstractModel {
     } else {
       this.decks = 1;
     }
+    this.dealer = ""+Pinochle.WEST;
+    this.active = ""+Pinochle.NORTH;
   }
 
   /**
@@ -34,10 +39,6 @@ public class GameModel extends AbstractModel {
 
   public void setGameBid(String bid) {
     this.bid   = bid;
-  }
-
-  public void setGameBidder(String bidder) {
-    this.bidder = bidder;
   }
 
   /**
@@ -112,6 +113,14 @@ public class GameModel extends AbstractModel {
 
   public void setMinimumBid(String bid) {
     conf.setProperty("MinimumBid", bid);
+  }
+
+  public void setDealer(String position) {
+    this.dealer = position;
+  }
+
+  public void setActivePlayer(String position) {
+    this.active = position;
   }
 
   public String getConfigX() {
@@ -198,12 +207,16 @@ public class GameModel extends AbstractModel {
     return this.trump;
   }
 
-  public String getGameBidder() {
-    return this.bidder;
-  }
-
   public int getGameStatus() {
     return this.status;
+  }
+
+  public String getActivePlayer() {
+    return this.active;
+  }
+
+  public String getDealer() {
+    return this.dealer;
   }
 
   public void reset() {
