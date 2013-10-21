@@ -174,8 +174,8 @@ public class GameController extends AbstractController {
     this.over = false;
     Deck deck = new Deck(1);
     deck.shuffle();
-    while (turn < deck.count()) {
-      players[turn%players.length].takeCard(deck.dealCard(turn));
+    for (int i = 0; i < deck.count(); i++) {
+      players[turn%players.length].takeCard(deck.dealCard(i));
       turn++;
     }
     /**
@@ -197,9 +197,9 @@ public class GameController extends AbstractController {
     int mark      = 0;
     int [] passes = new int[players.length];
               
-    for (int i = 0; i < players.length; i++) {
-      players[i].refresh();
-      players[i].assessHand();
+    for (Player player : players) { 
+      player.refresh();
+      player.assessHand();
     }
     
     while (sum < (players.length - 1)) {
@@ -294,19 +294,47 @@ public class GameController extends AbstractController {
   }
 
   public void playHand(Player[] players) {
-    int turn = getIntProperty("ActivePlayer");
+    int count  = getIntProperty("CardCount");
+    int turn   = getIntProperty("ActivePlayer");
+    int tricks = count/players.length;
     while (this.isPaused()) {
       try {
         TimeUnit.SECONDS.sleep(1);
       } catch (Exception e) {}
     }
-    for (int i = 0; i < players.length; i++) {
-      players[i].clearMeld();
-      players[i].refresh();
+    for (Player player : players) {
+      player.clearMeld();
+      player.refresh();
     }
-    while (! over) {
-      setStatus(players[turn].getName()+" it's your turn");
-      //players[turn%players.length].takeTurn();
+    for (int i = 0; i <= tricks; i++) {
+      Trick trick = new Trick();
+      for (int j = 0; j < players.length; j++) {
+        setStatus(players[turn%players.length].getName()+" it's your turn");
+        Card card = players[turn%players.length].playCard(trick);
+        trick.add(players[turn%players.length], card);
+        //add to GUI
+        switch (players[turn%players.length].getPosition()) {
+          case Pinochle.NORTH:
+            setViewProperty("NorthPlay", card);
+            break;
+          case Pinochle.SOUTH:
+            setViewProperty("SouthPlay", card);
+            break;
+          case Pinochle.EAST:
+            setViewProperty("EastPlay", card);
+            break;
+          case Pinochle.WEST:
+            setViewProperty("WestPlay", card);
+            break;
+        }
+        this.setPlayable(false);
+        try {
+          TimeUnit.SECONDS.sleep(1);
+        } catch (Exception e) {}
+        turn++;
+      }  
+      turn = trick.winner();
+      runViewMethod("clear");
     }
   }
 

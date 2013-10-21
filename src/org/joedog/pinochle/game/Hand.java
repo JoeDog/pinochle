@@ -67,6 +67,16 @@ public class Hand {
     return found;
   }
 
+  public Deck getSuit (int suit) {
+    Deck deck = new Deck();
+    for (Card c: this.getCards()) {
+      if (c.isa(suit)) {
+        deck.add(c);
+      }  
+    }  
+    return deck;
+  }
+
   public void meld (Card card) {
     meld(card, 1);
   }
@@ -102,6 +112,15 @@ public class Hand {
       Card.SortParameter.RANK_DESCENDING
     );
     Collections.sort(hand, cc);
+  }
+
+  public void sortByPosition() {
+    Comparator cc = Card.getComparator(
+      Card.SortParameter.SUIT_ASCENDING,
+      Card.SortParameter.RANK_DESCENDING
+    );
+    Collections.sort(hand, cc);
+
   }
 
   public void display() {
@@ -155,6 +174,14 @@ public class Hand {
     if (position < 0 || position >= hand.size())
       throw new IllegalArgumentException("Position does not exist in hand: " + position);
     hand.remove(position);
+  }
+
+  public void removeAll() {
+    for (Iterator<Card> iterator = this.getCards().iterator(); iterator.hasNext(); ) {
+      Card card = iterator.next();
+      iterator.remove();
+    }
+    return;
   }
 
   public int size() {

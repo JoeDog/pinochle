@@ -74,6 +74,10 @@ public abstract class Player {
     return this.bidder;
   }
 
+  public int getPosition() {
+    return this.position;
+  }
+
   /**
    * This is a programmer's helper; it will
    * never be called in the final product....
@@ -105,7 +109,7 @@ public abstract class Player {
     return this.hand;
   }
 
-  public abstract void takeTurn();
+  public abstract Card playCard(Trick trick);
 
   public abstract int bid(int bid); 
 

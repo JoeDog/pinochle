@@ -114,6 +114,7 @@ public abstract class AbstractController implements PropertyChangeListener {
         method.invoke(view, newValue);
       } catch (Exception ex) {
         // No warning; some views won't have the requested method
+        //ex.printStackTrace();
       }
     }
   }

@@ -198,6 +198,11 @@ public class GameModel extends AbstractModel {
     }
     return conf.getProperty("BidType");
   }
+  
+  public String getCardCount() {
+    if (this.decks == 1) return "48";
+    else return "80";
+  }
 
   public String getGameBid() {
     return this.bid;

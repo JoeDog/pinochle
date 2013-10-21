@@ -50,15 +50,24 @@ public class Computer extends Player {
     Deck deck = null;
     int trump = controller.getIntProperty("GameTrump");
     deck = meld.passables(bidder, 3, trump);
-    this.setting.refresh();
+    this.setting.refresh(this.hand);
     return deck;
   }
 
   public void finish (int status) {
   }
 
-  public void takeTurn() {
-    this.hand.remove(0);
-    //this.table.repaint();
+  public Card playCard(Trick trick) {
+    int  suit = trick.getLeadingSuit();
+    Deck deck = this.hand.getSuit(suit);
+    Card card = null;
+    if (deck != null && deck.size() > 0) {
+      card = deck.dealCard(0);
+    } else {
+      card = this.hand.get(0);
+    }
+    this.hand.remove(card);
+    this.setting.refresh(this.hand);
+    return card;
   }
 }

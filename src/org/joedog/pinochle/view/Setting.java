@@ -34,10 +34,10 @@ public class Setting extends JPanel implements MouseListener {
     createPanel();
   }
 
-  public void display(Hand hand) {
+  /*public void display(Hand hand) {
     this.hand = hand;
     createPanel();
-  }
+  }*/
 
   public void setText(final String text) {
     SwingUtilities.invokeLater(new Runnable() {

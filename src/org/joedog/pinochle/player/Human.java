@@ -129,7 +129,7 @@ public class Human extends Player {
   public void finish (int status) {
   }
 
-  public void takeTurn() {
+  public Card playCard(Trick trick) {
     while (! this.controller.isPlayable()) {
       try { 
         TimeUnit.SECONDS.sleep(1);;  
@@ -138,7 +138,8 @@ public class Human extends Player {
     Card card = this.setting.getCard();
     System.out.println("Playing: "+card.toString());
     this.hand.remove(card);
-    this.setting.refresh();
+    this.setting.refresh(this.hand);
+    return card;
   }
 }
 

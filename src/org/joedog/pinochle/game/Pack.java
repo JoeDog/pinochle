@@ -31,6 +31,10 @@ public class Pack extends Observable {
     return this.pack;
   }
 
+  public int size() {
+    return pack.size();
+  }
+
   public int count() {
     return pack.size();
   }

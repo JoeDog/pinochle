@@ -12,6 +12,7 @@ public class Card {
   int     id       = 0;
   int     rank     = 0;
   int     suit     = 0;
+  int     position = -1;
   JPanel  card     = null;
   JLabel  label    = null;
   URL     face     = null;
@@ -54,6 +55,10 @@ public class Card {
     return this.suit;
   }
 
+  public boolean isa(int suit) {
+    return (this.suit == suit);
+  }
+
   public int getValue() {
     return (1+this.suit)*this.rank;
   }
@@ -72,6 +77,14 @@ public class Card {
 
   public void setId(int id) {
     this.id = id;
+  }
+
+  public void setPosition(int position) {
+    this.position = position;
+  }
+
+  public int getPosition() {
+    return this.position;
   }
 
   public void setFaceUp() {
@@ -196,6 +209,8 @@ public class Card {
     SUIT_DESCENDING,
     RANK_ASCENDING,
     RANK_DESCENDING,
+    POSITION_ASCENDING,
+    POSITION_DESCENDING
   }
 
   private static class CardComparator implements Comparator<Card> {
@@ -223,6 +238,14 @@ public class Card {
             break;
           case SUIT_DESCENDING:
             comparison = c2.suit - c1.suit;
+            if (comparison != 0) return comparison;
+            break;
+          case POSITION_ASCENDING:
+            comparison = c1.position - c2.position;
+            if (comparison != 0) return comparison;
+            break;
+          case POSITION_DESCENDING:
+            comparison = c2.position - c1.position;
             if (comparison != 0) return comparison;
             break;
         }

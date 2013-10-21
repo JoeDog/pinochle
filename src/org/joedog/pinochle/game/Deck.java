@@ -37,10 +37,6 @@ public class Deck extends Pack {
     }
   }
 
-  public void addCard(Card card) {
-    this.add(card);
-  }
-
   public void printIt() {
     System.out.println("card count: "+this.count());
     System.out.println("deck size:  "+this.size);
