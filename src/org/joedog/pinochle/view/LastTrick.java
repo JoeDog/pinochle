@@ -10,14 +10,14 @@ import java.beans.PropertyChangeEvent;
 import org.joedog.pinochle.control.*;
 import org.joedog.pinochle.game.*;
 
-public class TrickArea extends JPanel implements View {
+public class LastTrick extends JPanel implements View {
   private GameController controller;
   private Card nc = null;
   private Card sc = null;
   private Card ec = null;
   private Card wc = null;
 
-  public TrickArea(GameController controller) {
+  public LastTrick(GameController controller) {
     this.controller = controller;
     this.setBackground(new Color(48,200,126));
   }
@@ -30,44 +30,28 @@ public class TrickArea extends JPanel implements View {
   public void paintComponent(Graphics g) {
     super.paintComponent(g); 
     if (wc != null) {
-      wc.getIcon().paintIcon(this, g, 5, 10);
+      wc.getIcon().paintIcon(this, g, 5, 0);
     }
     if (nc != null) {
       nc.getIcon().paintIcon(this, g, 25, 0);
     }
     if (sc != null) {
-      sc.getIcon().paintIcon(this, g, 45, 20);
+      sc.getIcon().paintIcon(this, g, 45, 0);
     }
     if (ec != null) {
-      ec.getIcon().paintIcon(this, g, 70, 10);
+      ec.getIcon().paintIcon(this, g, 70, 0);
     }
   }
 
-  public void setNorthPlay(Card card) {
-    System.out.println("NORTH: "+card.toString());
-    card.setFaceUp();
-    this.nc = card;
-    repaint();
-  }
-
-  public void setSouthPlay(final Card card) {
-    System.out.println("SOUTH: "+card.toString());
-    card.setFaceUp();
-    this.sc = card;
-    repaint();
-  }
-
-  public void setEastPlay(Card card) {
-    System.out.println("EAST: "+card.toString());
-    card.setFaceUp();
-    this.ec = card;
-    repaint();
-  }
-
-  public void setWestPlay(Card card) {
-    System.out.println("WEST: "+card.toString());
-    card.setFaceUp();
-    this.wc = card;
+  public void setDisplayTrick(Card[] cards){
+    cards[0].setFaceUp();
+    cards[1].setFaceUp();
+    cards[2].setFaceUp();
+    cards[3].setFaceUp();
+    this.wc = cards[0];
+    this.nc = cards[1];
+    this.sc = cards[2];
+    this.ec = cards[3];
     repaint();
   }
 
@@ -76,7 +60,6 @@ public class TrickArea extends JPanel implements View {
     this.nc = null;
     this.ec = null;
     this.sc = null;
-    System.out.println("repainting after clear!");
     this.removeAll();
     this.revalidate();
     this.repaint();

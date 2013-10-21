@@ -21,13 +21,8 @@ public class CardPanel extends JPanel {
     this.add(face);
     this.setName(card.toString());
     this.id      = this.card.getId();
-this.face.setBackground(Color.red);
-this.setBackground(Color.red);
     if (! included()) {
-      System.out.println("CP: adding: "+card.toString());
       setting.add(this);
-    } else {
-      System.out.println("CP: NOT adding it!");
     }
   }
 

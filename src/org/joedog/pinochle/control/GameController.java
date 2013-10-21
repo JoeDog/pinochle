@@ -307,10 +307,12 @@ public class GameController extends AbstractController {
       player.refresh();
     }
     for (int i = 0; i <= tricks; i++) {
-      Trick trick = new Trick();
+      Trick trick   = new Trick();
+      Card [] cards = new Card[4];
       for (int j = 0; j < players.length; j++) {
         setStatus(players[turn%players.length].getName()+" it's your turn");
         Card card = players[turn%players.length].playCard(trick);
+        cards[j] = card;
         trick.add(players[turn%players.length], card);
         //add to GUI
         switch (players[turn%players.length].getPosition()) {
@@ -335,6 +337,7 @@ public class GameController extends AbstractController {
       }  
       turn = trick.winner();
       runViewMethod("clear");
+      setViewProperty("DisplayTrick", cards);
     }
   }
 
