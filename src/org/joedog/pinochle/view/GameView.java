@@ -272,6 +272,7 @@ public class GameView extends JPanel implements View, MouseListener {
   public void modelPropertyChange(PropertyChangeEvent e) {
     if (e.getNewValue() == null) return;
     if (e.getPropertyName().equals(controller.TRUMP)) {
+      System.out.println("controller.TRUMP! "+e.getPropertyName());
       trump.setText(controller.getProperty("GameBid"));
       if (e.getNewValue().equals("0")) {
         trump.setIcon(new TrumpIcon(Pinochle.HEARTS));
@@ -285,6 +286,14 @@ public class GameView extends JPanel implements View, MouseListener {
       if (e.getNewValue().equals("3")) {
         trump.setIcon(new TrumpIcon(Pinochle.SPADES));
       }
+    }
+    if (e.getPropertyName().equals(controller.OURS)) {
+      System.out.println("controller.OURS! "+e.getPropertyName());
+      System.out.println("Cher and Jeff now have: "+e.getNewValue());
+    }
+    if (e.getPropertyName().equals(controller.THEIRS)) {
+      System.out.println("controller.THEIRS! "+e.getPropertyName());
+      System.out.println("Limey and Pommie now have: "+e.getNewValue());
     }
   }
 

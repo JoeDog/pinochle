@@ -7,18 +7,21 @@ import java.net.URL;
 import java.awt.Canvas;
 
 public abstract class Player {
-  public static final int HUMAN    = 1;
-  public static final int COMPUTER = 2;
-  protected Hand    hand;
-  protected Meld    meld;
-  public int        position;
-  public int        type;
-  public String     name;
-  public Setting    setting;
-  public int        maxBid;
-  public int        myBid;
-  public Assessment assessment;
-  public boolean    bidder = false;
+  public static final  int HUMAN    = 1;
+  public static final  int COMPUTER = 2;
+  public static final  int US       = 1;
+  public static final  int THEM     = 0;
+  protected Hand       hand;
+  protected Meld       meld;
+  public   int         team;
+  public   int         position;
+  public   int         type;
+  public   String      name;
+  public   Setting     setting;
+  public   int         maxBid;
+  public   int         myBid;
+  public   Assessment  assessment;
+  public   boolean     bidder = false;
 
   public Player () {
     newHand();
@@ -76,6 +79,10 @@ public abstract class Player {
 
   public int getPosition() {
     return this.position;
+  }
+
+  public int getTeam() {
+    return (this.position % 2);
   }
 
   /**

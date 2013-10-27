@@ -63,6 +63,7 @@ public class Game {
     int status = GameController.DEAL;
 
     while (status != GameController.OVER) {
+      System.out.println("NOT OVER!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!");
       status = controller.gameStatus();
       switch (status) {
         case GameController.DEAL:
@@ -79,10 +80,7 @@ public class Game {
           break;
         case GameController.PLAY:
           controller.playHand(players);
-          try {
-            TimeUnit.SECONDS.sleep(90);
-          } catch (java.lang.InterruptedException ie) {}
-          //System.exit(0); 
+          System.out.println("HAND IS OVER; now what????");
           break;
         case GameController.SCORE:
           break;
@@ -100,6 +98,7 @@ public class Game {
       */
       turn++;
     }
+    System.out.println("IT'S OVER!!!!!!!!!!!!");
   }
 }
 

@@ -67,6 +67,80 @@ public class Hand {
     return found;
   }
 
+  public int contains (int suit) {
+    int num = 0;
+    for (Card c: this.getCards()) { 
+      if (c.getSuit() == suit) {
+        num ++;
+      }
+    } 
+    return num;
+  }
+
+  public int aces (int suit) {
+    int num = 0;
+    for (Card c: this.getCards()) {
+      if (c.getSuit() == suit && c.getRank() == Pinochle.ACE) 
+        num ++;
+    }
+    return num;
+  }
+
+  public Card getLowest() {
+    //XXX: should call contains first  
+    System.out.println("HAND SIZE: "+this.hand.size());
+    Card card  = this.get(0); 
+    for (Card c: this.getCards()) { 
+      if (c != null && c.getRank() < card.getRank()) {
+        card = c;
+      }
+    } 
+    return card;
+  }
+  
+  public Card getLowest(int suit) {
+    //XXX: should call contains first  
+    Card card = null; 
+    for (Card c: this.getCards()) { 
+      if (c.getSuit() == suit) {
+        if (card == null) {
+          card = c;
+        } else {
+          if (c.getRank() < card.getRank()) 
+            card = c;
+        }
+      }
+    } 
+    return card;
+  }
+  
+  public Card getHighest(int suit) {
+    //XXX: should call contains first  
+    Card card = null; 
+    for (Card c: this.getCards()) { 
+      if (c.getSuit() == suit) {
+        if (card == null) {
+          card = c;
+        } else {
+          if (c.getRank() > card.getRank()) 
+            card = c;
+        }
+      }
+    } 
+    return card;
+  }
+
+  public int nonCounters(int suit) {
+    int  num  = 0;
+    Card card = null; 
+    for (Card c: this.getCards()) { 
+      if (! c.isCounter()) {
+        num ++;
+      }
+    } 
+    return num;
+  }
+
   public Deck getSuit (int suit) {
     Deck deck = new Deck();
     for (Card c: this.getCards()) {

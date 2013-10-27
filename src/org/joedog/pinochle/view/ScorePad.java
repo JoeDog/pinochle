@@ -46,6 +46,11 @@ public class ScorePad extends JPanel implements View, TableModelListener {
     model.setValueAt(s.getA(), 0, 0); 
     model.setValueAt(s.getB(), 0, 1); 
   }
+ 
+  public void setHandScore(Score s) {
+    model.setValueAt(s.getA(), 1, 0); 
+    model.setValueAt(s.getB(), 1, 1); 
+  }
 
   public void resetScore() {
     this.model.resetScore();

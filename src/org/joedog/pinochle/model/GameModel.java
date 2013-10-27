@@ -8,6 +8,8 @@ public class GameModel extends AbstractModel {
   private Configuration conf  = null;
   private int    decks;
   private int    status;
+  private int    nscounters;
+  private int    ewcounters; 
   private String dealer;
   private String active;
   private String trump; 
@@ -32,9 +34,8 @@ public class GameModel extends AbstractModel {
    * @see    game/Pinochle.java
    */
   public void setGameTrump(String trump) {
-    String tmp = this.trump;
     this.trump = trump;
-    firePropertyChange(GameController.TRUMP, tmp, this.trump);
+    firePropertyChange(GameController.TRUMP, "TRUMP", this.trump);
   }
 
   public void setGameBid(String bid) {
@@ -228,6 +229,28 @@ public class GameModel extends AbstractModel {
   }
 
   public void display() {
+  }
+
+  public void setOurCounters(String counters) {
+    int i = Integer.parseInt(counters);
+    this.nscounters += i;
+    firePropertyChange(GameController.OURS, "OURS", ""+this.nscounters);
+    return;
+  }
+
+  public String getOurCounters() {
+    return ""+this.nscounters;
+  }
+
+  public void setTheirCounters(String counters) {
+    int i = Integer.parseInt(counters);
+    this.ewcounters += i;
+    firePropertyChange(GameController.THEIRS, "THEIRS", ""+this.ewcounters);
+    return;
+  }
+  
+  public String getTheirCounters() {
+    return ""+this.ewcounters;
   }
 
   public void save() {

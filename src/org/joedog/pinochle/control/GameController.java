@@ -16,7 +16,9 @@ public class GameController extends AbstractController {
   private boolean passable          = false;
   private boolean meldable          = false;
   private boolean playable          = false;
-  public final static String TRUMP  = "0";
+  public final static String TRUMP  = "TRUMP";
+  public final static String OURS   = "OURS";
+  public final static String THEIRS = "THEIRS";
   public final static int DEAL      = 0;
   public final static int BID       = 1;
   public final static int PASS      = 2;
@@ -36,7 +38,7 @@ public class GameController extends AbstractController {
     this.meldable = false;
     this.passable = false;
     setStatus("New game!");
-    runViewMethod("resetButtons");
+    //runViewMethod("resetButtons");
     runViewMethod("resetScore");
     setModelProperty("GameStatus", ""+DEAL);
     this.thread.stop();
@@ -306,8 +308,8 @@ public class GameController extends AbstractController {
       player.clearMeld();
       player.refresh();
     }
-    for (int i = 0; i <= tricks; i++) {
-      Trick trick   = new Trick();
+    for (int i = 0; i < tricks; i++) {
+      Trick trick   = new Trick(this.getTrump());
       Card [] cards = new Card[4];
       for (int j = 0; j < players.length; j++) {
         setStatus(players[turn%players.length].getName()+" it's your turn");
@@ -336,9 +338,16 @@ public class GameController extends AbstractController {
         turn++;
       }  
       turn = trick.winner();
+      if (turn % 2 == 0) {
+        setModelProperty("OurCounters",   ""+trick.counters());
+      } else {
+        setModelProperty("TheirCounters", ""+trick.counters());
+      }
       runViewMethod("clear");
       setViewProperty("DisplayTrick", cards);
     }
+    setViewProperty("HandScore", new Score(getIntProperty("OurCounters"), getIntProperty("TheirCounters")));
+    setModelProperty("GameStatus", ""+DEAL);
   }
 
   public String getName (int player) {
