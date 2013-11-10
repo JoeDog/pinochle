@@ -25,12 +25,14 @@ public class ScoreModel extends AbstractModel {
   }
 
   public void resetHand() {
-    this.meld[0] = 0;
-    this.meld[1] = 0;
-    this.take[0] = 0;
-    this.take[1] = 0;
-    this.hand[0] = 0;
-    this.hand[1] = 0;
+    this.meld[0]   = 0;
+    this.meld[1]   = 0;
+    this.take[0]   = 0;
+    this.take[1]   = 0;
+    this.hand[0]   = 0;
+    this.hand[1]   = 0;
+    this.bidder[0] = false;
+    this.bidder[1] = false;
     firePropertyChange(GameController.RESET, "RESET", "hand");
   }
 
@@ -54,9 +56,10 @@ public class ScoreModel extends AbstractModel {
     return ""+this.bid;
   }
 
-  public void setBidder(String bidder) {
-    int i = Integer.parseInt(bidder);
+  public void setBidder(String player) {
+    int i = Integer.parseInt(player);
     this.bidder[i % 2] = true;
+    this.active = i;
   }
 
   /**
@@ -108,8 +111,14 @@ public class ScoreModel extends AbstractModel {
 
   public void addScore() {
     this.hand[0] = this.meld[0]+this.take[0];
+    if (bidder[0] == true && this.hand[0] < this.bid) {
+      this.hand[0] = (this.bid * -1);
+    }
     firePropertyChange(GameController.HAND_SCORE, "NSHAND", ""+this.hand[0]);
     this.hand[1] = this.meld[1]+this.take[1];
+    if (bidder[1] == true && this.hand[1] < this.bid) {
+      this.hand[1] = (this.bid * -1);
+    }
     firePropertyChange(GameController.HAND_SCORE, "EWHAND", ""+this.hand[1]);
     this.game[0] += this.hand[0];
     firePropertyChange(GameController.GAME_SCORE, "NSGAME", ""+this.game[0]);

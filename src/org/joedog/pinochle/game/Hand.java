@@ -113,6 +113,34 @@ public class Hand {
     } 
     return card;
   }
+
+  public Card getCounter(int suit) {
+    for (Card c: this.getCards()) { 
+      if (c.getSuit() == suit && c.getRank() == Pinochle.KING) {
+        return c;
+      }
+    }
+    for (Card c: this.getCards()) { 
+      if (c.getSuit() == suit && c.getRank() == Pinochle.TEN) {
+        return c;
+      }
+    }
+    return null;
+  }
+  
+  public Card getCounter() {
+    for (Card c: this.getCards()) { 
+      if (c.getRank() == Pinochle.KING) {
+        return c;
+      }
+    }
+    for (Card c: this.getCards()) { 
+      if (c.getRank() == Pinochle.TEN) {
+        return c;
+      }
+    }
+    return null;
+  }
   
   public Card getHighest(int suit) {
     //XXX: should call contains first  
@@ -135,6 +163,17 @@ public class Hand {
     Card card = null; 
     for (Card c: this.getCards()) { 
       if (! c.isCounter()) {
+        num ++;
+      }
+    } 
+    return num;
+  }
+
+  public int counters(int suit) {
+    int  num  = 0;
+    Card card = null; 
+    for (Card c: this.getCards()) { 
+      if (c.isCounter() && c.getRank() != Pinochle.ACE) {
         num ++;
       }
     } 

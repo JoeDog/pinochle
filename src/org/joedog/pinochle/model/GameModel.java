@@ -8,13 +8,13 @@ public class GameModel extends AbstractModel {
   private Configuration conf  = null;
   private int    decks;
   private int    status;
+  private int    nsmeld;
+  private int    ewmeld;
   private int    nscounters;
   private int    ewcounters; 
-  private String dealer;
   private String active;
   private String trump; 
   private String bid;
-  private String bidder;
 
   public GameModel () {
     conf = Configuration.getInstance();
@@ -23,23 +23,6 @@ public class GameModel extends AbstractModel {
     } else {
       this.decks = 1;
     }
-    this.dealer = ""+Pinochle.WEST;
-    this.active = ""+Pinochle.NORTH;
-  }
-
-  /**
-   * This method sets trump for the hand in progress
-   * @param  trump - a string interpretation of Pinochle.SUIT
-   * @return void
-   * @see    game/Pinochle.java
-   */
-  public void setGameTrump(String trump) {
-    this.trump = trump;
-    firePropertyChange(GameController.TRUMP, "TRUMP", this.trump);
-  }
-
-  public void setGameBid(String bid) {
-    this.bid   = bid;
   }
 
   /**
@@ -116,14 +99,6 @@ public class GameModel extends AbstractModel {
     conf.setProperty("MinimumBid", bid);
   }
 
-  public void setDealer(String position) {
-    this.dealer = position;
-  }
-
-  public void setActivePlayer(String position) {
-    this.active = position;
-  }
-
   public String getConfigX() {
     return conf.getProperty("ConfigX");
   }
@@ -179,6 +154,19 @@ public class GameModel extends AbstractModel {
     return conf.getProperty("WinningScore");
   }
 
+  public String getCheatMode() {
+    String key = MD5((String)conf.getProperty("Cheat"));
+
+    if (key==null || key.length() < 2) {
+      return "false";
+    } 
+
+    if (key.equals("6f40ce1466318bc16e9541c437609de5")) {
+      return "true";
+    }
+    return "false";
+  }
+
   public String getMinimumBid() {
     if (conf.getProperty("MinimumBid")==null) {
       return (decks==2) ? "50" : "16";
@@ -205,24 +193,8 @@ public class GameModel extends AbstractModel {
     else return "80";
   }
 
-  public String getGameBid() {
-    return this.bid;
-  }
-
-  public String getGameTrump() {
-    return this.trump;
-  }
-
   public int getGameStatus() {
     return this.status;
-  }
-
-  public String getActivePlayer() {
-    return this.active;
-  }
-
-  public String getDealer() {
-    return this.dealer;
   }
 
   public void reset() {
@@ -255,5 +227,20 @@ public class GameModel extends AbstractModel {
 
   public void save() {
     conf.save();
+  }
+
+  public String MD5(String md5) {
+    if (md5==null || md5.length() < 2) return "haha";
+
+    try {
+      java.security.MessageDigest md = java.security.MessageDigest.getInstance("MD5");
+      byte[] array = md.digest(md5.getBytes());
+      StringBuffer sb = new StringBuffer();
+      for (int i = 0; i < array.length; ++i) {
+        sb.append(Integer.toHexString((array[i] & 0xFF) | 0x100).substring(1,3));
+      }
+      return sb.toString();
+    } catch (java.security.NoSuchAlgorithmException e) { }
+    return null;
   }
 }

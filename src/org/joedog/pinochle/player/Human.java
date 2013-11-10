@@ -4,6 +4,7 @@ import java.util.List;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.concurrent.TimeUnit;
+import java.lang.Thread;
 import javax.swing.JFrame;
 import javax.swing.JInternalFrame;
 import javax.swing.JOptionPane;
@@ -23,6 +24,16 @@ public class Human extends Player {
   public void takeCard(Card c) {
     c.setFaceUp();
     this.hand.add(c);
+  }
+
+  public void takeCards(Deck d) {
+    for (Card c: d.getCards()) {
+      c.setFaceUp();
+      this.hand.add(c);
+    }
+    this.hand.sort();
+    this.setting.refresh(this.hand);
+    this.setting.refresh();
   }
 
   public int bid(int bid) {
@@ -83,7 +94,7 @@ public class Human extends Player {
         this.controller.disablePassButton();
       } 
       try {
-        TimeUnit.SECONDS.sleep(1);
+        Thread.sleep(500);
       } catch (Exception e) {}
     }  
     for (Iterator<Card> iterator = hand.getCards().iterator(); iterator.hasNext(); ) {
@@ -105,7 +116,7 @@ public class Human extends Player {
     this.setting.refresh();
     while (! this.controller.isMeldable()) {
       try { 
-        TimeUnit.SECONDS.sleep(1);;  
+        Thread.sleep(500);  
       } catch (Exception e) {}
     }
     for (Iterator<Card> iterator = hand.getCards().iterator(); iterator.hasNext(); ) {
@@ -126,13 +137,20 @@ public class Human extends Player {
     return m.getMeld();
   }
 
+  public void clearMeld() {
+    for (Card card: this.hand.getCards()) {
+      card.unmeld();
+      card.setFaceUp();
+    }
+  }
+
   public void finish (int status) {
   }
 
   public Card playCard(Trick trick) {
     while (! this.controller.isPlayable()) {
       try { 
-        TimeUnit.SECONDS.sleep(1);;  
+        Thread.sleep(500);  
       } catch (Exception e) {}
     }
     Card card = this.setting.getCard();

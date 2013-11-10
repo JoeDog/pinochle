@@ -29,21 +29,25 @@ public class Trick {
     } else {
       if (this.card.getSuit() == this.trump && card.getSuit() == this.trump) {
         System.out.println("hand contains trump; new card is trump");
+        this.trumped   = true;
         if (card.getRank() > this.card.getRank()) {
           System.out.println("new card out trumps current winner!");
-          this.card   = card;
-          this.winner = player.getPosition();
+          this.card    = card;
+          this.winner  = player.getPosition();
         }
       } else if (card.getSuit() == this.trump) {
         System.out.println("we played first trump on the trick!!!");
-        this.card   = card;
-        this.winner = player.getPosition();
+        this.card    = card;
+        this.winner  = player.getPosition();
+        this.trumped = true;
       } else {
         if (card.getSuit() == this.lead) {
           System.out.println("we're following a non-trump suit");
           if (card.getRank() > this.card.getRank()) {
             this.card   = card;
-            this.winner = player.getPosition();
+            if (! this.trumped) {
+              this.winner = player.getPosition();
+            }
           } 
         }
       }

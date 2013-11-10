@@ -28,18 +28,23 @@ public class LastTrick extends JPanel implements View {
   }
 
   public void paintComponent(Graphics g) {
+    int count = 0;
     super.paintComponent(g); 
     if (wc != null) {
       wc.getIcon().paintIcon(this, g, 5, 0);
-    }
+    } else count++;
     if (nc != null) {
       nc.getIcon().paintIcon(this, g, 25, 0);
-    }
+    } else count++;
     if (sc != null) {
       sc.getIcon().paintIcon(this, g, 45, 0);
-    }
+    } else count++;
     if (ec != null) {
       ec.getIcon().paintIcon(this, g, 70, 0);
+    } else count++;
+    if (count == 4) {
+      g.setColor(this.getBackground());
+      g.fillRect(0, 0, this.getWidth(), this.getHeight());
     }
   }
 

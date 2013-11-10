@@ -25,6 +25,7 @@ public class Main {
   private static GameActions    actions;
   private static GameView       view;
   private static GameModel      model;
+  private static ScoreModel     score;
   private static GameMenu       menu;
 
   public Main() { }
@@ -72,11 +73,15 @@ public class Main {
     if (model == null) {
       model = new GameModel();
     }
+    if (score == null) {
+      score = new ScoreModel();
+    }
     if (view == null) {
       view = new GameView(controller);
     }
     controller.addView(view);
     controller.addModel(model);
+    controller.addModel(score);
     SwingUtilities.invokeLater(new Runnable() {
       public void run() {
         createAndShowGui(controller, view);

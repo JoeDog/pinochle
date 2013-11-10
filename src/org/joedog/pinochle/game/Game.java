@@ -36,23 +36,28 @@ public class Game {
       factory.getPlayer(this.controller, Player.COMPUTER)
     };
     for (int i = 0; i < players.length; i++) {
-      String name = "default";
+      int    partner = -1;
+      String name    = "default";
       if (controller == null) System.out.println("null controller");
       switch (i) {
         case Pinochle.NORTH:
-          name = controller.getProperty("PlayerNorthName");
+          partner = Pinochle.SOUTH;
+          name    = controller.getProperty("PlayerNorthName");
           break;
         case Pinochle.EAST:
-          name = controller.getProperty("PlayerEastName");
+          partner = Pinochle.WEST;
+          name    = controller.getProperty("PlayerEastName");
           break;
         case Pinochle.SOUTH:
-          name = controller.getProperty("PlayerSouthName");
+          partner = Pinochle.NORTH;
+          name    = controller.getProperty("PlayerSouthName");
           break;
         case Pinochle.WEST:
-          name = controller.getProperty("PlayerWestName");
+          partner = Pinochle.EAST;
+          name    = controller.getProperty("PlayerWestName");
           break;
       }
-      players[i].setup(view.getSetting(i), i, name);
+      players[i].setup(view.getSetting(i), i, partner, name);
     }
     return players;
   }
@@ -63,7 +68,6 @@ public class Game {
     int status = GameController.DEAL;
 
     while (status != GameController.OVER) {
-      System.out.println("NOT OVER!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!");
       status = controller.gameStatus();
       switch (status) {
         case GameController.DEAL:

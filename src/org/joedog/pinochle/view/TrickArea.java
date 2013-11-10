@@ -29,17 +29,22 @@ public class TrickArea extends JPanel implements View {
 
   public void paintComponent(Graphics g) {
     super.paintComponent(g); 
+    int count = 0;
     if (wc != null) {
       wc.getIcon().paintIcon(this, g, 5, 10);
-    }
+    } else count++;
     if (nc != null) {
       nc.getIcon().paintIcon(this, g, 25, 0);
-    }
+    } else count++;
     if (sc != null) {
       sc.getIcon().paintIcon(this, g, 45, 20);
-    }
+    } else count++;
     if (ec != null) {
       ec.getIcon().paintIcon(this, g, 70, 10);
+    } else count++;
+    if (count == 4) {
+      g.setColor(this.getBackground()); 
+      g.fillRect(0, 0, this.getWidth(), this.getHeight());
     }
   }
 
@@ -76,9 +81,6 @@ public class TrickArea extends JPanel implements View {
     this.nc = null;
     this.ec = null;
     this.sc = null;
-    System.out.println("repainting after clear!");
-    this.removeAll();
-    this.revalidate();
     this.repaint();
   }
 

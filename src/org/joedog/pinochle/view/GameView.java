@@ -88,7 +88,7 @@ public class GameView extends JPanel implements View, MouseListener {
     table.add(getSetting(Pinochle.WEST),   20, 180, 355, 132);
     table.add(trick, 380, 180, 180, 155);
     table.add(last,  650, 350, 200, 155);
-    table.add(getScorePad(),  4, 350, 240, 130);
+    table.add(getScorePad(),  14, 350, 240, 130);
     buttons.setLayout(new FlowLayout());
     bottom.setLayout(new BorderLayout());
     bottom.add(buttons, java.awt.BorderLayout.CENTER);
@@ -163,6 +163,7 @@ public class GameView extends JPanel implements View, MouseListener {
           passButton = new JButton(new PassAction(controller));
         }  
         passButton.setEnabled(false);
+        buttons.removeAll();
         buttons.add(passButton);
         invalidate();
         validate();
@@ -272,8 +273,7 @@ public class GameView extends JPanel implements View, MouseListener {
   public void modelPropertyChange(PropertyChangeEvent e) {
     if (e.getNewValue() == null) return;
     if (e.getPropertyName().equals(controller.TRUMP)) {
-      System.out.println("controller.TRUMP! "+e.getPropertyName());
-      trump.setText(controller.getProperty("GameBid"));
+      //trump.setText(controller.getProperty("GameBid"));
       if (e.getNewValue().equals("0")) {
         trump.setIcon(new TrumpIcon(Pinochle.HEARTS));
       }
@@ -287,6 +287,9 @@ public class GameView extends JPanel implements View, MouseListener {
         trump.setIcon(new TrumpIcon(Pinochle.SPADES));
       }
     }
+    if (e.getPropertyName().equals(controller.HIGH_BID)) {
+      trump.setText((String)e.getNewValue());
+    }
     if (e.getPropertyName().equals(controller.OURS)) {
       System.out.println("controller.OURS! "+e.getPropertyName());
       System.out.println("Cher and Jeff now have: "+e.getNewValue());
@@ -294,6 +297,10 @@ public class GameView extends JPanel implements View, MouseListener {
     if (e.getPropertyName().equals(controller.THEIRS)) {
       System.out.println("controller.THEIRS! "+e.getPropertyName());
       System.out.println("Limey and Pommie now have: "+e.getNewValue());
+    }
+    if (e.getPropertyName().equals(controller.GAME_SCORE)) {
+      last.clear();
+      trick.clear();
     }
   }
 

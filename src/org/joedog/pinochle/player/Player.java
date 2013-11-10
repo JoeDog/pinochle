@@ -9,11 +9,9 @@ import java.awt.Canvas;
 public abstract class Player {
   public static final  int HUMAN    = 1;
   public static final  int COMPUTER = 2;
-  public static final  int US       = 1;
-  public static final  int THEM     = 0;
   protected Hand       hand;
   protected Meld       meld;
-  public   int         team;
+  public   int         partner;
   public   int         position;
   public   int         type;
   public   String      name;
@@ -29,20 +27,6 @@ public abstract class Player {
 
   public void takeCard(Card c) {
     this.hand.add(c);
-  }
-
-  public void takeCards(Deck d) {
-    for (Card c: d.getCards()) {
-      if (this.type == HUMAN) {
-        c.setFaceUp();
-      } else {
-        c.setFaceDown();
-      }
-      this.hand.add(c);
-    } 
-    this.hand.sort();
-    this.setting.refresh(this.hand);
-    this.setting.refresh();
   }
 
   public void refresh() {
@@ -63,9 +47,10 @@ public abstract class Player {
     return 1;
   }
 
-  public void setup(Setting setting, int position, String name) {
+  public void setup(Setting setting, int position, int partner, String name) {
     this.setting  = setting;
     this.position = position;
+    this.partner  = partner;
     this.name     = name;
   } 
 
@@ -81,8 +66,8 @@ public abstract class Player {
     return this.position;
   }
 
-  public int getTeam() {
-    return (this.position % 2);
+  public int getPartner() {
+    return this.partner;
   }
 
   /**
@@ -93,15 +78,6 @@ public abstract class Player {
     while (this.hand.size() > 0) {
       this.hand.remove(0);
     }  
-  }
-
-  public void clearMeld() {
-    for (Card card: this.hand.getCards()) {
-      card.unmeld();
-      if (this.type == COMPUTER) {
-        card.setFaceDown();
-      }
-    }
   }
 
   public String getName() {
@@ -124,5 +100,9 @@ public abstract class Player {
 
   public abstract Deck passCards(boolean bidder);
 
+  public abstract void takeCards(Deck d);
+
   public abstract int meld();
+
+  public abstract void clearMeld();
 }

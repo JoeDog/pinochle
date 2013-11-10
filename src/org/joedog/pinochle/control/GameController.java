@@ -3,29 +3,36 @@ package org.joedog.pinochle.control;
 import java.lang.Thread;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicBoolean;
+import java.util.Random;
 import org.joedog.pinochle.view.*;
 import org.joedog.pinochle.game.*;
 import org.joedog.pinochle.player.*;
-import org.joedog.pinochle.model.Score;
 
 public class GameController extends AbstractController {
   private Thread  thread;
-  private AtomicBoolean hiatus      = new AtomicBoolean(false);
-  public  boolean alive             = true;
-  private boolean running           = false;
-  private boolean passable          = false;
-  private boolean meldable          = false;
-  private boolean playable          = false;
-  public final static String TRUMP  = "TRUMP";
-  public final static String OURS   = "OURS";
-  public final static String THEIRS = "THEIRS";
-  public final static int DEAL      = 0;
-  public final static int BID       = 1;
-  public final static int PASS      = 2;
-  public final static int MELD      = 3;
-  public final static int PLAY      = 4;
-  public final static int SCORE     = 5;
-  public final static int OVER      = 6;
+  private AtomicBoolean hiatus        = new AtomicBoolean(false);
+  public  boolean alive               = true;
+  private boolean running             = false;
+  private boolean passable            = false;
+  private boolean meldable            = false;
+  private boolean playable            = false;
+  public final static int DEAL        = 0;
+  public final static int BID         = 1;
+  public final static int PASS        = 2;
+  public final static int MELD        = 3;
+  public final static int PLAY        = 4;
+  public final static int SCORE       = 5;
+  public final static int OVER        = 6;
+  
+  public final static String RESET       = "NEWHAND";
+  public final static String TRUMP       = "TRUMP";
+  public final static String HIGH_BID    = "HIBID";
+  public final static String OURS        = "OURS";
+  public final static String THEIRS      = "THEIRS";
+  public final static String MELD_SCORE  = "NSMELD";
+  public final static String TAKE_SCORE  = "NSTAKE";
+  public final static String HAND_SCORE  = "NSHAND";
+  public final static String GAME_SCORE  = "NSGAME";
 
   private boolean over = false;
 
@@ -42,6 +49,14 @@ public class GameController extends AbstractController {
     runViewMethod("resetScore");
     setModelProperty("GameStatus", ""+DEAL);
     this.thread.stop();
+  }
+
+  public void newHand() {
+    this.over     = false;
+    this.meldable = false;
+    this.passable = false;
+    setStatus("New hand!");
+    setModelProperty("GameStatus", ""+DEAL);
   }
 
   public synchronized void start () {
@@ -220,9 +235,9 @@ public class GameController extends AbstractController {
       if (passes[i] == 0) mark = i;
     }
     int trump = players[mark].nameTrump();
-    String t  = ""+trump;
+    System.out.println("TRUMP: "+trump);
     setModelProperty("GameBid",      ""+bid);
-    setModelProperty("ActivePlayer", ""+mark);
+    setModelProperty("Bidder",       ""+mark);
     setModelProperty("GameTrump",    ""+trump);
     setModelProperty("GameStatus",   ""+PASS);
     return;
@@ -288,7 +303,9 @@ public class GameController extends AbstractController {
         players[i].refresh();
       }
     } 
-    setViewProperty("MeldScore", new Score(ns, ew));
+    runModelMethod("resetHand");
+    setModelProperty("NSMeld", ""+ns);
+    setModelProperty("EWMeld", ""+ew);
     setModelProperty("GameStatus", ""+PLAY);
     this.pause(true);
     runViewMethod("addPlayButton");
@@ -301,7 +318,7 @@ public class GameController extends AbstractController {
     int tricks = count/players.length;
     while (this.isPaused()) {
       try {
-        TimeUnit.SECONDS.sleep(1);
+        Thread.sleep(500);
       } catch (Exception e) {}
     }
     for (Player player : players) {
@@ -333,21 +350,30 @@ public class GameController extends AbstractController {
         }
         this.setPlayable(false);
         try {
-          TimeUnit.SECONDS.sleep(1);
+          // We're going to sleep within a 
+          // random range between turns so
+          // play is less choppy, more humany
+          Thread.sleep(randInt(300, 900));
         } catch (Exception e) {}
         turn++;
       }  
       turn = trick.winner();
       if (turn % 2 == 0) {
-        setModelProperty("OurCounters",   ""+trick.counters());
+        setModelProperty("NSTake", ""+trick.counters());
       } else {
-        setModelProperty("TheirCounters", ""+trick.counters());
+        setModelProperty("EWTake", ""+trick.counters());
       }
       runViewMethod("clear");
       setViewProperty("DisplayTrick", cards);
     }
-    setViewProperty("HandScore", new Score(getIntProperty("OurCounters"), getIntProperty("TheirCounters")));
-    setModelProperty("GameStatus", ""+DEAL);
+    // Award the last trick
+    if (turn % 2 == 0) {
+      setModelProperty("NSTake", "1");
+    } else {
+      setModelProperty("EWTake", "1");
+    }
+    runModelMethod("addScore");
+    newHand();
   }
 
   public String getName (int player) {
@@ -383,5 +409,17 @@ public class GameController extends AbstractController {
 
   public boolean isPaused() {
     return hiatus.get();
+  }
+
+  public boolean cheatMode() {
+    String mode = (String)getModelProperty("CheatMode");
+    return Boolean.parseBoolean(mode);
+  }
+
+  public static int randInt(int min, int max) {
+    Random rand = new Random();
+
+    int randomNum = rand.nextInt((max - min) + 1) + min;
+    return randomNum;
   }
 }

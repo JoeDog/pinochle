@@ -1,149 +1,163 @@
 package org.joedog.pinochle.view;
 
-import java.awt.Component;
+import org.joedog.pinochle.control.*;
+
+import java.awt.Canvas;
 import java.awt.Color;
-import java.awt.Font;
 import java.awt.Dimension;
+import java.awt.Graphics;
+import java.awt.Graphics2D;
+import java.awt.GridLayout;
+import java.awt.FlowLayout;
 import java.awt.BorderLayout;
-import javax.swing.BorderFactory;
-import javax.swing.border.Border;
-import javax.swing.border.EmptyBorder;
-import javax.swing.JLabel;
-import javax.swing.JPanel;
-import javax.swing.JTable;
-import javax.swing.table.JTableHeader;
-import javax.swing.JScrollPane;
-import javax.swing.JTextField;
-import javax.swing.DefaultCellEditor;
-import javax.swing.SwingConstants;
-import javax.swing.table.TableColumn;
-import javax.swing.table.TableCellRenderer;
-import javax.swing.table.TableModel;
-import javax.swing.event.TableModelEvent;
-import javax.swing.event.TableModelListener;
+import java.awt.Font;
+import java.awt.event.KeyEvent;
 import java.beans.PropertyChangeEvent;
+import javax.swing.Action;
+import javax.swing.AbstractAction;
+import javax.swing.JPanel;
+import javax.swing.JButton;
+import javax.swing.JLabel;
 
-import org.joedog.pinochle.control.GameController;
-import org.joedog.pinochle.game.Pinochle;
-import org.joedog.pinochle.model.Score;
-import org.joedog.pinochle.model.ScoreTableModel;
+public class ScorePad extends JPanel implements View {
+  static final long serialVersionUID = -196491492884005033L;
+  private Cell[][] cell   = new Cell[5][3];
+  private String[] labels = new String[] {"Meld", "Counters", "Total", "Score"};
+  private GameController controller;
 
-public class ScorePad extends JPanel implements View, TableModelListener {
-  private JTable          table = null;
-  private JScrollPane     panel = null;
-  private ScoreTableModel model = null;
-  private GameController  controller = null;
-
-  public ScorePad(GameController controller) {
+  public ScorePad (GameController controller) {
     this.controller = controller;
-    this.setBackground(new Color(239,236,157));
-    this.setLayout(new BorderLayout());
-    this.display();
+    this.setup();
+    this.reset();
   }
 
-  public void setMeldScore(Score s) {
-    System.out.println("Setting the meld score....");
-    model.setValueAt(s.getA(), 0, 0); 
-    model.setValueAt(s.getB(), 0, 1); 
-  }
- 
-  public void setHandScore(Score s) {
-    model.setValueAt(s.getA(), 1, 0); 
-    model.setValueAt(s.getB(), 1, 1); 
-  }
-
-  public void resetScore() {
-    this.model.resetScore();
+  public void reset () {
+    cell[0][1].setValue("J/C");
+    cell[0][2].setValue("L/P");
+    for (int i = 1, j = 0; i < labels.length+1; i++, j++) 
+      cell[i][0].setValue(labels[j]);
+    for (int i = 1; i < cell.length; i++) {
+      for (int j = 1; j < cell[i].length; j++) {
+        cell[i][j].setValue("0");
+      }
+    } 
   }
 
-  private void display() {
-    this.model = new ScoreTableModel(
-      controller.getName(Pinochle.NORTH),
-      controller.getName(Pinochle.SOUTH),
-      controller.getName(Pinochle.EAST),
-      controller.getName(Pinochle.WEST)
-    );
-    this.model.addTableModelListener(this);
-    if (this.table == null) {
-      this.table = new JTable(model);
-      table.setShowGrid(true);
-      table.setShowVerticalLines(true);
-      table.setBackground(new Color(239,236,157));
-      table.setGridColor(new Color(123,145,83));
-      JTableHeader header = table.getTableHeader();
-      final TableCellRenderer defaultRenderer = table.getTableHeader().getDefaultRenderer();
-      table.getTableHeader().setDefaultRenderer(new TableCellRenderer() {
-        @Override
-        public Component getTableCellRendererComponent(
-                         JTable jTable, Object o, boolean b, boolean b1, int row, int column) {
-          JLabel parent = (JLabel) defaultRenderer.getTableCellRendererComponent(jTable, o, b, b1, row, column);
-          //Border border = BorderFactory.createLineBorder(new Color(123,145,83), 1);
-          //Border border = BorderFactory.createEmptyBorder(2,2,2,2);
-          Border border = BorderFactory.createMatteBorder(0, 0, 1, 1, new Color(123,145,83));
-          parent.setBorder(border);
-          parent.setBackground(new Color(239,236,157));
-          parent.setHorizontalAlignment(SwingConstants.RIGHT);
-          parent.setFont(new Font("default", Font.BOLD, 12));
-          return parent;
-        }
-      });
-    }
-
-    TableColumn nameColumn = table.getColumnModel().getColumn(0);
-    if (this.panel == null) {
-      panel = new JScrollPane(table);
-    }
-    panel.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED);
-    panel.setHorizontalScrollBarPolicy(JScrollPane.HORIZONTAL_SCROLLBAR_NEVER);
-    fitToContentWidth(table, 0);
-    fitToContentWidth(table, 1);
-    this.add(panel, BorderLayout.CENTER);
+  public void resetHand() {
+    for (int i = 1; i < cell.length-1; i++) {
+      for (int j = 1; j < cell[i].length; j++) {
+        cell[i][j].setValue("0");
+      }
+    } 
   }
 
-  public static void fitToContentWidth(final JTable table, final int column) {
-    int width = 0;
-    for (int row = 0; row < table.getRowCount(); row++) {
-      final Object cellValue = table.getValueAt(row, column);
-      final TableCellRenderer renderer = table.getCellRenderer(row, column);
-      final Component comp = renderer.getTableCellRendererComponent(
-        table, cellValue, false, false, row, column
-      );
-      width = Math.max(width, comp.getPreferredSize().width);
-    }
-    final TableColumn tc = table.getColumn(table.getColumnName(column));
-    width += table.getIntercellSpacing().width * 2;
-    tc.setPreferredWidth(width);
-    tc.setMinWidth(width);
-  }
-
-  public void modelPropertyChange(PropertyChangeEvent e) {
-    if (e.getNewValue() == null) return;
-    if (e.getPropertyName().equals(controller.TRUMP)) {
-    }
-  }
-
-  public void tableChanged(TableModelEvent e) {
-    if (e.getType() == TableModelEvent.UPDATE) {
-      int row = e.getFirstRow();
-      int col = e.getColumn();
-      if (col == 0) {
-        String name = ((String)table.getValueAt(row, col));
-        table.setValueAt(name, row, col);
+  private void setup() {
+    int id = 0;
+    BorderLayout bl = new BorderLayout();
+    GridLayout   gl = new GridLayout(5, 3);
+    gl.setVgap(1);
+    gl.setHgap(1);
+    this.setLayout(gl);
+    this.setBackground(new Color(123,145,83));
+    for (int i = 0; i < cell.length; i++) {
+      for (int j = 0; j < cell[i].length; j++) {
+        System.out.println("i: "+i+" j: "+j);
+        id++;
+        cell[i][j] = new Cell(id);
+        this.add(cell[i][j]);
+        if (i == 0) 
+          cell[i][j].setBold();
+        if (j == 0) 
+          cell[i][j].setLabel();
       }
     }
   }
 
-  class TextFieldEditor extends DefaultCellEditor {
-    public TextFieldEditor() {
-      super(new JTextField());
-      this.setClickCountToStart(1);
+  public void modelPropertyChange(PropertyChangeEvent e) {
+    if (e.getNewValue() == null) return;
+    if (e.getPropertyName().equals(controller.MELD_SCORE)) {
+      if (e.getOldValue().equals("NSMELD")) {
+        cell[1][1].setValue((String)e.getNewValue()); 
+      } else {
+        cell[1][2].setValue((String)e.getNewValue()); 
+      }
+    }
+    if (e.getPropertyName().equals(controller.TAKE_SCORE)) {
+      if (e.getOldValue().equals("NSTAKE")) {
+        cell[2][1].setValue((String)e.getNewValue()); 
+      } else {
+        cell[2][2].setValue((String)e.getNewValue()); 
+      }
+    }
+    if (e.getPropertyName().equals(controller.HAND_SCORE)) {
+      if (e.getOldValue().equals("NSHAND")) {
+        cell[3][1].setValue((String)e.getNewValue()); 
+      } else {
+        cell[3][2].setValue((String)e.getNewValue()); 
+      }
+    }
+    if (e.getPropertyName().equals(controller.GAME_SCORE)) {
+      if (e.getOldValue().equals("NSGAME")) {
+        cell[4][1].setValue((String)e.getNewValue()); 
+      } else {
+        cell[4][2].setValue((String)e.getNewValue()); 
+      }
+    }
+    if (e.getPropertyName().equals(controller.RESET)) {
+      if (e.getNewValue().equals("game")) {
+        this.reset();
+      } else {
+        this.resetHand();
+      }
+    }
+  }
+
+  private class Cell extends Canvas {
+    private int    id;
+    private int    wr     = 0;
+    private int    hr     = 0;
+    private int    weight = Font.PLAIN;
+    private String value  = "";
+    private Color  black  = Color.BLACK;
+    private Color  red    = Color.RED;
+    static final long serialVersionUID = -200243434234218974L; 
+
+    public Cell(int id) {
+      this.id = id;
+      this.wr = -10 + (int)(Math.random()*2);
+      this.hr =  2  + (int)(Math.random()*6);
+      this.setBackground(new Color(239,236,157));
     }
 
-    public Component
-    getTableCellEditorComponent(JTable table, Object value, boolean isSelected, int row, int col) {
-      JTextField editor = (JTextField) super.getTableCellEditorComponent(table, value, isSelected, row, col);
-      editor.setText("");
-      return editor;
+    public synchronized void setValue(String value) {
+      this.value = value;
+      repaint();
+    }
+
+    public int getId() {
+      return this.id;
+    }
+  
+    public void setBold() {
+      this.weight = Font.BOLD;
+    }
+
+    public void setLabel() {
+      this.wr = -25;
+    }
+
+    public void paint(Graphics g) {
+      Graphics2D g2 = (Graphics2D)g;
+      int w   = this.getWidth();
+      int h   = this.getHeight();
+      Font font = new Font("Helvetica", weight, 12);
+      g2.setFont(font);
+      if (this.value.startsWith("-", 1)) {
+        g2.setColor(red);
+      } else {
+        g2.setColor(black);
+      }
+      g2.drawString(this.value, (w/2)+this.wr, (h/2)+this.hr);
     }
   }
 }
