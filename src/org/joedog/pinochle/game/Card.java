@@ -124,7 +124,7 @@ public class Card {
   }
 
   public boolean matches (Card card) {
-    if ((this.suit - card.suit == 0) && (this.rank - card.rank == 0)) {
+    if ((this.suit == card.suit) && (this.rank == card.rank)) {
       return true;
     } else {
       return false; 

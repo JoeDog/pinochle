@@ -27,6 +27,7 @@ public class Human extends Player {
   }
 
   public void takeCards(Deck d) {
+    this.myBid = 0;
     for (Card c: d.getCards()) {
       c.setFaceUp();
       this.hand.add(c);

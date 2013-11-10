@@ -92,33 +92,73 @@ public class Computer extends Player {
     Card card = null;
     Card temp = null;
     Card high = null;
+    if (trick.getLeadingSuit() == -1) {
+      card = leadingPlay(trick);
+    } else {
+      card = followingPlay(trick);
+    }
+    if (card == null) {
+      card = this.hand.get(0);
+    }
+    this.hand.remove(card);
+    this.setting.refresh(this.hand);
+    return card;
+  }
+
+  private Card leadingPlay(Trick trick) {
+    Card card = null;
+    Card temp = null;
+    Card high = null;
     int  suit = trick.getLeadingSuit();
-    if (suit < Pinochle.HEARTS || suit > Pinochle.SPADES) {
-      // we either have the lead or WTF?
-      if (this.hand.aces(trick.getTrump()) > 0) { 
-        if (this.hand.contains(new Card(trick.getTrump(), Pinochle.ACE)) > 0) {
-          card = new Card(trick.getTrump(), Pinochle.ACE);
-        }
-      } else {
-        for (int i = Pinochle.HEARTS; i < Pinochle.SPADES; i++) {
-          if (this.hand.aces(i) > 0) {  
-            card = new Card(i, Pinochle.ACE);
-            break;
-          }
-        }
+    System.out.println("Okay, we have the lead...");
+    if (this.hand.aces(trick.getTrump()) > 0) {
+      if (this.hand.contains(new Card(Pinochle.ACE, trick.getTrump())) > 0) {
+        card = new Card(Pinochle.ACE, trick.getTrump());
       }
-      if (card == null) {
-        System.out.println("hand.size: "+this.hand.size());
-        Random r = new Random();
-        int    h = (this.hand.size() > 2) ? this.hand.size() : 2;
-        int    i = r.nextInt(h-1) + 1;
-        card = this.hand.get(i-1);
+    } else {
+      for (int i = 0; i < 4; i++) {
+        if (this.hand.aces(i) > 0) {
+          System.out.println("found one!");
+          card = new Card(Pinochle.ACE, i);
+          break;
+        }
       }
     }
+    if (card == null) {
+      // Let's play Beat the Queen....
+      if (this.hand.contains(new Card(Pinochle.QUEEN, trick.getTrump())) > 0) {
+        card = new Card(Pinochle.QUEEN, trick.getTrump());
+      }
+    }
+    if (card == null) {
+      // Okay, any queen will do....
+      for (int i = 0; i < 4; i++) {
+        if (this.hand.queens(i) > 0) {
+          System.out.println("found one!");
+          card = new Card(Pinochle.QUEEN, i);
+          break;
+        }
+      }
+    }
+    if (card == null) {
+      System.out.println("hand.size: "+this.hand.size());
+      Random r = new Random();
+      int    h = (this.hand.size() > 2) ? this.hand.size() : 2;
+      int    i = r.nextInt(h-1) + 1;
+      card = this.hand.get(i-1);
+    }
+    return card;
+  }
+
+  private Card followingPlay(Trick trick) {
+    Card card = null;
+    Card temp = null;
+    Card high = null;
+    int  suit = trick.getLeadingSuit();
     if (this.hand.contains(suit) > 0) {
       // can we beat it??
       temp = this.hand.getHighest(suit);
-      high = trick.getWinningCard(); 
+      high = trick.getWinningCard();
       if (temp != null && temp.getRank() > high.getRank()) {
         // XXX: should consult memory to see if this play can stand
         // XXX: should check to see if the winning card is my partners
@@ -146,14 +186,14 @@ public class Computer extends Player {
         for (int i = Pinochle.HEARTS; i < Pinochle.SPADES; i++) {
           cnt = this.hand.contains(i);
           if (cnt == 0) continue;
-          else if (cnt < num && this.hand.counters(i) > 0) sel = i; 
+          else if (cnt < num && this.hand.counters(i) > 0) sel = i;
         }
       } else {
         System.out.println(this.name+" says, 'Stinky partner, no counter for you'");
         for (int i = Pinochle.HEARTS; i < Pinochle.SPADES; i++) {
           cnt = this.hand.contains(i);
           if (cnt == 0) continue;
-          else if (cnt < num && this.hand.nonCounters(i) > 0) sel = i; 
+          else if (cnt < num && this.hand.nonCounters(i) > 0) sel = i;
         }
       }
       if (sel < 100) {
@@ -172,11 +212,6 @@ public class Computer extends Player {
         }
       }
     }
-    if (card == null) {
-      card = this.hand.get(0);
-    }
-    this.hand.remove(card);
-    this.setting.refresh(this.hand);
     return card;
   }
 }

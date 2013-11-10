@@ -85,10 +85,18 @@ public class Hand {
     }
     return num;
   }
+  
+  public int queens (int suit) {
+    int num = 0;
+    for (Card c: this.getCards()) {
+      if (c.getSuit() == suit && c.getRank() == Pinochle.QUEEN) 
+        num ++;
+    }
+    return num;
+  }
 
   public Card getLowest() {
     //XXX: should call contains first  
-    System.out.println("HAND SIZE: "+this.hand.size());
     Card card  = this.get(0); 
     for (Card c: this.getCards()) { 
       if (c != null && c.getRank() < card.getRank()) {
