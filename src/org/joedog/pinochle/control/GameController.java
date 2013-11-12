@@ -10,20 +10,19 @@ import org.joedog.pinochle.player.*;
 
 public class GameController extends AbstractController {
   private Thread  thread;
-  private AtomicBoolean hiatus        = new AtomicBoolean(false);
-  public  boolean alive               = true;
-  private boolean running             = false;
-  private boolean passable            = false;
-  private boolean meldable            = false;
-  private boolean playable            = false;
-  public final static int DEAL        = 0;
-  public final static int BID         = 1;
-  public final static int PASS        = 2;
-  public final static int MELD        = 3;
-  public final static int PLAY        = 4;
-  public final static int SCORE       = 5;
-  public final static int OVER        = 6;
-  
+  private AtomicBoolean hiatus           = new AtomicBoolean(false);
+  public  boolean alive                  = true;
+  private boolean running                = false;
+  private boolean passable               = false;
+  private boolean meldable               = false;
+  private boolean playable               = false;
+  public final static int DEAL           = 0;
+  public final static int BID            = 1;
+  public final static int PASS           = 2;
+  public final static int MELD           = 3;
+  public final static int PLAY           = 4;
+  public final static int SCORE          = 5;
+  public final static int OVER           = 6;
   public final static String RESET       = "NEWHAND";
   public final static String TRUMP       = "TRUMP";
   public final static String HIGH_BID    = "HIBID";
@@ -33,6 +32,7 @@ public class GameController extends AbstractController {
   public final static String TAKE_SCORE  = "NSTAKE";
   public final static String HAND_SCORE  = "NSHAND";
   public final static String GAME_SCORE  = "NSGAME";
+  public final static String WINNER      = "NONE";
 
   private boolean over = false;
 
@@ -45,7 +45,6 @@ public class GameController extends AbstractController {
     this.meldable = false;
     this.passable = false;
     setStatus("New game!");
-    //runViewMethod("resetButtons");
     runViewMethod("resetScore");
     setModelProperty("GameStatus", ""+DEAL);
     this.thread.stop();
@@ -57,6 +56,11 @@ public class GameController extends AbstractController {
     this.passable = false;
     setStatus("New hand!");
     setModelProperty("GameStatus", ""+DEAL);
+  }
+
+  public void winner() {
+    System.out.println("FIRING WINNER");
+    setModelProperty("GameStatus", ""+OVER);
   }
 
   public synchronized void start () {
@@ -88,9 +92,9 @@ public class GameController extends AbstractController {
         return Integer.parseInt(tmp);
       }
     } catch (final NumberFormatException nfe) {
-      return 0;
+      return -1;
     }
-    return 0;
+    return -1;
   }
 
   public int getTrump() {
@@ -318,7 +322,15 @@ public class GameController extends AbstractController {
     int tricks = count/players.length;
     while (this.isPaused()) {
       try {
-        Thread.sleep(500);
+        if (
+          players[0].getType()==Player.COMPUTER && 
+          players[1].getType()==Player.COMPUTER &&
+          players[2].getType()==Player.COMPUTER &&
+          players[3].getType()==Player.COMPUTER ) {
+          this.pause(false);
+        } else {
+          Thread.sleep(500);
+        }
       } catch (Exception e) {}
     }
     for (Player player : players) {

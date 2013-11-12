@@ -5,15 +5,16 @@ import org.joedog.pinochle.game.Pinochle;
 import org.joedog.pinochle.control.*;
 
 public class ScoreModel extends AbstractModel {
-  private int     bid      = 0;
-  private int     dealer   = Pinochle.SOUTH;
-  private int     trump    = Pinochle.HEARTS;
-  private int     active   = Pinochle.WEST;
-  private int     meld[]   = new int[] {0, 0};
-  private int     take[]   = new int[] {0, 0};
-  private int     hand[]   = new int[] {0, 0};
-  private int     game[]   = new int[] {0, 0};
-  private boolean bidder[] = new boolean[] {false, false};
+  private int bid      = 0;
+  private int dealer   = Pinochle.SOUTH;
+  private int trump    = Pinochle.HEARTS;
+  private int active   = Pinochle.WEST;
+  private int wscore   = 300;
+  private int meld[]   = new int[] {0, 0};
+  private int take[]   = new int[] {0, 0};
+  private int hand[]   = new int[] {0, 0};
+  private int game[]   = new int[] {0, 0};
+  private int bidder;
 
   public ScoreModel() {
 
@@ -24,15 +25,20 @@ public class ScoreModel extends AbstractModel {
     this.dealer = i;
   }
 
+  public void setGameWinningScore(String score) {
+    int i = Integer.parseInt(score);
+    this.wscore = i;
+  }
+
   public void resetHand() {
+    System.out.println("HEY! I'm resetting the hand!!!");
     this.meld[0]   = 0;
     this.meld[1]   = 0;
     this.take[0]   = 0;
     this.take[1]   = 0;
     this.hand[0]   = 0;
     this.hand[1]   = 0;
-    this.bidder[0] = false;
-    this.bidder[1] = false;
+    this.bidder    = -125; 
     firePropertyChange(GameController.RESET, "RESET", "hand");
   }
 
@@ -58,8 +64,9 @@ public class ScoreModel extends AbstractModel {
 
   public void setBidder(String player) {
     int i = Integer.parseInt(player);
-    this.bidder[i % 2] = true;
+    this.bidder = i;
     this.active = i;
+    System.out.println("SET DA BIDDER: "+this.bidder+"!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!");
   }
 
   /**
@@ -109,14 +116,15 @@ public class ScoreModel extends AbstractModel {
     firePropertyChange(GameController.TAKE_SCORE, "EWTAKE", ""+this.take[1]);
   }
 
-  public void addScore() {
+  public synchronized void addScore() {
+    System.out.println("HERE is MY BIDDER: "+this.bidder);
     this.hand[0] = this.meld[0]+this.take[0];
-    if (bidder[0] == true && this.hand[0] < this.bid) {
+    if (this.bidder % 2 == 0 && this.hand[0] < this.bid) {
       this.hand[0] = (this.bid * -1);
     }
     firePropertyChange(GameController.HAND_SCORE, "NSHAND", ""+this.hand[0]);
     this.hand[1] = this.meld[1]+this.take[1];
-    if (bidder[1] == true && this.hand[1] < this.bid) {
+    if (this.bidder % 2 != 0 && this.hand[1] < this.bid) {
       this.hand[1] = (this.bid * -1);
     }
     firePropertyChange(GameController.HAND_SCORE, "EWHAND", ""+this.hand[1]);
@@ -124,5 +132,22 @@ public class ScoreModel extends AbstractModel {
     firePropertyChange(GameController.GAME_SCORE, "NSGAME", ""+this.game[0]);
     this.game[1] += this.hand[1];
     firePropertyChange(GameController.GAME_SCORE, "EWGAME", ""+this.game[1]);
+
+    if (this.game[0] > this.wscore && this.game[1] >= this.wscore) {
+      System.out.println("BOTH ARE OVER: "+this.wscore+" bidders: "+this.bidder);
+      if (this.bidder % 2 == 0) {
+        firePropertyChange(GameController.WINNER, "NONE", "NORTH_SOUTH");
+        System.out.println("this.bidder[0]: "+this.bidder);
+      } else  {
+        firePropertyChange(GameController.WINNER, "NONE", "EAST_WEST");
+        System.out.println("this.bidder[1]: "+this.bidder);
+      }
+    } else if (this.game[0] >= this.wscore) {
+      firePropertyChange(GameController.WINNER, "NONE", "NORTH_SOUTH");
+      System.out.println("WINNER, WINNER, CHICKEN DINNER: NORTH/SOUTH");
+    } else if (this.game[1] >= this.wscore) {
+      System.out.println("WINNER, WINNER, CHICKEN DINNER: EAST/WEST");
+      firePropertyChange(GameController.WINNER, "NONE", "EAST_WEST");
+    }
   }
 }

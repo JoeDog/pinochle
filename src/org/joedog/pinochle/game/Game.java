@@ -30,11 +30,12 @@ public class Game {
   public Player [] getPlayers () {
     this.factory      = new PlayerFactoryImpl();
     Player [] players = {
-      factory.getPlayer(this.controller, Player.COMPUTER),
-      factory.getPlayer(this.controller, Player.COMPUTER),
-      factory.getPlayer(this.controller, Player.HUMAN), 
-      factory.getPlayer(this.controller, Player.COMPUTER)
+      factory.getPlayer(this.controller, controller.getIntProperty("PlayerNorthType")),
+      factory.getPlayer(this.controller, controller.getIntProperty("PlayerEastType")),
+      factory.getPlayer(this.controller, controller.getIntProperty("PlayerSouthType")), 
+      factory.getPlayer(this.controller, controller.getIntProperty("PlayerWestType"))
     };
+
     for (int i = 0; i < players.length; i++) {
       int    partner = -1;
       String name    = "default";
@@ -66,6 +67,7 @@ public class Game {
     int x      = 0;
     int turn   = 0;
     int status = GameController.DEAL;
+    controller.setProperty("GameWinningScore", controller.getProperty("WinningScore"));
 
     while (status != GameController.OVER) {
       status = controller.gameStatus();
@@ -89,20 +91,11 @@ public class Game {
         case GameController.SCORE:
           break;
         case GameController.OVER:
+          controller.pause(true);
           break;
       }
-      /* FOR REFERENCE
-      if ((players[turn%2].getType()).equals("HUMAN")) {
-        controller.setStatus("Your turn...");
-      } else {
-        controller.setStatus("My turn...");
-        players[turn%2].setEngine(controller.getEngine());
-      }
-      players[turn%2].takeTurn(); 
-      */
       turn++;
     }
-    System.out.println("IT'S OVER!!!!!!!!!!!!");
   }
 }
 

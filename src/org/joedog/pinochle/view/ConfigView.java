@@ -227,52 +227,64 @@ public class ConfigView extends JFrame {
 
   private JComboBox getEastTypeBox() {
     if (playerEastType == null) {
+       int i = 1;
        comboBoxModel  = new DefaultComboBoxModel();
-       comboBoxModel.addElement("Computer");
-       comboBoxModel.addElement("Random");
        comboBoxModel.addElement("Human");
+       comboBoxModel.addElement("Computer");
        playerEastType = new JComboBox();
        playerEastType.setModel(comboBoxModel);
        playerEastType.setBounds(new Rectangle(304, 34, 110, 20));
+       i = controller.getIntProperty("PlayerEastType"); 
+       if (i < 0) i = 1;
+       playerEastType.setSelectedIndex(i);
     }
     return playerEastType;
   }
 
   private JComboBox getWestTypeBox() {
     if (playerWestType == null) {
+       int i = 1;
        comboBoxModel  = new DefaultComboBoxModel();
-       comboBoxModel.addElement("Computer");
-       comboBoxModel.addElement("Random");
        comboBoxModel.addElement("Human");
+       comboBoxModel.addElement("Computer");
        playerWestType = new JComboBox();
        playerWestType.setModel(comboBoxModel);
        playerWestType.setBounds(new Rectangle(304, 58, 110, 20));
+       i = controller.getIntProperty("PlayerWestType"); 
+       if (i < 0) i = 1;
+       playerWestType.setSelectedIndex(i);
     }
     return playerWestType;
   }
 
   private JComboBox getNorthTypeBox() {
     if (playerNorthType == null) {
+       int i = 1;
        comboBoxModel  = new DefaultComboBoxModel();
-       comboBoxModel.addElement("Computer");
-       comboBoxModel.addElement("Random");
        comboBoxModel.addElement("Human");
+       comboBoxModel.addElement("Computer");
        playerNorthType = new JComboBox();
        playerNorthType.setModel(comboBoxModel);
        playerNorthType.setBounds(new Rectangle(304, 82, 110, 20));
+       i = controller.getIntProperty("PlayerNorthType"); 
+       if (i < 0) i = 1;
+       playerNorthType.setSelectedIndex(i);
     }
     return playerNorthType;
   }
 
   private JComboBox getSouthTypeBox() {
     if (playerSouthType == null) {
+       int i = 0;
        comboBoxModel  = new DefaultComboBoxModel();
        comboBoxModel.addElement("Human");
        comboBoxModel.addElement("Computer");
-       comboBoxModel.addElement("Random");
        playerSouthType = new JComboBox();
        playerSouthType.setModel(comboBoxModel);
        playerSouthType.setBounds(new Rectangle(304, 106, 110, 20));
+       i = controller.getIntProperty("PlayerSouthType"); 
+       if (i < 0) i = 0;
+       playerSouthType.setSelectedIndex(i);
     }
     return playerSouthType;
   }
@@ -345,6 +357,10 @@ public class ConfigView extends JFrame {
           controller.setProperty("PlayerWestName",  textWestName.getText());
           controller.setProperty("PlayerNorthName", textNorthName.getText());
           controller.setProperty("PlayerSouthName", textSouthName.getText());
+          controller.setProperty("PlayerEastType",  ""+(playerEastType.getSelectedIndex()));
+          controller.setProperty("PlayerWestType",  ""+(playerWestType.getSelectedIndex()));
+          controller.setProperty("PlayerNorthType", ""+(playerNorthType.getSelectedIndex()));
+          controller.setProperty("PlayerSouthType", ""+(playerSouthType.getSelectedIndex()));
           controller.setProperty("ConfigX",  Integer.toString(getX()));
           controller.setProperty("ConfigY",  Integer.toString(getY()));
           controller.setProperty("WinningScore",  textWinningScore.getText());

@@ -2,6 +2,7 @@ package org.joedog.pinochle.model;
 
 import java.util.Properties;
 import org.joedog.pinochle.game.Pinochle;
+import org.joedog.pinochle.player.Player;
 import org.joedog.pinochle.control.*;
 
 public class GameModel extends AbstractModel {
@@ -132,19 +133,43 @@ public class GameModel extends AbstractModel {
   }
 
   public String getPlayerEastType() {
-    return conf.getProperty("PlayerEastType");
+    String type = conf.getProperty("PlayerEastType");
+    if (type == null || ! isNumeric(type)) {
+      this.setPlayerEastType(""+Player.COMPUTER);
+      return ""+Player.COMPUTER;
+    } else {
+      return type;
+    }
   }
 
   public String getPlayerWestType() {
-    return conf.getProperty("PlayerWestType");
+    String type = conf.getProperty("PlayerWestType");
+    if (type == null || ! isNumeric(type)) {
+      this.setPlayerWestType(""+Player.COMPUTER);
+      return ""+Player.COMPUTER;
+    } else {
+      return type;
+    }
   }
 
   public String getPlayerNorthType() {
-    return conf.getProperty("PlayerNorthType");
+    String type = conf.getProperty("PlayerNorthType");
+    if (type == null || ! isNumeric(type)) {
+      this.setPlayerNorthType(""+Player.COMPUTER);
+      return ""+Player.COMPUTER;
+    } else {
+      return type;
+    }
   }
 
   public String getPlayerSouthType() {
-    return conf.getProperty("PlayerSouthType");
+    String type = conf.getProperty("PlayerSouthType");
+    if (type == null || ! isNumeric(type)) {
+      this.setPlayerSouthType(""+Player.HUMAN);
+      return ""+Player.HUMAN;
+    } else {
+      return type;
+    }
   }
 
   public String getWinningScore() {
@@ -242,5 +267,9 @@ public class GameModel extends AbstractModel {
       return sb.toString();
     } catch (java.security.NoSuchAlgorithmException e) { }
     return null;
+  }
+
+  public static boolean isNumeric(String str) {
+    return str.matches("-?\\d+(\\.\\d+)?");  //match a number with optional '-' and decimal.
   }
 }

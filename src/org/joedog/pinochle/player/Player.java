@@ -7,8 +7,8 @@ import java.net.URL;
 import java.awt.Canvas;
 
 public abstract class Player {
-  public static final  int HUMAN    = 1;
-  public static final  int COMPUTER = 2;
+  public static final  int HUMAN    = 0;
+  public static final  int COMPUTER = 1;
   protected Hand       hand;
   protected Meld       meld;
   public   int         partner;
