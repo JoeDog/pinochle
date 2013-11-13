@@ -20,11 +20,22 @@ public class Deck extends Pack {
     Pinochle.DIAMONDS
   };
 
+  /**
+   * Creates an empty deck; good for creating 
+   * groups of cards for passing or tracking
+   * <p>
+   * @return Deck
+   */
   public Deck() {
     this.size = 1;
     //this(1); // default to single deck
   }
 
+  /** 
+   * Creates a Pinochle deck of size (generally single or double)
+   * <p>
+   * @return Deck
+   */
   public Deck (int size) {
     int id = 0;
     this.size = size;
@@ -47,6 +58,12 @@ public class Deck extends Pack {
     return (Card) this.get(num);    
   }
 
+  /**
+   * Returns a String interpretation of the Deck
+   * <p>
+   * @param  none
+   * @return String
+   */
   public String toString() {
     String cards = null;
     for (Card c: this.getCards()) {
@@ -59,6 +76,14 @@ public class Deck extends Pack {
     return cards;
   }
 
+  /**
+   * Places the cards in the deck in random order; while
+   * completely unnecessary, this method 'shuffles' the 
+   * deck five times just for fun....
+   * <p>
+   * @param  none
+   * @return void
+   */
   public void shuffle() {
     int x = 0;
     while (x < 5) { 
@@ -90,7 +115,7 @@ public class Deck extends Pack {
 
   private static final void swap(int[] na, int a, int b) {
     int tmp;
-    tmp = na[a];
+    tmp   = na[a];
     na[a] = na[b];
     na[b] = tmp;
   }

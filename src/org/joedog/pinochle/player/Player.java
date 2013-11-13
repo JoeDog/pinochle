@@ -34,10 +34,11 @@ public abstract class Player {
     this.setting.refresh(this.hand);
   }
 
-  public void newHand() {
+  public synchronized void newHand() {
     this.hand   = new Hand();
     this.myBid  = 0;
     this.maxBid = 0;
+    System.out.println(this.name+"'s newHand(): "+myBid);
   }
 
   public int assessHand() {
@@ -91,6 +92,8 @@ public abstract class Player {
   public Hand getHand() {
     return this.hand;
   }
+
+  public abstract void remember(Deck cards);
 
   public abstract Card playCard(Trick trick);
 

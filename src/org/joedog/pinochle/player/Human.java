@@ -109,6 +109,13 @@ public class Human extends Player {
     return deck;
   } 
 
+  /**
+   * Pauses play while a Human selects meld from their
+   * hand. The meld is tallied by a Meld {@Link Meld} 
+   * object and returned as a score by the method
+   * <p>
+   * @return      int (the meld score)
+   */
   public int meld() {
     Hand tmp  = new Hand();
 
@@ -145,20 +152,61 @@ public class Human extends Player {
     }
   }
 
+  public void remember(Deck cards) {
+    // You're on your own, Human....
+  }
+
   public void finish (int status) {
   }
 
+  /**
+   * Returns a card selected by a Human player The
+   * card is verified {@Link verfied} to see if it
+   * complies with the rules of Pinochle
+   * <p>
+   * @param Trick   The current trick into which we play
+   * @return        Card  
+   */
   public Card playCard(Trick trick) {
-    while (! this.controller.isPlayable()) {
-      try { 
-        Thread.sleep(500);  
-      } catch (Exception e) {}
-    }
-    Card card = this.setting.getCard();
-    System.out.println("Playing: "+card.toString());
+    Card card;
+    boolean okay = false;
+    do {
+      while (! this.controller.isPlayable()) {
+        try { 
+          Thread.sleep(500);  
+        } catch (Exception e) {}
+      }
+      card = this.setting.getCard();
+      okay = verified(trick, card);
+    } while (! okay);
     this.hand.remove(card);
     this.setting.refresh(this.hand);
     return card;
+  }
+
+  /**
+   * Returns a boolean which indicates whether or not
+   * a human player followed the rules of pinochle play
+   * The trick {@Link Trick} is the current trick on the
+   * table and the card {@Link Card} is the card whose
+   * play we hope to verify.
+   * <p>
+   * @param Trick  The current trick into which we play the card
+   * @param Card   The card we've selected to play on the trick
+   * @return       boolean  (true is verified, false is not)
+   */
+  private boolean verified(Trick trick, Card card) {
+    int suit  = trick.getLeadingSuit();
+    if (suit == -1) {
+      // we have the lead so we can play whatever we want
+      return true;
+    }
+
+    if (this.hand.contains(suit) > 0) {
+      // we MUST follow suit
+      return (card.isa(suit)); 
+    }
+    return true;
   }
 }
 

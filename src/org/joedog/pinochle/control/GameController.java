@@ -190,15 +190,20 @@ public class GameController extends AbstractController {
   }
 
   public void newDeal(Player[] players) {
-    int turn  = this.getIntProperty("Dealer");
-    int next  = (turn < players.length-1)? turn + 1 : 0;
     this.over = false;
     Deck deck = new Deck(1);
+    int turn  = this.getIntProperty("Dealer");
+    int next  = (turn < players.length-1)? turn + 1 : 0;
+
+    for (int i = 0; i < players.length; i++) 
+      players[i].newHand();
+
     deck.shuffle();
     for (int i = 0; i < deck.count(); i++) {
       players[turn%players.length].takeCard(deck.dealCard(i));
       turn++;
     }
+
     /**
      * XXX: when this is commented out, you can't
      * see the cards in order to bid, but selection
@@ -369,6 +374,9 @@ public class GameController extends AbstractController {
         } catch (Exception e) {}
         turn++;
       }  
+      for (Player player : players) {
+        player.remember(trick.getCards());
+      }
       turn = trick.winner();
       if (turn % 2 == 0) {
         setModelProperty("NSTake", ""+trick.counters());

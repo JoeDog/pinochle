@@ -10,12 +10,14 @@ public class Trick {
   private int     trump;     // the named trump suit
   private int     winner;    // the winning position
   private Card    card;      // the winning card
+  private Deck    deck;      // easy to pass reference of all cards
   private boolean trumped;   // does the trick contain trump?
   private Map<Player, Card> cards = new HashMap<Player, Card>();  
 
   public Trick(int trump) {
     this.trump    = trump;
     this.trumped  = false;
+    this.deck     = new Deck();
   }
 
   public void add(Player player, Card card) {
@@ -28,21 +30,17 @@ public class Trick {
       this.winner = player.getPosition();
     } else {
       if (this.card.getSuit() == this.trump && card.getSuit() == this.trump) {
-        System.out.println("hand contains trump; new card is trump");
         this.trumped   = true;
         if (card.getRank() > this.card.getRank()) {
-          System.out.println("new card out trumps current winner!");
           this.card    = card;
           this.winner  = player.getPosition();
         }
       } else if (card.getSuit() == this.trump) {
-        System.out.println("we played first trump on the trick!!!");
         this.card    = card;
         this.winner  = player.getPosition();
         this.trumped = true;
       } else {
         if (card.getSuit() == this.lead) {
-          System.out.println("we're following a non-trump suit");
           if (card.getRank() > this.card.getRank()) {
             this.card   = card;
             if (! this.trumped) {
@@ -53,6 +51,7 @@ public class Trick {
       }
     }
     cards.put(player, card);
+    deck.add(card); 
   }
 
   public int winner() {
@@ -73,6 +72,10 @@ public class Trick {
 
   public Card getWinningCard() {
     return this.card;
+  }
+
+  public Deck getCards() {
+    return this.deck;
   }
 
   public int counters() {

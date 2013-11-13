@@ -5,13 +5,13 @@ import org.joedog.pinochle.control.GameController;
 import org.joedog.pinochle.game.*;
 
 public class Computer extends Player {
-  //private final static String type = "COMPUTER";
-  
   private GameController controller;
+  private Brain          brain;
 
   public Computer(GameController controller) {
     this.type = COMPUTER;
     this.controller = controller;
+    this.brain = new Brain();
   }
  
   public void takeCard(Card c) {
@@ -37,13 +37,18 @@ public class Computer extends Player {
     this.setting.refresh();
   }
 
+  public void remember(Deck d) {
+    this.brain.remember(d);
+  }
 
-  public int bid(int bid) {
+  public int bid (int bid) {
+    System.out.println(this.name+" has already bidded: "+myBid);
     if (myBid == -1) return myBid;
 
     if (bid > this.maxBid) {
       this.setting.setText("Bid: Pass");
-      return -1;
+      myBid = -1;
+      return myBid;
     }
     this.myBid = bid+1; // XXX: hard-coded auction
     this.setting.setText("Bid: "+this.myBid);

@@ -9,22 +9,54 @@ import java.util.Iterator;
 public class Hand {
   private ArrayList hand;  
 
+  /**
+   * Create a new empty Pinochle hand
+   * <p>
+   * @return Hand
+   */
   public Hand() {
     hand = new ArrayList();
   }
 
+  /**
+   * Return a List<Card> of all the cards in the Hand
+   * <p>
+   * @param  none
+   * @return List<Card>
+   */
   public List<Card> getCards() {
     return hand;
   }
 
+  /**
+   * Clear the hand of all cards
+   * <p>
+   * @param  none
+   * @return void
+   */
   public void reset() {
     hand.clear();
   }
 
+  /** 
+   * Return an ArrayList interpretation of the Hand
+   * <p>
+   * @param  none
+   * @return ArrayList
+   * @see    ArrayList
+   */
   public ArrayList getHand() {
     return this.hand;
   }
 
+  /**
+   * Return an int which represents Card's postion
+   * in the hand; this method returns the position 
+   * of the first instance of RANK and SUIT.
+   * <p>
+   * @param  Card
+   * @return int   position in the hand or -1 not found
+   */
   public int position (Card card) {
     for (int i = 0; i < hand.size(); i++) {
       Card c = (Card)hand.get(i);
@@ -35,6 +67,14 @@ public class Hand {
     return -1;
   }
 
+  /** 
+   * Returns an int which represents Card's position
+   * in the hand AT or AFTER mark; a match is based on
+   * the first occurance of RANK and SUIT
+   * <p>
+   * @param Card    the Card we're looking for
+   * @param int     position in the deck at which we start looking
+   */
   public int position (Card card, int mark) {
     for (int i = mark; i < hand.size(); i++) {
       Card c = (Card)hand.get(i);
@@ -45,6 +85,14 @@ public class Hand {
     return -1;
   }
 
+  /**
+   * Return an int which represents how many cards were
+   * selected in the hand; generally these selects were
+   * for passing or melding
+   * <p>
+   * @param  none
+   * @return int    The total number of selected cards
+   */
   public int numSelected() {
     int num = 0;
  
@@ -57,6 +105,13 @@ public class Hand {
     return num;
   }
 
+  /**
+   * Returns an int which represents how many instances
+   * of Card the hand contains
+   * <p>
+   * @param  Card  The Card to match
+   * @return int   The number of instances we've found 
+   */
   public int contains (Card card) { 
     int found = 0;
     for (Card c: this.getCards()){ 
@@ -67,6 +122,13 @@ public class Hand {
     return found;
   }
 
+  /**
+   * Returns an int which represents the number of 
+   * instances of suit discovered in the hand
+   * <p>
+   * @param  int   The suit we're looking for
+   * @return int   The number of instances we've found
+   */
   public int contains (int suit) {
     int num = 0;
     for (Card c: this.getCards()) { 
@@ -77,6 +139,13 @@ public class Hand {
     return num;
   }
 
+  /**
+   * Returns an int which represents the number of aces
+   * of parameter suit contained within the Hand
+   * <p>
+   * @param  int  The suit we're looking for 
+   * @return int  The number of aces found
+   */
   public int aces (int suit) {
     int num = 0;
     for (Card c: this.getCards()) {
@@ -86,6 +155,13 @@ public class Hand {
     return num;
   }
   
+  /**
+   * Returns an int which represents the number of queens
+   * of parameter suit contained within the Hand
+   * <p>
+   * @param  int  The suit we're looking for 
+   * @return int  The number of queens found
+   */
   public int queens (int suit) {
     int num = 0;
     for (Card c: this.getCards()) {
