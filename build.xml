@@ -4,6 +4,7 @@
   <property name="build.dir" value="out" />
   <property name="lib.dir"   value="lib" />
   <property name="dist.dir"  value="${basedir}" />
+  <property name="version"   value="0.9.0" />
 
   <target name="clean">
     <delete dir="${build.dir}"></delete>
@@ -24,6 +25,26 @@
     </javac>        
   </target>
 
+  <target name="docs">
+    <javadoc packagenames="org.joedog.pinochle.*"
+             sourcepath="src"
+             excludepackagenames="org.joedog.pinochle.images.*"
+             defaultexcludes="yes"
+             destdir="docs/api"
+             author="true"
+             version="true"
+             use="true"
+             windowtitle="Pinochle API">
+      <doctitle><![CDATA[<h1>Pinochle</h1>]]></doctitle>
+      <bottom><![CDATA[<i>Copyright &#169; 2013 Jeffrey Fulmer, et al. All Rights Reserved.</i>]]></bottom>
+      <tag name="todo" scope="all" description="To do:"/>
+      <group title="Group 1 Packages" packages="com.dummy.test.a*"/>
+      <group title="Group 2 Packages" packages="com.dummy.test.b*:com.dummy.test.c*"/>
+      <link offline="true" href="http://docs.oracle.com/javase/7/docs/api/" packagelistLoc="C:\tmp"/>
+      <link href="http://docs.oracle.com/javase/7/docs/api/"/>
+    </javadoc>
+  </target>
+
   <target name="resources" >  
     <copy todir="${build.dir}/org/joedog/pinochle/images" >  
       <fileset dir="${src.dir}/org/joedog/pinochle/images" includes="*.png" />  
@@ -41,7 +62,7 @@
   </target>
 
   <target name="jar" depends="clean,compile,resources">
-    <jar jarfile="${dist.dir}/${ant.project.name}.jar" basedir="${build.dir}">  
+    <jar jarfile="${dist.dir}/${ant.project.name}-${version}.jar" basedir="${build.dir}">  
       <manifest>  
         <attribute name="Built-By"           value="${user.name}" />  
         <attribute name="Main-Class"         value="org.joedog.pinochle.Main" />  
