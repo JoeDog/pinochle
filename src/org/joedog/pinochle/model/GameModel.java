@@ -8,7 +8,6 @@ import org.joedog.pinochle.control.*;
 public class GameModel extends AbstractModel {
   private Configuration conf  = null;
   private int    decks;
-  private int    status;
   private int    nsmeld;
   private int    ewmeld;
   private int    nscounters;
@@ -25,16 +24,6 @@ public class GameModel extends AbstractModel {
       this.decks = 1;
     }
   }
-
-  /**
-   * This method sets the status of the hand in terms 
-   * of the phase we're in, i.e., bid, meld, etc.
-   * @param  status - a string interpretation of GameController.STATUS
-   * @return void
-   */
-  public void setGameStatus(String status) {
-    this.status = Integer.parseInt(status); 
-  } 
 
   public void setMainX(String X) {
     conf.setProperty("MainX", X);
@@ -216,10 +205,6 @@ public class GameModel extends AbstractModel {
   public String getCardCount() {
     if (this.decks == 1) return "48";
     else return "80";
-  }
-
-  public int getGameStatus() {
-    return this.status;
   }
 
   public void reset() {

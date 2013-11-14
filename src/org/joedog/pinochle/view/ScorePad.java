@@ -190,7 +190,7 @@ public class ScorePad extends JPanel implements View {
         Font f = new Font("Helvetica", Font.ITALIC, 24);
         g2.setFont(f);
         g2.setColor(Color.GREEN);
-        g2.drawString("0", (w/2)+this.wr, (h/2)+this.hr);
+        g2.drawString("0", (w/2)+this.wr-5, (h/2)+this.hr+4);
       }
     }
   }

@@ -8,6 +8,7 @@ public class Brain {
   private boolean trumped[] = new boolean[] {false, false, false, false};
 
   public Brain() {
+    this.deck = new Deck();
   }
 
   /**
@@ -19,9 +20,9 @@ public class Brain {
    * @param int   the player who melded those cards
    * @see         org.joedog.pinochle.game.Pinochle 
    */
-  public void remember(Deck deck, int player) {
-    for (int i = 0; i < deck.count(); i++) {
-      Card tmp = deck.dealCard(i);
+  public void remember(Deck cards, int player) {
+    for (int i = 0; i < cards.count(); i++) {
+      Card tmp = cards.dealCard(i);
       melds[player].add(tmp);
     }
   }
@@ -34,12 +35,16 @@ public class Brain {
    * @param Card    the card that was played
    */
   public void remember(Card card) {
-    deck.add(card);
+    Card c = null;
+    if (card != null) {
+      c = new Card(card); 
+      this.deck.add(c);
+    }
   }
 
   public void remember(Deck cards) {
-    for (int i = 0; i < deck.size(); i++) {
-      this.remember(deck.get(i));
+    for (int i = 0; i < cards.size(); i++) {
+      this.remember(cards.get(i));
     }
   }
 
@@ -63,7 +68,7 @@ public class Brain {
    * <p>
    * @return    void 
    */
-  public void newHand() {
+  public void refresh() {
     deck = new Deck();
     for (int i = 0; i < 4; i++) {
       melds[i]   = new Hand();  
@@ -79,9 +84,11 @@ public class Brain {
    * @param  int   The suit we're examining
    * @return boolean 
    */
-  public boolean containsHighest(Hand hand, int suit) {
+  public boolean haveHighest(Hand hand, int suit) {
     int rank = highest(suit);
-    return (hand.contains(new Card(rank, suit)) > 0);    
+    Card tmp = new Card(rank, suit);
+    System.out.println("The highest available card is "+tmp.toString());
+    return (hand.contains(tmp) > 0);    
   }
 
   /**
@@ -92,12 +99,19 @@ public class Brain {
    * @return int    Rank of the highest available card
    */
   private int highest(int suit) {
-    int  rank = -1;
-    for (int i = 0; i < deck.count(); i++) {
-      Card card;
-      card = deck.get(i);      
-      rank = (card.getRank() > rank) ? card.getRank() : rank;
+    int  cnt   = 0; 
+    int  r[]   = new int[] {
+      Pinochle.ACE,
+      Pinochle.TEN,
+      Pinochle.KING,
+      Pinochle.QUEEN,
+      Pinochle.JACK,
+    };
+    for (int i = 0; i < r.length; i++) {
+      cnt = deck.contains(new Card(r[i], suit));
+      if (cnt < 2) return r[i];
     }
-    return rank;
+    // WTF? We'll err on the side of caution...
+    return Pinochle.ACE; 
   }
 }

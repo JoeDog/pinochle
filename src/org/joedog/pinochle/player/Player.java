@@ -38,7 +38,6 @@ public abstract class Player {
     this.hand   = new Hand();
     this.myBid  = 0;
     this.maxBid = 0;
-    System.out.println(this.name+"'s newHand(): "+myBid);
   }
 
   public int assessHand() {

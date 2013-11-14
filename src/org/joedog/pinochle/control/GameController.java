@@ -11,7 +11,6 @@ import org.joedog.pinochle.player.*;
 public class GameController extends AbstractController {
   private Thread  thread;
   private AtomicBoolean hiatus           = new AtomicBoolean(false);
-  public  boolean alive                  = true;
   private boolean running                = false;
   private boolean passable               = false;
   private boolean meldable               = false;
@@ -59,7 +58,8 @@ public class GameController extends AbstractController {
   }
 
   public void winner() {
-    System.out.println("FIRING WINNER");
+    this.over = true;
+    System.out.println("WINNER IS FIRED!!!!!!"); 
     setModelProperty("GameStatus", ""+OVER);
   }
 
@@ -151,7 +151,6 @@ public class GameController extends AbstractController {
   public void exit() {
     setStatus("Shutting down...");
     this.save();
-    this.alive = false;
     try {
       TimeUnit.SECONDS.sleep(1);
     } catch (Exception e) {}
@@ -159,38 +158,34 @@ public class GameController extends AbstractController {
   }
 
   public synchronized int gameStatus () {
-    if (this.over) {
-      return DEAL;
-    }
     int status  = ((Integer)getModelProperty("GameStatus")).intValue();
     switch (status) {
       case DEAL:
-        this.over = false;
-        break;
       case BID:
-        this.over = false;
-        break;
       case PASS:
-        this.over = false;
-        break;
       case MELD:
-        this.over = false;
-        break;
       case PLAY:
-        this.over = false;
-        break;
       case SCORE:
         this.over = false;
         break;
       case OVER:
-        this.over = false;
+        /**
+         * we should loop in this case  
+         * until the user selects exit
+         * or a new game....
+         */
+        this.over = true;
+        try {
+          TimeUnit.SECONDS.sleep(1);
+        } catch (Exception e) {}
         break;
     }
     return status;
   }
 
   public void newDeal(Player[] players) {
-    this.over = false;
+    if (this.over) return;
+
     Deck deck = new Deck(1);
     int turn  = this.getIntProperty("Dealer");
     int next  = (turn < players.length-1)? turn + 1 : 0;
@@ -370,7 +365,7 @@ public class GameController extends AbstractController {
           // We're going to sleep within a 
           // random range between turns so
           // play is less choppy, more humany
-          Thread.sleep(randInt(300, 900));
+          Thread.sleep(randInt(300, 600));
         } catch (Exception e) {}
         turn++;
       }  
@@ -393,7 +388,9 @@ public class GameController extends AbstractController {
       setModelProperty("EWTake", "1");
     }
     runModelMethod("addScore");
-    newHand();
+    if (!this.over) {
+      newHand();
+    }
   }
 
   public String getName (int player) {

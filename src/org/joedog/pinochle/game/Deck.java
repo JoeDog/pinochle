@@ -48,6 +48,14 @@ public class Deck extends Pack {
     }
   }
 
+  public int contains(Card card) {
+    int  count = 0;
+    for (Card c: this.getCards()) {
+      if (c.matches(card)) count++; 
+    }
+    return count;
+  }
+
   public void printIt() {
     System.out.println("card count: "+this.count());
     System.out.println("deck size:  "+this.size);

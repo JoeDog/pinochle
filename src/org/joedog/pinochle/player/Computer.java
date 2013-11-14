@@ -38,7 +38,9 @@ public class Computer extends Player {
   }
 
   public void remember(Deck d) {
-    this.brain.remember(d);
+    if (d != null || d.size() > 1) {
+      this.brain.remember(d);
+    }
   }
 
   public int bid (int bid) {
@@ -115,6 +117,12 @@ public class Computer extends Player {
     Card temp = null;
     Card high = null;
     int  suit = trick.getLeadingSuit();
+    int  s[]  = new int[] {
+      Pinochle.HEARTS, 
+      Pinochle.CLUBS, 
+      Pinochle.DIAMONDS, 
+      Pinochle.SPADES
+    };
     System.out.println("Okay, we have the lead...");
     if (this.hand.aces(trick.getTrump()) > 0) {
       if (this.hand.contains(new Card(Pinochle.ACE, trick.getTrump())) > 0) {
@@ -123,9 +131,24 @@ public class Computer extends Player {
     } else {
       for (int i = 0; i < 4; i++) {
         if (this.hand.aces(i) > 0) {
-          System.out.println("found one!");
+          System.out.println("found an ACE!");
           card = new Card(Pinochle.ACE, i);
           break;
+        }
+      }
+    }
+    if (card == null) {
+      // Let's see if we have a high card....
+      // XXX: we need to remove the position check. 
+      // XXX: we're gonna use NS as a control now.
+      if (this.position % 2 != 0) {
+        shuffle(s);
+        for (int i : s) {
+          System.out.println("SHUFFLE: "+i);
+          if (brain.haveHighest(this.hand, i) == true) {
+            System.out.println("HEY OH! I have the higest "+i);
+            card = this.hand.getHighest(i);
+          }
         }
       }
     }
@@ -146,7 +169,6 @@ public class Computer extends Player {
       }
     }
     if (card == null) {
-      System.out.println("hand.size: "+this.hand.size());
       Random r = new Random();
       int    h = (this.hand.size() > 2) ? this.hand.size() : 2;
       int    i = r.nextInt(h-1) + 1;
@@ -218,5 +240,21 @@ public class Computer extends Player {
       }
     }
     return card;
+  }
+
+  private static void shuffle(int[] a) {
+    int n = a.length;
+    Random random = new Random();
+    random.nextInt();
+    for (int i = 0; i < n; i++) {
+      int change = i + random.nextInt(n - i);
+      swap(a, i, change);
+    }
+  }
+
+  private static void swap(int[] a, int i, int change) {
+    int helper = a[i];
+    a[i] = a[change];
+    a[change] = helper;
   }
 }

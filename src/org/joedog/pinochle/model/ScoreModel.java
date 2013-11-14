@@ -6,6 +6,8 @@ import org.joedog.pinochle.control.*;
 
 public class ScoreModel extends AbstractModel {
   private int bid      = 0;
+  private int over     = 0;
+  private int status   = GameController.DEAL;
   private int dealer   = Pinochle.SOUTH;
   private int trump    = Pinochle.HEARTS;
   private int active   = Pinochle.WEST;
@@ -17,8 +19,21 @@ public class ScoreModel extends AbstractModel {
   private int bidder;
 
   public ScoreModel() {
-
   } 
+
+  /**
+   * This method sets the status of the hand in terms
+   * of the phase we're in, i.e., bid, meld, etc.
+   * @param  status - a string interpretation of GameController.STATUS
+   * @return void
+   */
+  public void setGameStatus(String status) {
+    this.status = Integer.parseInt(status);
+  }
+
+  public int getGameStatus() {
+    return this.status;
+  }
 
   public void setDealer(String player) {
     int i = Integer.parseInt(player);
@@ -31,14 +46,12 @@ public class ScoreModel extends AbstractModel {
   }
 
   public void resetHand() {
-    System.out.println("HEY! I'm resetting the hand!!!");
     this.meld[0]   = 0;
     this.meld[1]   = 0;
     this.take[0]   = 0;
     this.take[1]   = 0;
     this.hand[0]   = 0;
     this.hand[1]   = 0;
-    this.bidder    = -125; 
     firePropertyChange(GameController.RESET, "RESET", "hand");
   }
 
@@ -66,7 +79,6 @@ public class ScoreModel extends AbstractModel {
     int i = Integer.parseInt(player);
     this.bidder = i;
     this.active = i;
-    System.out.println("SET DA BIDDER: "+this.bidder+"!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!");
   }
 
   /**
@@ -117,7 +129,6 @@ public class ScoreModel extends AbstractModel {
   }
 
   public synchronized void addScore() {
-    System.out.println("HERE is MY BIDDER: "+this.bidder);
     this.hand[0] = this.meld[0]+this.take[0];
     if (this.bidder % 2 == 0 && this.hand[0] < this.bid) {
       this.hand[0] = (this.bid * -1);
@@ -134,19 +145,17 @@ public class ScoreModel extends AbstractModel {
     firePropertyChange(GameController.GAME_SCORE, "EWGAME", ""+this.game[1]);
 
     if (this.game[0] > this.wscore && this.game[1] >= this.wscore) {
-      System.out.println("BOTH ARE OVER: "+this.wscore+" bidders: "+this.bidder);
       if (this.bidder % 2 == 0) {
         firePropertyChange(GameController.WINNER, "NONE", "NORTH_SOUTH");
-        System.out.println("this.bidder[0]: "+this.bidder);
       } else  {
         firePropertyChange(GameController.WINNER, "NONE", "EAST_WEST");
-        System.out.println("this.bidder[1]: "+this.bidder);
       }
+      this.status = GameController.OVER;
     } else if (this.game[0] >= this.wscore) {
       firePropertyChange(GameController.WINNER, "NONE", "NORTH_SOUTH");
-      System.out.println("WINNER, WINNER, CHICKEN DINNER: NORTH/SOUTH");
+      this.status = GameController.OVER;
     } else if (this.game[1] >= this.wscore) {
-      System.out.println("WINNER, WINNER, CHICKEN DINNER: EAST/WEST");
+      this.status = GameController.OVER;
       firePropertyChange(GameController.WINNER, "NONE", "EAST_WEST");
     }
   }

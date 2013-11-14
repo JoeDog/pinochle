@@ -86,7 +86,6 @@ public class Game {
           break;
         case GameController.PLAY:
           controller.playHand(players);
-          System.out.println("HAND IS OVER; now what????");
           break;
         case GameController.SCORE:
           break;
