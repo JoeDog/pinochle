@@ -98,6 +98,14 @@ public class GameController extends AbstractController {
     return -1;
   }
 
+  public boolean getBooleanProperty(String property) {
+    String tmp = (String)getModelProperty(property); 
+    if (tmp.equals("true")) {
+      return true;
+    } 
+    return false;
+  }
+
   public int getTrump() {
     return getIntProperty("GameTrump");
   }
@@ -363,10 +371,16 @@ public class GameController extends AbstractController {
         }
         this.setPlayable(false);
         try {
+          int lo = 300;
+          int hi = 700;
           // We're going to sleep within a 
           // random range between turns so
           // play is less choppy, more humany
-          Thread.sleep(randInt(100, 300));
+          if (this.getBooleanProperty("Simulation")) {
+            lo = 20;
+            hi = 80;
+          }
+          Thread.sleep(randInt(lo, hi));
         } catch (Exception e) {}
         turn++;
       }  
