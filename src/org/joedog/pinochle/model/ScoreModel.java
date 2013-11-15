@@ -17,8 +17,10 @@ public class ScoreModel extends AbstractModel {
   private int hand[]   = new int[] {0, 0};
   private int game[]   = new int[] {0, 0};
   private int bidder;
+  private Stats stats;
 
   public ScoreModel() {
+    this.stats = new Stats();
   } 
 
   /**
@@ -59,6 +61,7 @@ public class ScoreModel extends AbstractModel {
     this.resetHand();
     this.game[0] = 0;
     this.game[1] = 0;
+    this.stats   = new Stats();
     firePropertyChange(GameController.RESET, "RESET", "game");
   }
 
@@ -107,24 +110,28 @@ public class ScoreModel extends AbstractModel {
   public void setNSMeld(String m) {
     int i = Integer.parseInt(m);
     this.meld[0] = i;
+    stats.addNSMeld(i);
     firePropertyChange(GameController.MELD_SCORE, "NSMELD", ""+this.meld[0]);
   }
 
   public void setEWMeld(String m) {
     int i = Integer.parseInt(m);
     this.meld[1] = i;
+    stats.addEWMeld(i);
     firePropertyChange(GameController.MELD_SCORE, "EWMELD", ""+this.meld[1]);
   }
 
   public void setNSTake(String c) {
     int i = Integer.parseInt(c);
     this.take[0] += i;
+    stats.addNSTake(i);
     firePropertyChange(GameController.TAKE_SCORE, "NSTAKE", ""+this.take[0]);
   }
 
   public void setEWTake(String c) {
     int i = Integer.parseInt(c);
     this.take[1] += i;
+    stats.addEWTake(i);
     firePropertyChange(GameController.TAKE_SCORE, "EWTAKE", ""+this.take[1]);
   }
 
@@ -158,5 +165,11 @@ public class ScoreModel extends AbstractModel {
       this.status = GameController.OVER;
       firePropertyChange(GameController.WINNER, "NONE", "EAST_WEST");
     }
+    if (this.status == GameController.OVER) {
+      System.out.println("Total hands: "+stats.getHands());
+      System.out.println("N/S Meld:    "+stats.getNSMeld()+" E/W Meld:     "+stats.getEWMeld());
+      System.out.println("N/S Take:    "+stats.getNSTake()+" E/W Take:     "+stats.getEWTake());
+      System.out.println("N/S Take Pct.: "+(double)stats.getNSTake()/(stats.getNSTake()+stats.getNSMeld())+" E/W Take Pct.: "+(double)stats.getEWTake()/(stats.getEWTake()+stats.getEWMeld()));
+    } 
   }
 }
