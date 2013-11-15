@@ -38,22 +38,26 @@ public class ScorePad extends JPanel implements View {
     String north = controller.getProperty("PlayerNorthName");
     String south = controller.getProperty("PlayerSouthName");
 
-    if (north != null || north.length() > 0 || south != null || south.length() > 1) {
-      headers[0] = south.substring(0, 1)+"/"+north.substring(0,1);  
+    if (north != null && north.length() > 0 && south != null && south.length() > 1) {
+      headers[0] = south.substring(0, 1)+"/"+north.substring(0,1);
+    } else {
+      headers[0] = "Us";
     }
-    if (east != null || east.length() > 1 || west != null || west.length() > 1) {
+    if (east != null && east.length() > 1 && west != null && west.length() > 1) {
       headers[1] = east.substring(0, 1)+"/"+west.substring(0,1);
+    } else {
+      headers[1] = "Them";
     }
     cell[0][1].setValue(headers[0]);
     cell[0][2].setValue(headers[1]);
-    for (int i = 1, j = 0; i < labels.length+1; i++, j++) 
+    for (int i = 1, j = 0; i < labels.length+1; i++, j++)
       cell[i][0].setValue(labels[j]);
     for (int i = 1; i < cell.length; i++) {
       for (int j = 1; j < cell[i].length; j++) {
         cell[i][j].setValue("0");
         cell[i][j].clearWinner();
       }
-    } 
+    }
   }
 
   public void resetHand() {

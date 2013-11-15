@@ -10,6 +10,6 @@ public class GameThread extends Thread {
   }
 
   public void run() {
-    game.play();
+    game.start();
   }
 }

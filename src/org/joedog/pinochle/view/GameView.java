@@ -80,7 +80,7 @@ public class GameView extends JPanel implements View, MouseListener {
       last = new LastTrick(this.controller);
       this.controller.addView(last);
     }
-
+    this.addPassButton();
     table.add(getMsgBox(), 0, 0, 84, 42);
     table.add(getSetting(Pinochle.NORTH), 290, 10,  355, 132);
     table.add(getSetting(Pinochle.EAST),  570, 180, 355, 132);

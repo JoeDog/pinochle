@@ -118,19 +118,27 @@ public class GameModel extends AbstractModel {
   }
 
   public String getPlayerEastName() {
-    return conf.getProperty("PlayerEastName");
+    String name = conf.getProperty("PlayerEastName");
+    if (name != null) return name;
+    else return "East";
   }
 
   public String getPlayerWestName() {
-    return conf.getProperty("PlayerWestName");
+    String name = conf.getProperty("PlayerWestName");
+    if (name != null) return name;
+    else return "West";
   }
 
   public String getPlayerNorthName() {
-    return conf.getProperty("PlayerNorthName");
+    String name = conf.getProperty("PlayerNorthName");
+    if (name != null) return name;
+    else return "North";
   }
 
   public String getPlayerSouthName() {
-    return conf.getProperty("PlayerSouthName");
+    String name = conf.getProperty("PlayerSouthName");
+    if (name != null) return name;
+    else return "South";
   }
 
   public String getPlayerEastType() {

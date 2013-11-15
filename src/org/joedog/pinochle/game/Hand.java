@@ -122,6 +122,19 @@ public class Hand {
     return found;
   }
 
+  public boolean canTop(Card card) {
+    if (card == null) {
+      System.out.println("WTF? card is null");
+      return false;
+    }
+    for (Card c: this.getCards()){
+      if (c.getSuit() == card.getSuit() && c.getRank() > card.getRank()) {
+        return true;
+      }
+    }
+    return false;
+  }
+ 
   /**
    * Returns an int which represents the number of 
    * instances of suit discovered in the hand
