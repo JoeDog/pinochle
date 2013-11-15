@@ -51,6 +51,7 @@ public class ScorePad extends JPanel implements View {
     for (int i = 1; i < cell.length; i++) {
       for (int j = 1; j < cell[i].length; j++) {
         cell[i][j].setValue("0");
+        cell[i][j].clearWinner();
       }
     } 
   }
@@ -170,7 +171,11 @@ public class ScorePad extends JPanel implements View {
 
     public void drawWinner() {
       this.winner = true;
-      System.out.println("WINNER IS TRUE!!");
+      this.repaint();
+    }
+
+    public void clearWinner() {
+      this.winner = false; 
       this.repaint();
     }
 
