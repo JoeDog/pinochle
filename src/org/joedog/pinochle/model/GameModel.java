@@ -7,14 +7,15 @@ import org.joedog.pinochle.control.*;
 
 public class GameModel extends AbstractModel {
   private Configuration conf  = null;
-  private int    decks;
-  private int    nsmeld;
-  private int    ewmeld;
-  private int    nscounters;
-  private int    ewcounters; 
-  private String active;
-  private String trump; 
-  private String bid;
+  private int     decks;
+  private int     nsmeld;
+  private int     ewmeld;
+  private int     nscounters;
+  private int     ewcounters; 
+  private boolean simulation = false;
+  private String  active;
+  private String  trump; 
+  private String  bid;
 
   public GameModel () {
     conf = Configuration.getInstance();
@@ -22,6 +23,17 @@ public class GameModel extends AbstractModel {
       this.decks = 2;
     } else {
       this.decks = 1;
+    }
+    if (conf.getProperty("PlayerNorthType")!=null && conf.getProperty("PlayerSouthType")!=null &&
+        conf.getProperty("PlayerNorthType")!=null && conf.getProperty("PlayerSouthType")!=null ){
+      int N = Integer.parseInt(conf.getProperty("PlayerNorthType"));
+      int S = Integer.parseInt(conf.getProperty("PlayerSouthType"));
+      int E = Integer.parseInt(conf.getProperty("PlayerEastType"));
+      int W = Integer.parseInt(conf.getProperty("PlayerWestType"));
+      if (N > 0 && S > 0 && E > 0 && W > 0) {
+        System.out.println("SIMULATE THIS! ################################################################");
+        this.simulation = true;
+      } 
     }
   }
 
@@ -200,6 +212,10 @@ public class GameModel extends AbstractModel {
       return "single"; 
     }
     return conf.getProperty("BidType");
+  }
+
+  public String getSimulation() {
+    return ""+this.simulation;
   }
   
   public String getCardCount() {
