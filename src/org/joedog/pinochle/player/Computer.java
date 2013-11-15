@@ -13,6 +13,14 @@ public class Computer extends Player {
     this.controller = controller;
     this.brain = new Brain();
   }
+
+  @Override
+  public synchronized void newHand() {
+    this.hand   = new Hand();
+    this.brain  = new Brain();
+    this.myBid  = 0;
+    this.maxBid = 0;
+  }
  
   public void takeCard(Card c) {
     if (controller.cheatMode()) {
@@ -144,12 +152,14 @@ public class Computer extends Player {
       if (this.position % 2 != 0) {
         shuffle(s);
         for (int i : s) {
-          System.out.println("SHUFFLE: "+i);
           if (brain.haveHighest(this.hand, i) == true) {
             System.out.println("HEY OH! I have the higest "+i);
             card = this.hand.getHighest(i);
+            break;
           }
         }
+        if (card != null) 
+          System.out.println("                 "+this.name+" has the highest card. It's a "+card.toString());
       }
     }
     if (card == null) {
