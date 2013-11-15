@@ -44,6 +44,7 @@ public class GameController extends AbstractController {
     this.meldable = false;
     this.passable = false;
     setStatus("New game!");
+    runModelMethod("resetGame");
     runViewMethod("resetScore");
     setModelProperty("GameStatus", ""+DEAL);
     this.thread.stop();
@@ -365,7 +366,7 @@ public class GameController extends AbstractController {
           // We're going to sleep within a 
           // random range between turns so
           // play is less choppy, more humany
-          Thread.sleep(randInt(300, 600));
+          Thread.sleep(randInt(100, 300));
         } catch (Exception e) {}
         turn++;
       }  
