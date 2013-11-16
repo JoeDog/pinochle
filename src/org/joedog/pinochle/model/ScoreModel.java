@@ -146,6 +146,7 @@ public class ScoreModel extends AbstractModel {
       this.hand[1] = (this.bid * -1);
     }
     firePropertyChange(GameController.HAND_SCORE, "EWHAND", ""+this.hand[1]);
+
     this.game[0] += this.hand[0];
     firePropertyChange(GameController.GAME_SCORE, "NSGAME", ""+this.game[0]);
     this.game[1] += this.hand[1];
