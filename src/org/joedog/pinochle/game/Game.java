@@ -47,7 +47,6 @@ public class Game {
     for (int i = 0; i < players.length; i++) {
       int    partner = -1;
       String name    = "default";
-      if (controller == null) System.out.println("null controller");
       switch (i) {
         case Pinochle.NORTH:
           partner = Pinochle.SOUTH;
@@ -271,9 +270,10 @@ public class Game {
    * @return void
    */
   public void play(Player[] players) {
-    int count  = controller.getIntProperty("CardCount");
-    int turn   = controller.getIntProperty("ActivePlayer");
-    int tricks = count/players.length;
+    int count   = controller.getIntProperty("CardCount");
+    int turn    = controller.getIntProperty("ActivePlayer");
+    boolean sim = controller.getBooleanProperty("Simulation");
+    int tricks  = count/players.length;
     while (controller.isPaused()) {
       try {
         if (
@@ -292,22 +292,13 @@ public class Game {
       player.refresh();
     }
 
-    Rules r = new Rules();
     for (int i = 0; i < tricks; i++) {
       Trick trick   = new Trick(controller.getTrump());
       Card [] cards = new Card[4];
       for (int j = 0; j < players.length; j++) {
-        Hand    hand = null;
-        Card    card = null;
-        boolean okay = false;
+        Card card = null;
         controller.setStatus(players[turn%players.length].getName()+" it's your turn");
-        do {
-          card = players[turn%players.length].playCard(trick);
-          hand = players[turn%players.length].getHand();
-          okay = r.isLegitPlay(trick, hand, card);
-          //if (!okay) controller.setStatus("Hey, cheater!! Play within the rules!!");
-          okay = true;
-        } while(!okay);
+        card = players[turn%players.length].playCard(trick);
         cards[j] = card;
         trick.add(players[turn%players.length], card);
         switch (players[turn%players.length].getPosition()) {
@@ -326,19 +317,9 @@ public class Game {
         }
         controller.setPlayable(false);
         try {
-          int lo = 300;
-          int hi = 700;
-          // We're going to sleep within a 
-          // random range between turns so
-          // play is less choppy, more humany
-          if (controller.getBooleanProperty("Simulation")) {
-            lo = 20;
-            hi = 80;
-          }
+          int lo = (sim==true) ?  20 : 80;
+          int hi = (sim==true) ? 300 : 700;
           Thread.sleep(randInt(lo, hi));
-        } catch (Exception e) {}
-        try {
-          Thread.sleep(randInt(300, 600));
         } catch (Exception e) {}
         turn++;
       }
