@@ -299,8 +299,8 @@ public class GameView extends JPanel implements View, MouseListener {
       System.out.println("Limey and Pommie now have: "+e.getNewValue());
     }
     if (e.getPropertyName().equals(controller.GAME_SCORE)) {
-      last.clear();
-      trick.clear();
+      last.clearLast();
+      trick.clearTrick();
     }
   }
 

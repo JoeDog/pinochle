@@ -16,6 +16,7 @@ public class LastTrick extends JPanel implements View {
   private Card sc = null;
   private Card ec = null;
   private Card wc = null;
+  private boolean clear = false;
 
   public LastTrick(GameController controller) {
     this.controller = controller;
@@ -42,9 +43,10 @@ public class LastTrick extends JPanel implements View {
     if (ec != null) {
       ec.getIcon().paintIcon(this, g, 70, 0);
     } else count++;
-    if (count == 4) {
+    if (count == 4 || clear == true) {
       g.setColor(this.getBackground());
       g.fillRect(0, 0, this.getWidth(), this.getHeight());
+      clear = false;
     }
   }
 
@@ -60,11 +62,12 @@ public class LastTrick extends JPanel implements View {
     repaint();
   }
 
-  public void clear() {
+  public void clearLast() {
     this.wc = null;
     this.nc = null;
     this.ec = null;
     this.sc = null;
+    this.clear = true;
     this.removeAll();
     this.revalidate();
     this.repaint();
