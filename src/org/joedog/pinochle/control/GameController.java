@@ -58,6 +58,8 @@ public class GameController extends AbstractController {
     setStatus("New game!");
     runModelMethod("resetGame");
     runViewMethod("resetScore");
+    runViewMethod("clearTrick");
+    runViewMethod("clearLast");
     setModelProperty("GameStatus", ""+DEAL);
     this.thread.stop();
   }
@@ -214,11 +216,11 @@ public class GameController extends AbstractController {
   }
 
   public void addScore() {
-    this.runViewMethod("addScore");
+    this.runModelMethod("addScore");
   }
 
   public void clear() {
-    this.runViewMethod("clear");
+    this.runViewMethod("clearTrick");
   }
 
   public boolean over() {
