@@ -54,6 +54,18 @@ public class Trick {
     deck.add(card); 
   }
 
+  /**
+   * Returns true if there are no cards in the 
+   * trick - an empty trick indicates a Player
+   * has the lead.
+   * <p>
+   * @param  none
+   * @return boolean	true if empty, false if not
+  */
+  public boolean isEmpty() {
+    return (cards.size() == 0);
+  }
+
   public int winner() {
     return this.winner;
   }
