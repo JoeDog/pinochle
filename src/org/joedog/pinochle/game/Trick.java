@@ -11,6 +11,7 @@ public class Trick {
   private int     winner;    // the winning position
   private Card    card;      // the winning card
   private Deck    deck;      // easy to pass reference of all cards
+  private Hand    hand;      // programmer's convenience...
   private boolean trumped;   // does the trick contain trump?
   private Map<Player, Card> cards = new HashMap<Player, Card>();  
 
@@ -18,12 +19,14 @@ public class Trick {
     this.trump    = trump;
     this.trumped  = false;
     this.deck     = new Deck();
+    this.hand     = new Hand();
   }
 
   public void add(Player player, Card card) {
     if (card.getSuit() == this.trump) {
       this.trumped = true;
     }
+    this.hand.add(card);
     if (cards.size() == 0) { 
       this.card   = card;
       this.lead   = card.getSuit();
@@ -100,4 +103,9 @@ public class Trick {
     }
     return counters;
   }
+
+  public String toString() {
+    if (hand.size() == 0) return "[empty]";
+    return this.hand.toString();
+  } 
 }

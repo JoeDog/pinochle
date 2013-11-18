@@ -27,6 +27,12 @@ public class Meld {
     this.score  = score(this.trump);
   }
 
+  /**
+   * Returns the score of the hand
+   * <p>
+   * @param  none
+   * @return int
+   */
   public int getMeld() {
     return this.score; 
   }
@@ -34,7 +40,7 @@ public class Meld {
   /**
    * Returns an int that represents the total meld
    * for the hand. The trump argument represents the
-   * trump suit. (See org.joedog.pinochle.game.Pinochle
+   * trump suit. See org.joedog.pinochle.game.Pinochle
    * <p>
    * This method searches a hand for the following:
    * Run (A,10,K,Q,J) 15, 150 (must be in trump)
@@ -77,6 +83,8 @@ public class Meld {
     int meld  = 0;
     int aces  = 0;
     int taces = 0;
+    int power = 0;
+    int matt  = 100;
     Assessment a = new Assessment(); 
  
     for (int i = 0; i < suits.length; i++) {
@@ -84,14 +92,36 @@ public class Meld {
       taces = this.hand.contains(new Card(Pinochle.ACE, suits[i]));
       aces += taces;
       cnt   = 0;
+      power = 0;
+      matt  = 100;
       for (int x = 0; x < ranks.length; x++) {
         cnt += this.hand.contains(new Card(ranks[x], suits[i]));
       }
-      if ((cnt + meld +taces) > (a.getTrumpCount()+a.getTrumpAces()+a.getMeld())) {
+      if (cnt < matt) matt = cnt;
+      if (this.hand.contains(new Card(Pinochle.ACE, suits[i])) == 2) {
+        power += 4;
+      }  
+      if (power == 4 && this.hand.contains(new Card(Pinochle.ACE, suits[i])) == 2) {
+        power += 4;
+      }
+      if (power == 4 && this.hand.contains(new Card(Pinochle.ACE, suits[i])) == 2) {
+        power += 2;
+      }
+      if (cnt >= 5) {
+        power += 3;
+      }
+      if (matt < 2) {
+        power += 3;
+      }
+      if (meld < 6) {
+        power -= 4;
+      }
+      if ((cnt + meld + taces + power) > (a.getTrumpCount()+a.getTrumpAces()+a.getMeld()+a.getPower())) {
         a.setMeld(meld);
         a.setSuit(suits[i]);
         a.setTrumpCount(cnt);
         a.setTrumpAces(taces);
+        a.setPower(power);
       }
       a.setAces(aces);
     } 
@@ -100,7 +130,6 @@ public class Meld {
 
   public Deck passables(boolean bidder, int num, int trump) {
     Deck deck = new Deck();
-    System.out.println("Trump: "+Pinochle.suitname(trump));
     if (! bidder) {
       /**
        * If our partner took the bid, then we want
@@ -128,7 +157,6 @@ public class Meld {
           if (marriage(trump, trump) > 1 && deck.count() < 2 && 
               round(Pinochle.KING) < 1 && round(Pinochle.QUEEN) < 1) {
           // XXX: is my 'else if' check sufficient???
-          //System.out.println("Going to pass a marriage...");
           Card king  = new Card(Pinochle.KING, trump);
           Card queen = new Card(Pinochle.QUEEN, trump);
           if (trump == Pinochle.SPADES || trump == Pinochle.DIAMONDS) {
@@ -191,7 +219,6 @@ public class Meld {
       } else
         if (marriage(suit, trump) > 1 && deck.count() < 2 &&
             round(Pinochle.KING) < 1 && round(Pinochle.QUEEN) < 1) {
-        //System.out.println("Going to pass a marriage...");
         Card king  = new Card(Pinochle.KING, suit);
         Card queen = new Card(Pinochle.QUEEN, suit);
         if (suit == Pinochle.SPADES || suit == Pinochle.DIAMONDS) {
@@ -200,9 +227,7 @@ public class Meld {
             // XXX: maybe we do but that's for later
             deck.add(hand.pass(king));
             deck.add(hand.pass(queen));
-            //System.out.println("Gonna pass: "+king.toString());
             hand.remove(king);
-            //System.out.println("Gonna pass: "+queen.toString());
             hand.remove(queen);
           }
         }
@@ -210,21 +235,18 @@ public class Meld {
       Card ten = new Card(Pinochle.TEN, suit);
       while (deck.count() < num && hand.contains(ten) > 0) {
         deck.add(hand.pass(ten));  
-        //System.out.println("Gonna pass: "+ten.toString());
         hand.remove(ten);
       }
       if (round(Pinochle.JACK) < 1) {
         Card jack = new Card(Pinochle.JACK, suit);
         while (deck.count() < num && hand.contains(jack) > 0) {
           deck.add(hand.pass(jack));  
-          //System.out.println("Gonna pass: "+jack.toString());
           hand.remove(jack);
         }
       }
       Card nine = new Card(Pinochle.NINE, suit);
       while (deck.count() < num && hand.contains(nine) > 0) {
         deck.add(hand.pass(nine));  
-        //System.out.println("Gonna pass: "+nine.toString());
         hand.remove(nine);
       }
     }
@@ -249,7 +271,6 @@ public class Meld {
         hand.remove(card);
       }
     }  
-    //System.out.println(deck.toString());
     return deck;
   }
 

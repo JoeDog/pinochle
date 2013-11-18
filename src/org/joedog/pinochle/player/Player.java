@@ -30,7 +30,7 @@ public abstract class Player {
   }
 
   public void refresh() {
-    this.hand.display();
+    //this.hand.display();
     this.setting.refresh(this.hand);
   }
 

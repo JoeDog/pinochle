@@ -20,7 +20,9 @@ public class Rules {
      * If the trick is empty, we can 
      * play anything we please...
      */
-    if (trick.isEmpty()) return true;
+    if (trick.isEmpty()) { 
+      return true;
+    }
 
     if (suit == trump) {
       // then we must 1.) follow and 2.) beat it

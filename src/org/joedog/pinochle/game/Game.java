@@ -297,7 +297,16 @@ public class Game {
       Card [] cards = new Card[4];
       for (int j = 0; j < players.length; j++) {
         Card card = null;
-        controller.setStatus(players[turn%players.length].getName()+" it's your turn");
+        if (trick.isEmpty()) {
+          controller.setStatus(
+            players[turn%players.length].getName()+" it's your turn. You have the lead..."
+          );
+        } else {
+          controller.setStatus(
+            players[turn%players.length].getName()+" it's your turn." +
+            Pinochle.suitname(trick.getLeadingSuit())+" was led."
+          );
+        }
         card = players[turn%players.length].playCard(trick);
         cards[j] = card;
         trick.add(players[turn%players.length], card);

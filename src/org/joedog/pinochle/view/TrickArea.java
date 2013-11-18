@@ -28,7 +28,7 @@ public class TrickArea extends JPanel implements View {
     super.paint(g);
   }
 
-  public void paintComponent(Graphics g) {
+  public synchronized void paintComponent(Graphics g) {
     super.paintComponent(g); 
     int count = 0;
     if (wc != null) {
@@ -44,41 +44,40 @@ public class TrickArea extends JPanel implements View {
       ec.getIcon().paintIcon(this, g, 70, 10);
     } else count++;
     if (count == 4 || clear == true) {
+      boolean tmp = clear;
       g.setColor(this.getBackground()); 
       g.fillRect(0, 0, this.getWidth(), this.getHeight());
       clear = false;
+      if (tmp != clear) // the variable changed
+        this.repaint();
     }
   }
 
-  public void setNorthPlay(Card card) {
-    System.out.println("NORTH: "+card.toString());
+  public synchronized void setNorthPlay(Card card) {
     card.setFaceUp();
     this.nc = card;
     repaint();
   }
 
-  public void setSouthPlay(final Card card) {
-    System.out.println("SOUTH: "+card.toString());
+  public synchronized void setSouthPlay(final Card card) {
     card.setFaceUp();
     this.sc = card;
     repaint();
   }
 
-  public void setEastPlay(Card card) {
-    System.out.println("EAST: "+card.toString());
+  public synchronized void setEastPlay(Card card) {
     card.setFaceUp();
     this.ec = card;
     repaint();
   }
 
-  public void setWestPlay(Card card) {
-    System.out.println("WEST: "+card.toString());
+  public synchronized void setWestPlay(Card card) {
     card.setFaceUp();
     this.wc = card;
     repaint();
   }
 
-  public void clearTrick() {
+  public synchronized void clearTrick() {
     this.wc = null;
     this.nc = null;
     this.ec = null;

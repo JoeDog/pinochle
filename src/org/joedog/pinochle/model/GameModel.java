@@ -31,7 +31,6 @@ public class GameModel extends AbstractModel {
       int E = Integer.parseInt(conf.getProperty("PlayerEastType"));
       int W = Integer.parseInt(conf.getProperty("PlayerWestType"));
       if (N > 0 && S > 0 && E > 0 && W > 0) {
-        System.out.println("SIMULATE THIS! ################################################################");
         this.simulation = true;
       } 
     }

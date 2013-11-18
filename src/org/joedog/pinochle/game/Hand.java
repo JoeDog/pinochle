@@ -124,7 +124,6 @@ public class Hand {
 
   public boolean canTop(Card card) {
     if (card == null) {
-      System.out.println("WTF? card is null");
       return false;
     }
     for (Card c: this.getCards()){
@@ -220,6 +219,18 @@ public class Hand {
     for (Card c: this.getCards()) { 
       if (c.getSuit() == suit && c.getRank() == Pinochle.TEN) {
         return c;
+      }
+    }
+    return null;
+  }
+
+  public Card beat(Card card) {
+    int i = card.getRank()+1;
+    for ( ; i <= Pinochle.ACE; i++) {
+      for (Card c: this.getCards()) { 
+        if (c.getRank() == i) {
+          return c;
+        }
       }
     }
     return null;

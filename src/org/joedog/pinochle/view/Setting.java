@@ -50,14 +50,16 @@ public class Setting extends JPanel implements MouseListener {
   public void refresh() {
     SwingUtilities.invokeLater(new Runnable() {
       public void run() {
-        for (Component c: setting.getComponents()) {
-          c.invalidate();
-          c.validate();
-          c.repaint();
+        if (setting != null) {
+          for (Component c: setting.getComponents()) {
+            c.invalidate();
+            c.validate();
+            c.repaint();
+          }
+          setting.invalidate();
+          setting.validate();
+          setting.repaint();
         }
-        setting.invalidate();
-        setting.validate();
-        setting.repaint();
       }
     });
   }

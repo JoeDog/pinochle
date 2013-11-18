@@ -87,7 +87,6 @@ public class Brain {
   public boolean haveHighest(Hand hand, int suit) {
     int rank = highest(suit);
     Card tmp = new Card(rank, suit);
-    System.out.println("The highest available card is "+tmp.toString());
     return (hand.contains(tmp) > 0);    
   }
 

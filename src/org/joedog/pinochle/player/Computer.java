@@ -52,7 +52,6 @@ public class Computer extends Player {
   }
 
   public int bid (int bid) {
-    System.out.println(this.name+" has already bidded: "+myBid);
     if (myBid == -1) return myBid;
 
     if (bid > this.maxBid) {
@@ -131,7 +130,6 @@ public class Computer extends Player {
       Pinochle.DIAMONDS, 
       Pinochle.SPADES
     };
-    System.out.println("Okay, we have the lead...");
     if (this.hand.aces(trick.getTrump()) > 0) {
       if (this.hand.contains(new Card(Pinochle.ACE, trick.getTrump())) > 0) {
         card = new Card(Pinochle.ACE, trick.getTrump());
@@ -139,7 +137,6 @@ public class Computer extends Player {
     } else {
       for (int i = 0; i < 4; i++) {
         if (this.hand.aces(i) > 0) {
-          System.out.println("found an ACE!");
           card = new Card(Pinochle.ACE, i);
           break;
         }
@@ -153,13 +150,10 @@ public class Computer extends Player {
         shuffle(s);
         for (int i : s) {
           if (brain.haveHighest(this.hand, i) == true) {
-            System.out.println("HEY OH! I have the higest "+i);
             card = this.hand.getHighest(i);
             break;
           }
         }
-        if (card != null) 
-          System.out.println("                 "+this.name+" has the highest card. It's a "+card.toString());
       }
     }
     if (card == null) {
@@ -172,7 +166,6 @@ public class Computer extends Player {
       // Okay, any queen will do....
       for (int i = 0; i < 4; i++) {
         if (this.hand.queens(i) > 0) {
-          System.out.println("found one!");
           card = new Card(Pinochle.QUEEN, i);
           break;
         }
@@ -188,10 +181,11 @@ public class Computer extends Player {
   }
 
   private Card followingPlay(Trick trick) {
-    Card card = null;
-    Card temp = null;
-    Card high = null;
-    int  suit = trick.getLeadingSuit();
+    Card card  = null;
+    Card temp  = null;
+    Card high  = null;
+    int  suit  = trick.getLeadingSuit();
+    int  trump = trick.getTrump();
     if (this.hand.contains(suit) > 0) {
       // can we beat it??
       temp = this.hand.getHighest(suit);
@@ -202,31 +196,34 @@ public class Computer extends Player {
         card = temp;
       } else {
         if (trick.winner() == this.partner) {
-          System.out.println(this.name+" says, 'Good job, partner. Here's a counter'");
           card = this.hand.getCounter(suit);
           if (card == null) {
-            System.out.println(this.name+" says, 'Scratch that, I don't have a counter'");
             card = this.hand.getLowest(suit);
           }
         } else {
-          System.out.println(this.name+" says, :-P");
           card = this.hand.getLowest(suit);
         }
       }
     } else {
-      System.out.println(this.name+" is in the else case");
       int cnt;
       int num = 100; // short suit
       int sel = 100; // selected short suit
+      if (this.hand.contains(trump) > 0) {
+        // we are required by the rules to play it....
+        Card tmp = trick.getWinningCard();
+        if (tmp.getSuit() == trump) {
+          card = this.hand.beat(tmp);
+          if (card == null) 
+            card = this.hand.getLowest(trump);
+        } 
+      }
       if (trick.winner() == this.partner) {
-        System.out.println(this.name+" says, 'Good job, partner. Here's a counter'");
-        for (int i = Pinochle.HEARTS; i < Pinochle.SPADES; i++) {
+        for (int i = 0; i < 4; i++) { // loop thru the suits
           cnt = this.hand.contains(i);
           if (cnt == 0) continue;
           else if (cnt < num && this.hand.counters(i) > 0) sel = i;
         }
       } else {
-        System.out.println(this.name+" says, 'Stinky partner, no counter for you'");
         for (int i = Pinochle.HEARTS; i < Pinochle.SPADES; i++) {
           cnt = this.hand.contains(i);
           if (cnt == 0) continue;
@@ -234,14 +231,12 @@ public class Computer extends Player {
         }
       }
       if (sel < 100) {
-        System.out.println(this.name+" sel is less than 100");
         if (trick.winner() == this.partner) {
           card = this.hand.getCounter(sel);
         } else {
           card = this.hand.getLowest(sel);
         }
       } else {
-        System.out.println(this.name+" sel is NOT less than 100");
         if (trick.winner() == this.partner) {
           card = this.hand.getCounter();
         } else {

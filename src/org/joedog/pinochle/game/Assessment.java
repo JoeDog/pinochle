@@ -7,6 +7,7 @@ public class Assessment {
   private int taces;
   private int index;
   private int trump;
+  private int power;
   private int [] hearts;
   private int [] clubs;
   private int [] diamonds;
@@ -48,6 +49,10 @@ public class Assessment {
     this.trump = trump;
   }
 
+  public void setPower(int power) {
+    this.power = power;
+  }
+
   public void setTrumpAces(int aces) {
     this.taces = aces;
   }
@@ -56,11 +61,16 @@ public class Assessment {
     return this.suit;
   }
 
+  public int getPower() {
+    return this.power;
+  }
+
   public int maxBid() {
     int bid = this.meld;
     bid += this.aces*2;
     bid += (4-this.trump>0) ? (4-this.trump)*2 : 2;
     bid += 3;
+    bid += this.power;
     return bid;
   }
   
