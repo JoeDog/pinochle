@@ -1,0 +1,13 @@
+- If last trick, try to take it with the lowest card possible
+
+- MUST make the computers trump
+
+- Track partner's bid; bid's over twice, then pass
+
+- Score pad should turn red when you ride....
+
+- If you're no-tricked, you don't get your meld....
+
+- Computer throw-offs don't work (when not following suit)
+
+- cardsHigherThan does not return the correct answer.
