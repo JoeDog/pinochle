@@ -136,7 +136,14 @@ public class ScoreModel extends AbstractModel {
   }
 
   public synchronized void addScore() {
-    this.hand[0] = this.meld[0]+this.take[0];
+    if (this.take[0] == 0) {
+      // NO MELD FOR YOU!!!
+      this.meld[0] = 0;
+      this.hand[0] = 0;
+      firePropertyChange(GameController.MELD_SCORE, "NSMELD", ""+this.meld[0]);
+    } else {
+      this.hand[0] = this.meld[0]+this.take[0];
+    }
     if (this.bidder % 2 == 0 && this.hand[0] < this.bid) {
       this.hand[0] = (this.bid * -1);
     }
@@ -144,6 +151,15 @@ public class ScoreModel extends AbstractModel {
     this.hand[1] = this.meld[1]+this.take[1];
     if (this.bidder % 2 != 0 && this.hand[1] < this.bid) {
       this.hand[1] = (this.bid * -1);
+    }
+
+    if (this.take[1] == 0) {
+      // NO MELD FOR YOU!!!
+      this.meld[1] = 0;
+      this.hand[1] = 0;
+      firePropertyChange(GameController.MELD_SCORE, "EWMELD", ""+this.meld[1]);
+    } else {
+      this.hand[1] = this.meld[1]+this.take[1];
     }
     firePropertyChange(GameController.HAND_SCORE, "EWHAND", ""+this.hand[1]);
 
