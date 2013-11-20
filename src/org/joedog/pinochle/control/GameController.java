@@ -11,7 +11,6 @@ import org.joedog.pinochle.player.*;
 public class GameController extends AbstractController {
   private Thread  thread;
   private AtomicBoolean hiatus           = new AtomicBoolean(false);
-  //private boolean running                = false;
   private boolean passable               = false;
   private boolean meldable               = false;
   private boolean playable               = false;
@@ -233,6 +232,10 @@ public class GameController extends AbstractController {
 
   public String getGameString () {
     return (String)getModelProperty("GameString");
+  }
+
+  public boolean getHeadless() {
+    return this.getBooleanProperty("Headless"); 
   }
 
   public void addThread(Thread thread) {

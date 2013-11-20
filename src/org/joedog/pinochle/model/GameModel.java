@@ -34,6 +34,9 @@ public class GameModel extends AbstractModel {
         this.simulation = true;
       } 
     }
+    if (conf.getProperty("Debug") != null && conf.getProperty("Debug").equals("true")) {
+      System.getProperties().put("pinochle.debug", "true");
+    }
   }
 
   public void setMainX(String X) {
@@ -98,6 +101,13 @@ public class GameModel extends AbstractModel {
 
   public void setMinimumBid(String bid) {
     conf.setProperty("MinimumBid", bid);
+  }
+
+  public String getHeadless() {
+    if (conf.getProperty("Headless") == null || conf.getProperty("Headless").length() < 1) {
+      return "false";
+    } 
+    return conf.getProperty("Headless");
   }
 
   public String getConfigX() {

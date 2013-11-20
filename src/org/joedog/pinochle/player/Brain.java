@@ -1,6 +1,7 @@
 package org.joedog.pinochle.player;
 
 import org.joedog.pinochle.game.*;
+import org.joedog.pinochle.util.*;
 
 public class Brain {
   private Deck    deck;
@@ -108,11 +109,11 @@ public class Brain {
 
   public int cardsHigherThan(Card card) {
     int cnt = 0;
-    System.out.println("Looking for cards higher than: "+card.toString());
+    Debug.print("Looking for cards higher than: "+card.toString());
     for (int i = Pinochle.ACE; i > card.getRank(); i--) {
       cnt += deck.contains(new Card(i, card.getSuit()));  
     }
-    System.out.println("cardsHigherThan "+card.toString()+": "+cnt); 
+    Debug.print("cardsHigherThan "+card.toString()+": "+cnt); 
     return cnt;
   }
 

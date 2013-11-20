@@ -58,6 +58,10 @@ public abstract class Player {
     System.out.println(this.name+" "+this.hand.toString());
   }
 
+  public String handToString() {
+    return this.name+" "+this.hand.toString();
+  }
+
   public boolean wonBid() {
     return this.bidder;
   }

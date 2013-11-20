@@ -3,17 +3,16 @@ package org.joedog.pinochle.player;
 import java.util.Random;
 import org.joedog.pinochle.control.GameController;
 import org.joedog.pinochle.game.*;
+import org.joedog.pinochle.util.*;
 
 public class Computer extends Player {
   private GameController controller;
   private Brain          brain;
-  private boolean        debug;
 
   public Computer(GameController controller) {
     this.type = COMPUTER;
     this.controller = controller;
     this.brain = new Brain();
-    this.debug = true;
   }
 
   @Override
@@ -135,18 +134,20 @@ public class Computer extends Player {
     if (this.hand.aces(trick.getTrump()) > 0) {
       if (this.hand.contains(new Card(Pinochle.ACE, trick.getTrump())) > 0) {
         card = new Card(Pinochle.ACE, trick.getTrump());
-        debug(this.name+" unleashes his fire power: "+card.toString());
+        Debug.print(this.name+" unleashes his fire power: "+card.toString());
       }
     } else {
+      Debug.print(this.name+" is looking for aces");
       for (int i = 0; i < 4; i++) {
         if (this.hand.aces(i) > 0) {
           card = new Card(Pinochle.ACE, i);
-          debug(this.name+" fires an ace: "+card.toString());
+          Debug.print(this.name+" fires an ace: "+card.toString());
           break;
         }
       }
     }
     if (card == null) {
+      Debug.print(this.name+" checked and found no aces....");
       // Let's see if we have a high card....
       // XXX: we need to remove the position check. 
       // XXX: we're gonna use NS as a control now.
@@ -155,7 +156,7 @@ public class Computer extends Player {
         for (int i : s) {
           if (brain.haveHighest(this.hand, i) == true) {
             card = this.hand.getHighest(i);
-            debug(this.name+" says, I'll hit you with my best shot: "+card.toString());
+            Debug.print(this.name+" says, I'll hit you with my best shot: "+card.toString());
             break;
           }
         }
@@ -165,7 +166,7 @@ public class Computer extends Player {
       // Let's play Beat the Queen....
       if (this.hand.contains(new Card(Pinochle.QUEEN, trick.getTrump())) > 0) {
         card = new Card(Pinochle.QUEEN, trick.getTrump());
-        debug(this.name+" says, this is a good time to play beat the queen: "+card.toString());
+        Debug.print(this.name+" says, this is a good time to play beat the queen: "+card.toString());
       }
     }
     if (card == null) {
@@ -173,7 +174,7 @@ public class Computer extends Player {
       for (int i = 0; i < 4; i++) {
         if (this.hand.queens(i) > 0) {
           card = new Card(Pinochle.QUEEN, i);
-          debug(this.name+" says, Oh, well, this queen will have to do: "+card.toString());
+          Debug.print(this.name+" says, Oh, well, this queen will have to do: "+card.toString());
           break;
         }
       }
@@ -182,9 +183,9 @@ public class Computer extends Player {
       Random r = new Random();
       int    h = (this.hand.size() > 2) ? this.hand.size() : 2;
       int    i = r.nextInt(h-1) + 1;
-      debug("Random i: "+i+" hand size: "+hand.size());
+      Debug.print("Random i: "+i+" hand size: "+hand.size());
       card = this.hand.get(i-1);
-      debug(this.name+" Look what I pulled out of my ass: "+card.toString());
+      Debug.print(this.name+" Look what I pulled out of my ass: "+card.toString());
     }
     return card;
   }
@@ -203,41 +204,41 @@ public class Computer extends Player {
       high = trick.getWinningCard();
       if (trick.winner() == this.partner) {
         // partner has it, but will it stand?
-        debug(this.name+"'s partner is winning but will it stand?");
+        Debug.print(this.name+"'s partner is winning but will it stand?");
         int total   = this.brain.cardsHigherThan(high);
         int winners = this.hand.cardsHigherThan(high);
         if (winners > 0 && winners < total) {
           // Oh noes, there are outstanding cards
           // which can beat my partner...
-          debug(this.name+"'s partner's card can be beaten!!!");
+          Debug.print(this.name+"'s partner's card can be beaten!!!");
           if (this.brain.haveHighest(this.hand, suit)) {
             card = temp;
-            debug("Never fear! "+this.name+" is here!!! "+card.toString());
+            Debug.print("Never fear! "+this.name+" is here!!! "+card.toString());
           } else {
             card = this.hand.getLowest(suit);
-            debug(this.name+" says, 'Sorry, partner. They're gonna take it....' ("+card.toString()+")");
+            Debug.print(this.name+" says, 'Sorry, partner. They're gonna take it....' ("+card.toString()+")");
           }
         } else if (total == 0) {
           // My parter is gonna win it
           card = this.hand.getCounter(suit);
           if (card == null) 
              card = this.hand.getLowest(suit);
-          debug(this.name+" says, 'Good job, partner. I tried to give a counter' ("+card.toString()+")");
+          Debug.print(this.name+" says, 'Good job, partner. I tried to give a counter' ("+card.toString()+")");
         } else {
           card = this.hand.getLowest(suit);
-          debug(this.name+" is no help at all: "+card.toString());
+          Debug.print(this.name+" is no help at all: "+card.toString());
         }
       } else if (this.brain.haveHighest(this.hand, suit)) {
         if (temp.getRank() == high.getRank()) {
           card = this.hand.getLowest(suit);
-          debug(this.name+" says, 'Crap, we can only tie...' playing lowest: "+card.toString());
+          Debug.print(this.name+" says, 'Crap, we can only tie...' playing lowest: "+card.toString());
         } else {
           card = temp;
-          debug(this.name+" has the highest card and [s]he's gonna play it! "+card.toString());
+          Debug.print(this.name+" has the highest card and [s]he's gonna play it! "+card.toString());
         }
       } else {
         card = this.hand.getLowest(suit);
-        System.out.println(this.name+" is powerless to do anything: "+card.toString());
+        Debug.print(this.name+" is powerless to do anything: "+card.toString());
       }
     } else {
       int cnt;
@@ -250,13 +251,13 @@ public class Computer extends Player {
           // somebody already trumped
           card = this.hand.beat(tmp);
           if (card == null) {
-            debug(this.name+" can't out-trump the "+tmp.toString()+" (playing off)");
+            Debug.print(this.name+" can't out-trump the "+tmp.toString()+" (playing off)");
             card = this.hand.getLowest(trump);
           }
         } else {
           // nobody trumped but we must do that     
           card = this.hand.getLowest(trump);
-          debug("Nobody trumped. "+this.name+" is gonna try "+card.toString());
+          Debug.print("Nobody trumped. "+this.name+" is gonna try "+card.toString());
         }
       }
       if (trick.winner() == this.partner) {
@@ -277,20 +278,20 @@ public class Computer extends Player {
           card = this.hand.getCounter(sel);
           if (card == null) 
             card = this.hand.getLowest();
-          debug(this.name+" says, 'Good job partner, I tried to give you a counter: "+card.toString()+"'");
+          Debug.print(this.name+" says, 'Good job partner, I tried to give you a counter: "+card.toString()+"'");
         } else {
           card = this.hand.getLowest(sel);
-          debug(this.name+" says, 'The bad guys got that one. Here's my worst card: "+card.toString()+"'");
+          Debug.print(this.name+" says, 'The bad guys got that one. Here's my worst card: "+card.toString()+"'");
         }
       } else {
         if (trick.winner() == this.partner) {
           card = this.hand.getCounter();
           if (card == null)  
             card = this.hand.getLowest();
-          debug(this.name+" says, 'Good job partner, I tried to give you a counter: "+card.toString()+"'");
+          Debug.print(this.name+" says, 'Good job partner, I tried to give you a counter: "+card.toString()+"'");
         } else {
           card = this.hand.getLowest();
-          debug(this.name+" says, 'The bad guys got that one. Here's my worst card: "+card.toString()+"'");
+          Debug.print(this.name+" says, 'The bad guys got that one. Here's my worst card: "+card.toString()+"'");
         }
       }
     }
@@ -311,11 +312,5 @@ public class Computer extends Player {
     int helper = a[i];
     a[i] = a[change];
     a[change] = helper;
-  }
-
-  private void debug(String s) {
-    if (this.debug) {
-      System.out.println(s);
-    }
   }
 }

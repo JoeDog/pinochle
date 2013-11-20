@@ -52,6 +52,7 @@ public class Setting extends JPanel implements MouseListener {
       public void run() {
         if (setting != null) {
           for (Component c: setting.getComponents()) {
+            if (c == null) System.out.println("c: null "+c.toString());
             c.invalidate();
             c.validate();
             c.repaint();

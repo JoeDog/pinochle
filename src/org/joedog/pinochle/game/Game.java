@@ -6,6 +6,7 @@ import org.joedog.pinochle.game.*;
 import org.joedog.pinochle.player.*;
 import org.joedog.pinochle.view.*;
 import org.joedog.pinochle.view.actions.*;
+import org.joedog.pinochle.util.*;
 
 import java.util.Random;
 import java.util.concurrent.TimeUnit;
@@ -295,9 +296,9 @@ public class Game {
     for (int i = 0; i < tricks; i++) {
       Trick trick   = new Trick(controller.getTrump());
       Card [] cards = new Card[4];
-      System.out.println("Trump: "+Pinochle.suitname(controller.getTrump()));
+      Debug.print("Trump: "+Pinochle.suitname(controller.getTrump()));
       for (Player player : players) {
-        player.showHand();
+        Debug.print(player.handToString());
       }
       for (int j = 0; j < players.length; j++) {
         Card card = null;
@@ -340,8 +341,8 @@ public class Game {
         player.remember(trick.getCards());
       }
       turn = trick.winner();
-      System.out.println("    TRICK: "+trick.toString());
-      System.out.println("");
+      Debug.print("    TRICK: "+trick.toString());
+      Debug.print("");
       if (turn % 2 == 0) {
         controller.store("NSTake", ""+trick.counters());
       } else {

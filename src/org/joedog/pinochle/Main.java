@@ -82,11 +82,13 @@ public class Main {
     controller.addView(view);
     controller.addModel(model);
     controller.addModel(score);
-    SwingUtilities.invokeLater(new Runnable() {
-      public void run() {
-        createAndShowGui(controller, view);
-      }
-    });
+    if (! controller.getHeadless()) {
+      SwingUtilities.invokeLater(new Runnable() {
+        public void run() {
+          createAndShowGui(controller, view);
+        }
+      });
+    }
 
     while (true) {
       Game game = new Game(controller, view);
