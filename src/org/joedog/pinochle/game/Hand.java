@@ -8,6 +8,9 @@ import java.util.Iterator;
 
 public class Hand {
   private ArrayList hand;  
+  private int       ranks[]   = new int[] {
+    Pinochle.ACE, Pinochle.TEN, Pinochle.KING, Pinochle.QUEEN, Pinochle.JACK,
+  };
 
   /**
    * Create a new empty Pinochle hand
@@ -221,7 +224,27 @@ public class Hand {
         return c;
       }
     }
+    System.out.println("We don't have no stinkin' counters...");
     return null;
+  }
+
+  /**
+   * Returns the total number of cards in the hand
+   * which are higher than parameter card.
+   * <p>
+   * @param  Card  the card we're comparing 
+   * @return int   the number of cards we have which beat it
+   */
+  public int cardsHigherThan(Card card) {
+    int cnt = 0;
+    for (int i = card.getRank()+1; i <= Pinochle.ACE; i++) {
+      for (Card c: this.getCards()) { 
+        if (c.getRank() > card.getRank()) {
+          cnt += 1;
+        }
+      }
+    }
+    return cnt;
   }
 
   public Card beat(Card card) {

@@ -55,7 +55,7 @@ public abstract class Player {
   } 
 
   public void showHand() {
-    this.hand.display();
+    System.out.println(this.name+" "+this.hand.toString());
   }
 
   public boolean wonBid() {

@@ -295,6 +295,10 @@ public class Game {
     for (int i = 0; i < tricks; i++) {
       Trick trick   = new Trick(controller.getTrump());
       Card [] cards = new Card[4];
+      System.out.println("Trump: "+Pinochle.suitname(controller.getTrump()));
+      for (Player player : players) {
+        player.showHand();
+      }
       for (int j = 0; j < players.length; j++) {
         Card card = null;
         if (trick.isEmpty()) {
@@ -336,6 +340,8 @@ public class Game {
         player.remember(trick.getCards());
       }
       turn = trick.winner();
+      System.out.println("    TRICK: "+trick.toString());
+      System.out.println("");
       if (turn % 2 == 0) {
         controller.store("NSTake", ""+trick.counters());
       } else {

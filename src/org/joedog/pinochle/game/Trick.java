@@ -105,7 +105,15 @@ public class Trick {
   }
 
   public String toString() {
+    String str = "";
     if (hand.size() == 0) return "[empty]";
-    return this.hand.toString();
+    for (Map.Entry<Player, Card> play : cards.entrySet()) {
+      String star = "";
+      Player p = play.getKey();
+      Card   c = play.getValue();
+      star = (p.getPosition() == this.winner()) ? "*" : "";
+      str += p.getName()+"("+c.toString()+")"+star+" ";
+    }
+    return str;
   } 
 }

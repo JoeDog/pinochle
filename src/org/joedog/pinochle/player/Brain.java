@@ -6,6 +6,9 @@ public class Brain {
   private Deck    deck;
   private Hand    melds[]   = new Hand[4];
   private boolean trumped[] = new boolean[] {false, false, false, false};
+  private int     ranks[]   = new int[] {
+    Pinochle.ACE, Pinochle.TEN, Pinochle.KING, Pinochle.QUEEN, Pinochle.JACK,
+  };
 
   public Brain() {
     this.deck = new Deck();
@@ -91,6 +94,29 @@ public class Brain {
   }
 
   /**
+   * Returns true if Card is the highest available
+   * card in the suit
+   * <p>
+   * @param Card     The card to test
+   * @param int      The suit we're examining
+   * @return boolean 
+   */
+  public boolean isHighest(Card card) {
+    int rank = highest(card.getSuit());
+    return (card.getRank() > rank);
+  }
+
+  public int cardsHigherThan(Card card) {
+    int cnt = 0;
+    System.out.println("Looking for cards higher than: "+card.toString());
+    for (int i = Pinochle.ACE; i > card.getRank(); i--) {
+      cnt += deck.contains(new Card(i, card.getSuit()));  
+    }
+    System.out.println("cardsHigherThan "+card.toString()+": "+cnt); 
+    return cnt;
+  }
+
+  /**
    * Returns the rank of the highest card 
    * available in a suit
    * <p>
@@ -99,16 +125,9 @@ public class Brain {
    */
   private int highest(int suit) {
     int  cnt   = 0; 
-    int  r[]   = new int[] {
-      Pinochle.ACE,
-      Pinochle.TEN,
-      Pinochle.KING,
-      Pinochle.QUEEN,
-      Pinochle.JACK,
-    };
-    for (int i = 0; i < r.length; i++) {
-      cnt = deck.contains(new Card(r[i], suit));
-      if (cnt < 2) return r[i];
+    for (int i = 0; i < ranks.length; i++) {
+      cnt = deck.contains(new Card(ranks[i], suit));
+      if (cnt < 2) return ranks[i];
     }
     // WTF? We'll err on the side of caution...
     return Pinochle.ACE; 
