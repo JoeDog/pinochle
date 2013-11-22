@@ -5,6 +5,7 @@ import org.joedog.pinochle.util.*;
 
 public class Brain {
   private Deck    deck;
+  private int     deckSize;
   private Hand    melds[]   = new Hand[4];
   private boolean trumped[] = new boolean[] {false, false, false, false};
   private int     ranks[]   = new int[] {
@@ -12,7 +13,13 @@ public class Brain {
   };
 
   public Brain() {
-    this.deck = new Deck();
+    this.deck     = new Deck();
+    this.deckSize = 1;
+  }
+
+  public Brain(int deckSize) {
+    this.deck     = new Deck();
+    this.deckSize = deckSize;
   }
 
   /**
@@ -32,9 +39,9 @@ public class Brain {
   }
 
   /** 
-   * We're going to remember every card that 
-   * was played; it doesn't matter who played
-   * it -- we only care that it was played.
+   * Commit a single card to memory; generally
+   * this represents a card that was played as
+   * it was played.
    * <p>
    * @param Card    the card that was played
    */
@@ -46,6 +53,14 @@ public class Brain {
     }
   }
 
+  /**
+   * Commit all cards in Deck to memory; this 
+   * generally represents a subset of cards 
+   * such as the members of a Trick.
+   * <p>
+   * @param  Deck   the cards we commit to memory
+   * @return void
+   */
   public void remember(Deck cards) {
     for (int i = 0; i < cards.size(); i++) {
       this.remember(cards.get(i));
@@ -108,13 +123,14 @@ public class Brain {
   }
 
   public int cardsHigherThan(Card card) {
-    int cnt = 0;
+    int num = ((Pinochle.ACE - card.getRank()) * (2 *this.deckSize));
     Debug.print("Looking for cards higher than: "+card.toString());
+    Debug.print("The number of potentially higher cards is: "+num);
     for (int i = Pinochle.ACE; i > card.getRank(); i--) {
-      cnt += deck.contains(new Card(i, card.getSuit()));  
+      num -= deck.contains(new Card(i, card.getSuit()));  
     }
-    Debug.print("cardsHigherThan "+card.toString()+": "+cnt); 
-    return cnt;
+    Debug.print("cardsHigherThan "+card.toString()+": "+num); 
+    return num;
   }
 
   /**
