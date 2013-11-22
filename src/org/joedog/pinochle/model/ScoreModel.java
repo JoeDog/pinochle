@@ -21,8 +21,12 @@ public class ScoreModel extends AbstractModel {
   private Stats stats;
 
   public ScoreModel() {
-    this.stats = new Stats();
+    this.stats = new Stats(new String []{"NS","EW"});
   } 
+
+  public ScoreModel(String[] teams) {
+    this.stats = new Stats(teams);
+  }
 
   /**
    * This method sets the status of the hand in terms
@@ -66,6 +70,14 @@ public class ScoreModel extends AbstractModel {
     firePropertyChange(GameController.RESET, "RESET", "game");
   }
 
+  public void resetGame(String [] teams) {
+    this.resetHand();
+    this.game[0] = 0;
+    this.game[1] = 0;
+    this.stats   = new Stats(teams);
+    firePropertyChange(GameController.RESET, "RESET", "game");
+  }
+
   public String getDealer() {
     return ""+this.dealer;
   }
@@ -81,8 +93,11 @@ public class ScoreModel extends AbstractModel {
 
   public void setBidder(String player) {
     int i = Integer.parseInt(player);
-    this.bidder = i;
     this.active = i;
+    if (i % 2 == 0) 
+      this.stats.setBidder("NS");
+    else
+      this.stats.setBidder("EW");
   }
 
   /**
@@ -108,34 +123,39 @@ public class ScoreModel extends AbstractModel {
     return ""+this.active;
   }
 
-  public void setNSMeld(String m) {
-    int i = Integer.parseInt(m);
-    this.meld[0] = i;
-    stats.addNSMeld(i);
-    firePropertyChange(GameController.MELD_SCORE, "NSMELD", ""+this.meld[0]);
+  public void setMeld(String m) {
+    String[] str = m.split("\\|",-1); 
+    int i = Integer.parseInt(str[1]);
+    stats.addMeld(str[0], i);
+    firePropertyChange(GameController.MELD_SCORE, str[0]+"MELD", ""+stats.getMeld(str[0]));
   }
 
-  public void setEWMeld(String m) {
-    int i = Integer.parseInt(m);
-    this.meld[1] = i;
-    stats.addEWMeld(i);
-    firePropertyChange(GameController.MELD_SCORE, "EWMELD", ""+this.meld[1]);
+  public void setTake(String c) {
+    String[] str = c.split("\\|",-1); 
+    int i = Integer.parseInt(str[1]);
+    stats.addTake(str[0], i);
+    firePropertyChange(GameController.TAKE_SCORE, str[0]+"TAKE", ""+stats.getTake(str[0]));
+  }
+  
+  public void addScore() {
+    stats.tally(this.bid, this.wscore);
+    if (stats.hasWinner()) {
+      this.status = GameController.OVER;
+    }
+    firePropertyChange(GameController.MELD_SCORE, "NSMELD", ""+stats.getMeld("NS"));
+    firePropertyChange(GameController.MELD_SCORE, "EWMELD", ""+stats.getMeld("EW"));
+    firePropertyChange(GameController.TAKE_SCORE, "NSTAKE", ""+stats.getTake("NS"));
+    firePropertyChange(GameController.TAKE_SCORE, "EWTAKE", ""+stats.getTake("EW"));
+    firePropertyChange(GameController.HAND_SCORE, "NSHAND", ""+stats.getHand("NS"));
+    firePropertyChange(GameController.HAND_SCORE, "EWHAND", ""+stats.getHand("EW"));
+    firePropertyChange(GameController.GAME_SCORE, "NSGAME", ""+stats.getGame("NS"));
+    firePropertyChange(GameController.GAME_SCORE, "EWGAME", ""+stats.getGame("EW"));
+    if (stats.hasWinner()) {
+      firePropertyChange(GameController.WINNER, "NONE", stats.getWinner());
+    }
   }
 
-  public void setNSTake(String c) {
-    int i = Integer.parseInt(c);
-    this.take[0] += i;
-    stats.addNSTake(i);
-    firePropertyChange(GameController.TAKE_SCORE, "NSTAKE", ""+this.take[0]);
-  }
-
-  public void setEWTake(String c) {
-    int i = Integer.parseInt(c);
-    this.take[1] += i;
-    stats.addEWTake(i);
-    firePropertyChange(GameController.TAKE_SCORE, "EWTAKE", ""+this.take[1]);
-  }
-
+  /******************************
   public String getGameScore() {
     String s = String.format(
       "%6s %4d  %4d\n%6s %4d  %4d\n%6s %4d  %4d\n%6s %4d  %4d\n",
@@ -146,9 +166,10 @@ public class ScoreModel extends AbstractModel {
     );
     return s;
   }
+  ******************************/
 
+  /******************************
   public synchronized void addScore() {
-    Debug.print("scoreModel.addScore()");
     if (this.take[0] == 0) {
       // NO MELD FOR YOU!!!
       this.meld[0] = 0;
@@ -199,7 +220,8 @@ public class ScoreModel extends AbstractModel {
       System.out.println("Total hands: "+stats.getHands());
       System.out.println("N/S Meld:    "+stats.getNSMeld()+" E/W Meld:     "+stats.getEWMeld());
       System.out.println("N/S Take:    "+stats.getNSTake()+" E/W Take:     "+stats.getEWTake());
-      System.out.println("N/S Take Pct.: "+(double)stats.getNSTake()/(stats.getNSTake()+stats.getNSMeld())+" E/W Take Pct.: "+(double)stats.getEWTake()/(stats.getEWTake()+stats.getEWMeld()));
+      System.out.println("N/S Take Pct.: "+(double)stats.getNSTake()/(stats.getNSTake()+stats.getNSMeld())+" E/W Take Pct.: "+(double)stats.getEWTake()/(stats.getEWTake()+stats.getEWMeld())); 
     } 
   }
+  ******************************/
 }

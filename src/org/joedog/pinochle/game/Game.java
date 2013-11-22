@@ -259,8 +259,8 @@ public class Game {
       }
     }
     controller.resetHand();
-    controller.store("NSMeld", ""+ns);
-    controller.store("EWMeld", ""+ew);
+    controller.store("Meld",       "NS|"+ns);
+    controller.store("Meld",       "EW|"+ew);
     controller.store("GameStatus", ""+GameController.PLAY);
     controller.pause(true);
     controller.addPlayButton();
@@ -349,9 +349,9 @@ public class Game {
       turn = trick.winner();
       Debug.print("    TRICK: "+trick.toString());
       if (turn % 2 == 0) {
-        controller.store("NSTake", ""+trick.counters());
+        controller.store("Take", "NS|"+trick.counters());
       } else {
-        controller.store("EWTake", ""+trick.counters());
+        controller.store("Take", "EW|"+trick.counters());
       }
       controller.clear();
       controller.display("DisplayTrick", cards);
@@ -359,9 +359,9 @@ public class Game {
     }
     // Award the last trick
     if (turn % 2 == 0) {
-      controller.store("NSTake", "1");
+      controller.store("Take", "NS|1");
     } else {
-      controller.store("EWTake", "1");
+      controller.store("Take", "EW|1");
     }
     controller.addScore();
     Debug.print(controller.getGameScore()+"\n");

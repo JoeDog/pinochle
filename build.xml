@@ -55,7 +55,7 @@
   </target> 
 
   <target name="run" depends="clean,compile,resources">
-    <java classname="org.joedog.pinochle.Main" fork="yes">
+    <java classname="org.joedog.pinochle.Main" fork="true" spawn="false">
       <classpath refid="classpath" />
       <jvmarg value="-splash:${build.dir}org/joedog/pinochle/images/splash.png -XX:-OmitStackTraceInFastThrow"/>
     </java>

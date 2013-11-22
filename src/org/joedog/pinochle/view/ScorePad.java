@@ -121,7 +121,7 @@ public class ScorePad extends JPanel implements View {
     }
     if (e.getPropertyName().equals(controller.WINNER)) {
       this.controller.winner();
-      if (e.getNewValue().equals("NORTH_SOUTH")) {
+      if (e.getNewValue().equals("NS")) {
         cell[4][1].drawWinner(); 
       } else {
         cell[4][2].drawWinner(); 
