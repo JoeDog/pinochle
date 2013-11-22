@@ -97,6 +97,8 @@ public abstract class Player {
   }
 
   public abstract void remember(Deck cards);
+  
+  public abstract void remember(Card card);
 
   public abstract Card playCard(Trick trick);
 

@@ -156,6 +156,10 @@ public class Human extends Player {
     // You're on your own, Human....
   }
 
+  public void remember(Card card) {
+    // You're on your own, Human....
+  }
+
   public void finish (int status) {
   }
 

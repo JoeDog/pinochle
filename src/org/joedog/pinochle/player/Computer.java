@@ -52,6 +52,12 @@ public class Computer extends Player {
     }
   }
 
+  public void remember(Card c) {
+    if (c != null) {
+      this.brain.remember(c);
+    }
+  }
+
   public int bid (int bid) {
     if (myBid == -1) return myBid;
 
@@ -151,14 +157,12 @@ public class Computer extends Player {
       // Let's see if we have a high card....
       // XXX: we need to remove the position check. 
       // XXX: we're gonna use NS as a control now.
-      if (this.position % 2 != 0) {
-        shuffle(s);
-        for (int i : s) {
-          if (brain.haveHighest(this.hand, i) == true) {
-            card = this.hand.getHighest(i);
-            Debug.print(this.name+" says, I'll hit you with my best shot: "+card.toString());
-            break;
-          }
+      shuffle(s);
+      for (int i : s) {
+        if (brain.haveHighest(this.hand, i) == true) {
+          card = this.hand.getHighest(i);
+          Debug.print(this.name+" says, I'll hit you with my best shot: "+card.toString());
+          break;
         }
       }
     }
@@ -223,7 +227,7 @@ public class Computer extends Player {
           card = this.hand.getCounter(suit);
           if (card == null) 
              card = this.hand.getLowest(suit);
-          Debug.print(this.name+" says, 'Good job, partner. I tried to give a counter' ("+card.toString()+")");
+          Debug.print(this.name+" says, '(226) Good job, partner. I tried to give a counter' ("+card.toString()+")");
         } else {
           card = this.hand.getLowest(suit);
           Debug.print(this.name+" is no help at all: "+card.toString());
@@ -273,12 +277,12 @@ public class Computer extends Player {
           else if (cnt < num && this.hand.nonCounters(i) > 0) sel = i;
         }
       }
-      if (sel < 100) {
+      if (card == null && sel < 100) {
         if (trick.winner() == this.partner) {
           card = this.hand.getCounter(sel);
           if (card == null) 
-            card = this.hand.getLowest();
-          Debug.print(this.name+" says, 'Good job partner, I tried to give you a counter: "+card.toString()+"'");
+            card = this.hand.getCounter();
+          Debug.print(this.name+" says, '(281) Good job partner, I tried to give you a counter: "+card.toString()+"'");
         } else {
           card = this.hand.getLowest(sel);
           Debug.print(this.name+" says, 'The bad guys got that one. Here's my worst card: "+card.toString()+"'");
@@ -288,7 +292,7 @@ public class Computer extends Player {
           card = this.hand.getCounter();
           if (card == null)  
             card = this.hand.getLowest();
-          Debug.print(this.name+" says, 'Good job partner, I tried to give you a counter: "+card.toString()+"'");
+          Debug.print(this.name+" says, '(291) Good job partner, I tried to give you a counter: "+card.toString()+"'");
         } else {
           card = this.hand.getLowest();
           Debug.print(this.name+" says, 'The bad guys got that one. Here's my worst card: "+card.toString()+"'");
