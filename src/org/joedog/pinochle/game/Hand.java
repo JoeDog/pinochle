@@ -213,6 +213,13 @@ public class Hand {
     return card;
   }
 
+  /**
+   * Returns a counter in 'suit' and null if 
+   * none are available. 
+   * <p>
+   * @param  int  the suit we hope to follow
+   * @return Card a counter (10, K) or null
+   */
   public Card getCounter(int suit) {
     for (Card c: this.getCards()) { 
       if (c.getSuit() == suit && c.getRank() == Pinochle.KING) {
@@ -224,9 +231,30 @@ public class Hand {
         return c;
       }
     }
-    System.out.println("We don't have no stinkin' counters...");
     return null;
   }
+  
+  /**
+   * Returns a counter in any suit or null if 
+   * none are available. 
+   * <p>
+   * @param  none  any suit will do
+   * @return Card  a counter (10, K) or null
+   */
+  public Card getCounter() {
+    for (Card c: this.getCards()) { 
+      if (c.getRank() == Pinochle.KING) {
+        return c;
+      }
+    }
+    for (Card c: this.getCards()) { 
+      if (c.getRank() == Pinochle.TEN) {
+        return c;
+      }
+    }
+    return null;
+  }
+  
 
   /**
    * Returns the total number of cards in the hand
@@ -254,20 +282,6 @@ public class Hand {
         if (c.getRank() == i) {
           return c;
         }
-      }
-    }
-    return null;
-  }
-  
-  public Card getCounter() {
-    for (Card c: this.getCards()) { 
-      if (c.getRank() == Pinochle.KING) {
-        return c;
-      }
-    }
-    for (Card c: this.getCards()) { 
-      if (c.getRank() == Pinochle.TEN) {
-        return c;
       }
     }
     return null;
