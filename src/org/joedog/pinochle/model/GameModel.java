@@ -37,6 +37,9 @@ public class GameModel extends AbstractModel {
     if (conf.getProperty("Debug") != null && conf.getProperty("Debug").equals("true")) {
       System.getProperties().put("pinochle.debug", "true");
     }
+    if (conf.getProperty("WinningScore")==null) {
+      conf.setProperty("WinningScore", (decks==2) ? "500" : "300");
+    }
   }
 
   public void setMainX(String X) {

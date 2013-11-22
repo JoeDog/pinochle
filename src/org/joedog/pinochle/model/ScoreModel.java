@@ -3,6 +3,7 @@ package org.joedog.pinochle.model;
 import java.util.Properties;
 import org.joedog.pinochle.game.Pinochle;
 import org.joedog.pinochle.control.*;
+import org.joedog.pinochle.util.*;
 
 public class ScoreModel extends AbstractModel {
   private int bid      = 0;
@@ -135,7 +136,19 @@ public class ScoreModel extends AbstractModel {
     firePropertyChange(GameController.TAKE_SCORE, "EWTAKE", ""+this.take[1]);
   }
 
+  public String getGameScore() {
+    String s = String.format(
+      "%6s %4d  %4d\n%6s %4d  %4d\n%6s %4d  %4d\n%6s %4d  %4d\n",
+      "Meld:", meld[0], meld[1],
+      "Take:", take[0], take[1],
+      "Hand:", hand[0], hand[1],
+      "Game:", game[0], game[1]
+    );
+    return s;
+  }
+
   public synchronized void addScore() {
+    Debug.print("scoreModel.addScore()");
     if (this.take[0] == 0) {
       // NO MELD FOR YOU!!!
       this.meld[0] = 0;
@@ -164,8 +177,8 @@ public class ScoreModel extends AbstractModel {
     firePropertyChange(GameController.HAND_SCORE, "EWHAND", ""+this.hand[1]);
 
     this.game[0] += this.hand[0];
-    firePropertyChange(GameController.GAME_SCORE, "NSGAME", ""+this.game[0]);
     this.game[1] += this.hand[1];
+    firePropertyChange(GameController.GAME_SCORE, "NSGAME", ""+this.game[0]);
     firePropertyChange(GameController.GAME_SCORE, "EWGAME", ""+this.game[1]);
 
     if (this.game[0] > this.wscore && this.game[1] >= this.wscore) {
