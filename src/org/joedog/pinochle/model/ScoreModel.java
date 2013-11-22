@@ -13,11 +13,6 @@ public class ScoreModel extends AbstractModel {
   private int trump    = Pinochle.HEARTS;
   private int active   = Pinochle.WEST;
   private int wscore   = 300;
-  private int meld[]   = new int[] {0, 0};
-  private int take[]   = new int[] {0, 0};
-  private int hand[]   = new int[] {0, 0};
-  private int game[]   = new int[] {0, 0};
-  private int bidder;
   private Stats stats;
 
   public ScoreModel() {
@@ -53,27 +48,18 @@ public class ScoreModel extends AbstractModel {
   }
 
   public void resetHand() {
-    this.meld[0]   = 0;
-    this.meld[1]   = 0;
-    this.take[0]   = 0;
-    this.take[1]   = 0;
-    this.hand[0]   = 0;
-    this.hand[1]   = 0;
+    stats.resetHand();
     firePropertyChange(GameController.RESET, "RESET", "hand");
   }
 
   public void resetGame() {
     this.resetHand();
-    this.game[0] = 0;
-    this.game[1] = 0;
-    this.stats   = new Stats();
+    this.stats.reset();
     firePropertyChange(GameController.RESET, "RESET", "game");
   }
 
   public void resetGame(String [] teams) {
     this.resetHand();
-    this.game[0] = 0;
-    this.game[1] = 0;
     this.stats   = new Stats(teams);
     firePropertyChange(GameController.RESET, "RESET", "game");
   }
