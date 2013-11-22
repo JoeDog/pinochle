@@ -238,6 +238,10 @@ public class GameController extends AbstractController {
     return this.getBooleanProperty("Headless"); 
   }
 
+  public String getGameScore() {
+    return (String)this.getModelProperty("GameScore");
+  }
+
   public void addThread(Thread thread) {
     this.thread = thread;
   }
