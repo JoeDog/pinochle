@@ -106,6 +106,9 @@ public class Game {
         case GameController.SCORE:
           break;
         case GameController.OVER:
+          if (controller.getHeadless() == true) {
+            System.exit(0);
+          }
           controller.pause(true);
           break;
       }
@@ -314,6 +317,12 @@ public class Game {
         }
         card = players[turn%players.length].playCard(trick);
         cards[j] = card;
+        /**
+         * Each computer player will commit this play to memory...
+         */
+        for (Player player : players) {
+          player.remember(card);
+        }
         trick.add(players[turn%players.length], card);
         switch (players[turn%players.length].getPosition()) {
           case Pinochle.NORTH:
@@ -331,18 +340,14 @@ public class Game {
         }
         controller.setPlayable(false);
         try {
-          int lo = (sim==true) ?  20 : 80;
-          int hi = (sim==true) ? 300 : 700;
+          int lo = (sim==true) ?  20 : 300;
+          int hi = (sim==true) ?  80 : 700;
           Thread.sleep(randInt(lo, hi));
         } catch (Exception e) {}
         turn++;
       }
-      for (Player player : players) {
-        player.remember(trick.getCards());
-      }
       turn = trick.winner();
       Debug.print("    TRICK: "+trick.toString());
-      Debug.print("");
       if (turn % 2 == 0) {
         controller.store("NSTake", ""+trick.counters());
       } else {
@@ -350,6 +355,7 @@ public class Game {
       }
       controller.clear();
       controller.display("DisplayTrick", cards);
+      Debug.print("");
     }
     // Award the last trick
     if (turn % 2 == 0) {
@@ -358,6 +364,7 @@ public class Game {
       controller.store("EWTake", "1");
     }
     controller.addScore();
+    Debug.print(controller.getGameScore()+"\n");
     if (!controller.over()) {
       controller.newHand();
     }
