@@ -57,7 +57,6 @@ public class Data {
     this.meld   = 0;
     this.take   = 0;
     this.hand   = 0;
-    this.bidder = false;
   }
     
   public void addMeld(int meld) {
@@ -75,8 +74,9 @@ public class Data {
   public void addHand(int bid, int wscore) {
     this.meld   = (this.take == 0)  ? 0 : this.meld;
     this.hand   = (this.take == 0)  ? 0 : this.meld + this.take;
-    if (this.bidder) {
+    if (this.bidder == true) {
       this.hand = (this.hand < bid) ? (bid * -1) : this.hand;
+    } else {
     }
     this.loHand = (this.hand < this.loHand) ? this.hand : this.loHand;
     this.hiHand = (this.hand > this.hiHand) ? this.hand : this.hiHand;

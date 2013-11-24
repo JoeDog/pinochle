@@ -56,6 +56,16 @@ public class Deck extends Pack {
     return count;
   }
 
+  public int contains (int suit) {
+    int num = 0;
+    for (Card c: this.getCards()) {
+      if (c.getSuit() == suit) {
+        num ++;
+      }
+    }
+    return num;
+  }
+
   public void printIt() {
     System.out.println("card count: "+this.count());
     System.out.println("deck size:  "+this.size);

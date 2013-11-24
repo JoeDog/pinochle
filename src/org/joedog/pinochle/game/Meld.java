@@ -79,12 +79,12 @@ public class Meld {
    */
   public Assessment assessment() {
     int cnt;
-    int max   = 0;
-    int meld  = 0;
-    int aces  = 0;
-    int taces = 0;
-    int power = 0;
-    int matt  = 100;
+    int max      = 0;
+    int meld     = 0;
+    int aces     = 0;
+    int taces    = 0;
+    int power    = 0;
+    int matt     = 100;
     Assessment a = new Assessment(); 
  
     for (int i = 0; i < suits.length; i++) {
@@ -116,6 +116,21 @@ public class Meld {
       if (meld < 6) {
         power -= 4;
       }
+      if (run(suits[i]) > 0) {
+        power += 6;
+      } else {
+        switch(shy(suits[i])) {
+          case 1: 
+            power += 4;
+            break;
+          case 2:
+            power += 1;
+            break;
+          default:
+           break;
+        }
+      }
+      power += powerFactor();
       if ((cnt + meld + taces + power) > (a.getTrumpCount()+a.getTrumpAces()+a.getMeld()+a.getPower())) {
         a.setMeld(meld);
         a.setSuit(suits[i]);
@@ -255,6 +270,7 @@ public class Meld {
      * Eek! We've gotten this far and we haven't found
      * enough cards to pass; we're just gonna do random
      */
+    int tries = 0;
     while (deck.count() < num) {
       Random r  = new Random();
       int lo    = 1;
@@ -262,7 +278,13 @@ public class Meld {
       int rand  = r.nextInt(hi-lo) + lo; 
       Card card = hand.get(rand);  
       if (bidder) {
-        if (card.getSuit() != trump) {
+        System.out.println("card for consideration: "+card.toString());
+        if (tries >= 25) {
+          // GOD DAMN DO WE HAVE A SPECTACULAR HAND
+          deck.add(hand.pass(card));
+          hand.remove(card);
+        } else if (card.getSuit() != trump && card.getRank() != Pinochle.ACE) {
+          // DO NOT PASS TRUMP OR ACES!!
           deck.add(hand.pass(card));
           hand.remove(card);
         }
@@ -270,8 +292,45 @@ public class Meld {
         deck.add(hand.pass(card));
         hand.remove(card);
       }
+      tries++;
     }  
+    System.out.println(deck.toString());
     return deck;
+  }
+
+  public int powerFactor() {
+    int cnt = 0;
+    int num = 0;
+    int ace = 0;
+    for (int i = 0; i < suits.length; i++) {
+      cnt = 0; // reset to 0
+      ace = this.hand.contains(new Card(Pinochle.ACE, suits[i]));
+      cnt += this.hand.contains(suits[i]);
+      System.out.println("CNT: "+cnt+", ACE: "+ace);
+      if (cnt >= 5 && ace > 0) {
+        num += 1;
+      } else if (cnt >= 4 && ace == 2) {
+        num += 1;
+      }
+    }
+    System.out.println("power factor: "+num);
+    if (num > 1) return 5;
+    else return 0;
+  }
+
+  public int shy(int trump) {
+    int  cnt   = 5;
+    Card ace   = new Card(Pinochle.ACE,   trump);
+    Card ten   = new Card(Pinochle.TEN,   trump);
+    Card king  = new Card(Pinochle.KING,  trump);
+    Card queen = new Card(Pinochle.QUEEN, trump);
+    Card jack  = new Card(Pinochle.JACK,  trump);
+    if (hand.contains(ace)   > 0) cnt --; 
+    if (hand.contains(ten)   > 0) cnt --; 
+    if (hand.contains(king)  > 0) cnt --; 
+    if (hand.contains(queen) > 0) cnt --; 
+    if (hand.contains(jack)  > 0) cnt --; 
+    return cnt;
   }
 
   public int run(int trump) {

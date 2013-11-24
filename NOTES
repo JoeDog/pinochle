@@ -11,3 +11,9 @@
 - Computer throw-offs don't work (when not following suit)
 
 - cardsHigherThan does not return the correct answer.
+
+- If computer has two cards left, trump and non-trump. Lead non-trump
+
+- Computer passes and breaks up pinochle!!
+
+

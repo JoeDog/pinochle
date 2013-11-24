@@ -95,6 +95,12 @@ public class Brain {
     }
   }
 
+  public boolean outstandingTrump(Hand hand, int trump) {
+    int num = deck.contains(trump) + hand.contains(trump);  
+    if (num == 12) return false; // no outstanding trump
+    else return true;
+  }
+
   /**
    * Returns true if Hand contains the highest 
    * available card in the suit
@@ -124,12 +130,9 @@ public class Brain {
 
   public int cardsHigherThan(Card card) {
     int num = ((Pinochle.ACE - card.getRank()) * (2 *this.deckSize));
-    Debug.print("Looking for cards higher than: "+card.toString());
-    Debug.print("The number of potentially higher cards is: "+num);
     for (int i = Pinochle.ACE; i > card.getRank(); i--) {
       num -= deck.contains(new Card(i, card.getSuit()));  
     }
-    Debug.print("cardsHigherThan "+card.toString()+": "+num); 
     return num;
   }
 

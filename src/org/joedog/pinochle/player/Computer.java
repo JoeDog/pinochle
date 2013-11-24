@@ -160,17 +160,24 @@ public class Computer extends Player {
       shuffle(s);
       for (int i : s) {
         if (brain.haveHighest(this.hand, i) == true) {
+          if (i == trick.getTrump() && ! brain.outstandingTrump(this.hand, i)) {
+            System.out.println("Let's save our trump");
+            continue;  
+          }
           card = this.hand.getHighest(i);
-          Debug.print(this.name+" says, I'll hit you with my best shot: "+card.toString());
+          Debug.print(this.name+" says, I'll hit you with my best shot: "+card.toString()); 
+          if (card == null) return card;
           break;
         }
       }
     }
     if (card == null) {
       // Let's play Beat the Queen....
-      if (this.hand.contains(new Card(Pinochle.QUEEN, trick.getTrump())) > 0) {
+      if (this.hand.contains(new Card(Pinochle.QUEEN, trick.getTrump())) > 0 && 
+          brain.outstandingTrump(this.hand, trick.getTrump())) {
         card = new Card(Pinochle.QUEEN, trick.getTrump());
         Debug.print(this.name+" says, this is a good time to play beat the queen: "+card.toString());
+        if (card != null) return card;
       }
     }
     if (card == null) {
@@ -208,9 +215,9 @@ public class Computer extends Player {
       high = trick.getWinningCard();
       if (trick.winner() == this.partner) {
         // partner has it, but will it stand?
-        Debug.print(this.name+"'s partner is winning but will it stand?");
         int total   = this.brain.cardsHigherThan(high);
         int winners = this.hand.cardsHigherThan(high);
+        Debug.print(this.name+"'s partner is winning but will it stand?");
         if (winners > 0 && winners < total) {
           // Oh noes, there are outstanding cards
           // which can beat my partner...
@@ -218,31 +225,38 @@ public class Computer extends Player {
           if (this.brain.haveHighest(this.hand, suit)) {
             card = temp;
             Debug.print("Never fear! "+this.name+" is here!!! "+card.toString());
+            if (card != null) return card;
           } else {
             card = this.hand.getLowest(suit);
             Debug.print(this.name+" says, 'Sorry, partner. They're gonna take it....' ("+card.toString()+")");
+            if (card != null) return card;
           }
         } else if (total == 0) {
           // My parter is gonna win it
           card = this.hand.getCounter(suit);
           if (card == null) 
              card = this.hand.getLowest(suit);
-          Debug.print(this.name+" says, '(226) Good job, partner. I tried to give a counter' ("+card.toString()+")");
+          Debug.print(this.name+" says, '(226) Good job! I tried to give a counter' ("+card.toString()+")");
+          if (card != null) return card;
         } else {
           card = this.hand.getLowest(suit);
           Debug.print(this.name+" is no help at all: "+card.toString());
+          if (card != null) return card;
         }
       } else if (this.brain.haveHighest(this.hand, suit)) {
-        if (temp.getRank() == high.getRank()) {
+        if (temp.getRank() <= high.getRank()) {
           card = this.hand.getLowest(suit);
           Debug.print(this.name+" says, 'Crap, we can only tie...' playing lowest: "+card.toString());
+          if (card != null) return card;
         } else {
           card = temp;
           Debug.print(this.name+" has the highest card and [s]he's gonna play it! "+card.toString());
+          if (card != null) return card;
         }
       } else {
         card = this.hand.getLowest(suit);
         Debug.print(this.name+" is powerless to do anything: "+card.toString());
+        if (card != null) return card;
       }
     } else {
       int cnt;
@@ -257,11 +271,13 @@ public class Computer extends Player {
           if (card == null) {
             Debug.print(this.name+" can't out-trump the "+tmp.toString()+" (playing off)");
             card = this.hand.getLowest(trump);
+            if (card != null) return card;
           }
         } else {
           // nobody trumped but we must do that     
           card = this.hand.getLowest(trump);
           Debug.print("Nobody trumped. "+this.name+" is gonna try "+card.toString());
+          if (card != null) return card;
         }
       }
       if (trick.winner() == this.partner) {
@@ -277,25 +293,32 @@ public class Computer extends Player {
           else if (cnt < num && this.hand.nonCounters(i) > 0) sel = i;
         }
       }
+      if (card != null) return card;
       if (card == null && sel < 100) {
         if (trick.winner() == this.partner) {
           card = this.hand.getCounter(sel);
           if (card == null) 
             card = this.hand.getCounter();
-          Debug.print(this.name+" says, '(281) Good job partner, I tried to give you a counter: "+card.toString()+"'");
+          Debug.print(this.name+" says, '(281) Good job! I'll to give you a counter: "+card.toString()+"'");
+          if (card != null) return card;
         } else {
           card = this.hand.getLowest(sel);
-          Debug.print(this.name+" says, 'The bad guys got that one. Here's my worst card: "+card.toString()+"'");
+          if (card.getRank() == Pinochle.ACE) 
+            card = this.hand.getLowest();
+          Debug.print(this.name+" says, '(300) Bad guys got it. Here's my worst card: "+card.toString()+"'");
+          if (card != null) return card;
         }
       } else {
         if (trick.winner() == this.partner) {
           card = this.hand.getCounter();
           if (card == null)  
             card = this.hand.getLowest();
-          Debug.print(this.name+" says, '(291) Good job partner, I tried to give you a counter: "+card.toString()+"'");
+          Debug.print(this.name+" says, '(291) Good job! I tried to give you a counter: "+card.toString()+"'");
+          if (card != null) return card;
         } else {
           card = this.hand.getLowest();
-          Debug.print(this.name+" says, 'The bad guys got that one. Here's my worst card: "+card.toString()+"'");
+          Debug.print(this.name+" says, '(310) Bad guys got it. Here's my worst card: "+card.toString()+"'");
+          if (card != null) return card;
         }
       }
     }

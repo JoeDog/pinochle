@@ -79,11 +79,13 @@ public class ScoreModel extends AbstractModel {
 
   public void setBidder(String player) {
     int i = Integer.parseInt(player);
+    this.stats.resetBidder(); // clear both 
     this.active = i;
-    if (i % 2 == 0) 
+    if (i % 2 == 0) {
       this.stats.setBidder("NS");
-    else
+    } else {
       this.stats.setBidder("EW");
+    }
   }
 
   /**
@@ -138,76 +140,17 @@ public class ScoreModel extends AbstractModel {
     firePropertyChange(GameController.GAME_SCORE, "EWGAME", ""+stats.getGame("EW"));
     if (stats.hasWinner()) {
       firePropertyChange(GameController.WINNER, "NONE", stats.getWinner());
+      Debug.print(this.getGameInfo());
     }
   }
 
-  /******************************
-  public String getGameScore() {
+  public String getGameInfo() {
     String s = String.format(
       "%6s %4d  %4d\n%6s %4d  %4d\n%6s %4d  %4d\n%6s %4d  %4d\n",
-      "Meld:", meld[0], meld[1],
-      "Take:", take[0], take[1],
-      "Hand:", hand[0], hand[1],
-      "Game:", game[0], game[1]
+      "Meld:", stats.getTotalMeld("NS"), stats.getTotalMeld("EW"),
+      "Take:", stats.getTotalTake("NS"), stats.getTotalTake("NS"),
+      "Game:", stats.getGame("NS"),      stats.getGame("EW")
     );
     return s;
   }
-  ******************************/
-
-  /******************************
-  public synchronized void addScore() {
-    if (this.take[0] == 0) {
-      // NO MELD FOR YOU!!!
-      this.meld[0] = 0;
-      this.hand[0] = 0;
-      firePropertyChange(GameController.MELD_SCORE, "NSMELD", ""+this.meld[0]);
-    } else {
-      this.hand[0] = this.meld[0]+this.take[0];
-    }
-    if (this.bidder % 2 == 0 && this.hand[0] < this.bid) {
-      this.hand[0] = (this.bid * -1);
-    }
-    firePropertyChange(GameController.HAND_SCORE, "NSHAND", ""+this.hand[0]);
-    this.hand[1] = this.meld[1]+this.take[1];
-    if (this.bidder % 2 != 0 && this.hand[1] < this.bid) {
-      this.hand[1] = (this.bid * -1);
-    }
-
-    if (this.take[1] == 0) {
-      // NO MELD FOR YOU!!!
-      this.meld[1] = 0;
-      this.hand[1] = 0;
-      firePropertyChange(GameController.MELD_SCORE, "EWMELD", ""+this.meld[1]);
-    } else {
-      this.hand[1] = this.meld[1]+this.take[1];
-    }
-    firePropertyChange(GameController.HAND_SCORE, "EWHAND", ""+this.hand[1]);
-
-    this.game[0] += this.hand[0];
-    this.game[1] += this.hand[1];
-    firePropertyChange(GameController.GAME_SCORE, "NSGAME", ""+this.game[0]);
-    firePropertyChange(GameController.GAME_SCORE, "EWGAME", ""+this.game[1]);
-
-    if (this.game[0] > this.wscore && this.game[1] >= this.wscore) {
-      if (this.bidder % 2 == 0) {
-        firePropertyChange(GameController.WINNER, "NONE", "NORTH_SOUTH");
-      } else  {
-        firePropertyChange(GameController.WINNER, "NONE", "EAST_WEST");
-      }
-      this.status = GameController.OVER;
-    } else if (this.game[0] >= this.wscore) {
-      firePropertyChange(GameController.WINNER, "NONE", "NORTH_SOUTH");
-      this.status = GameController.OVER;
-    } else if (this.game[1] >= this.wscore) {
-      this.status = GameController.OVER;
-      firePropertyChange(GameController.WINNER, "NONE", "EAST_WEST");
-    }
-    if (this.status == GameController.OVER) {
-      System.out.println("Total hands: "+stats.getHands());
-      System.out.println("N/S Meld:    "+stats.getNSMeld()+" E/W Meld:     "+stats.getEWMeld());
-      System.out.println("N/S Take:    "+stats.getNSTake()+" E/W Take:     "+stats.getEWTake());
-      System.out.println("N/S Take Pct.: "+(double)stats.getNSTake()/(stats.getNSTake()+stats.getNSMeld())+" E/W Take Pct.: "+(double)stats.getEWTake()/(stats.getEWTake()+stats.getEWMeld())); 
-    } 
-  }
-  ******************************/
 }

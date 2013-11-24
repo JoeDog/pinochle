@@ -54,9 +54,13 @@ public class Stats {
     for (Map.Entry<String, Data> d : this.data.entrySet()) {
       if (d.getKey().equals(team)) {
         (d.getValue()).setBidder(true);
-      } else {
-        (d.getValue()).setBidder(false);
       }
+    }
+  }
+
+  public void resetBidder() {
+    for (Map.Entry<String, Data> d : this.data.entrySet()) {
+      (d.getValue()).setBidder(false);
     }
   }
 
@@ -88,8 +92,16 @@ public class Stats {
     return (this.data.get(team)).getMeld();
   }
 
+  public int getTotalMeld(String team) {
+    return (this.data.get(team)).getTotalMeld();
+  }
+
   public int getTake(String team) {
     return (this.data.get(team)).getTake();
+  }
+
+  public int getTotalTake(String team) {
+    return (this.data.get(team)).getTotalTake();
   }
 
   public int getHand(String team) {

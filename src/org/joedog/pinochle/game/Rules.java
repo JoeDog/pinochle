@@ -1,6 +1,7 @@
 package org.joedog.pinochle.game;
 
 import org.joedog.pinochle.control.*;
+import org.joedog.pinochle.util.*;
 
 public class Rules {
   // We want a controller to set status
@@ -21,6 +22,7 @@ public class Rules {
      * play anything we please...
      */
     if (trick.isEmpty()) { 
+      Debug.print("Trick is empty; play what you want...");
       return true;
     }
 
@@ -57,7 +59,11 @@ public class Rules {
           controller.setStatus("CHEATER!! You must beat the "+tops.toString());
           return false;
         } 
-      } else {
+      } else if (card.getSuit() != suit) {
+        if (hand.contains(suit) > 0) {
+          controller.setStatus("CHEATER!! You must follow suit ("+Pinochle.suitname(suit)+")");
+          return false;
+        }
         if (hand.contains(trump) > 0) {
           controller.setStatus("CHEATER!! In this case, you must play trump ("+Pinochle.suitname(trump)+")");
           return false;
