@@ -278,8 +278,7 @@ public class Meld {
       int rand  = r.nextInt(hi-lo) + lo; 
       Card card = hand.get(rand);  
       if (bidder) {
-        System.out.println("card for consideration: "+card.toString());
-        if (tries >= 25) {
+        if (tries >= 50) {
           // GOD DAMN DO WE HAVE A SPECTACULAR HAND
           deck.add(hand.pass(card));
           hand.remove(card);
@@ -294,7 +293,6 @@ public class Meld {
       }
       tries++;
     }  
-    System.out.println(deck.toString());
     return deck;
   }
 
@@ -306,14 +304,12 @@ public class Meld {
       cnt = 0; // reset to 0
       ace = this.hand.contains(new Card(Pinochle.ACE, suits[i]));
       cnt += this.hand.contains(suits[i]);
-      System.out.println("CNT: "+cnt+", ACE: "+ace);
       if (cnt >= 5 && ace > 0) {
         num += 1;
       } else if (cnt >= 4 && ace == 2) {
         num += 1;
       }
     }
-    System.out.println("power factor: "+num);
     if (num > 1) return 5;
     else return 0;
   }

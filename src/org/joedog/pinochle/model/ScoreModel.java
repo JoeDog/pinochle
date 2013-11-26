@@ -12,11 +12,12 @@ public class ScoreModel extends AbstractModel {
   private int dealer   = Pinochle.SOUTH;
   private int trump    = Pinochle.HEARTS;
   private int active   = Pinochle.WEST;
-  private int wscore   = 300;
   private Stats stats;
+  private Configuration conf = null;
 
   public ScoreModel() {
     this.stats = new Stats(new String []{"NS","EW"});
+    conf = Configuration.getInstance();
   } 
 
   public ScoreModel(String[] teams) {
@@ -42,10 +43,6 @@ public class ScoreModel extends AbstractModel {
     this.dealer = i;
   }
 
-  public void setGameWinningScore(String score) {
-    int i = Integer.parseInt(score);
-    this.wscore = i;
-  }
 
   public void resetHand() {
     stats.resetHand();
@@ -126,7 +123,7 @@ public class ScoreModel extends AbstractModel {
   }
   
   public void addScore() {
-    stats.tally(this.bid, this.wscore);
+    stats.tally(this.bid, this.winningScore());
     if (stats.hasWinner()) {
       this.status = GameController.OVER;
     }
@@ -152,5 +149,18 @@ public class ScoreModel extends AbstractModel {
       "Game:", stats.getGame("NS"),      stats.getGame("EW")
     );
     return s;
+  }
+  
+  private int winningScore() {
+    int i = Integer.parseInt(conf.getProperty("WinningScore"));
+    return i;
+  }
+
+  private int deckSize() {
+    if ((conf.getProperty("DeckSize")).equals("double")) {
+      return 2;
+    } else {
+      return 1;
+    }
   }
 }

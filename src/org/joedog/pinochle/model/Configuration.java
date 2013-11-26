@@ -36,6 +36,10 @@ public class Configuration {
     return _instance;
   }
 
+  public Enumeration propertyNames() {
+    return conf.propertyNames();
+  }
+
   public void setProperty(String key, String val) {
     conf.setProperty(key, val);
   }

@@ -328,6 +328,7 @@ public class ConfigView extends JFrame {
       playDouble = new JRadioButton("Double");
       playDouble.setActionCommand("double");
       playDouble.addActionListener(new DeckButtonListener(this.controller));
+      playDouble.setEnabled(false);
     }
     if (deckSelectPanel == null) {
       deckSelectPanel = new JPanel();
