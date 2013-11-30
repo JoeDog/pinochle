@@ -254,6 +254,10 @@ public class GameView extends JPanel implements View, MouseListener {
     }
   }
 
+  public synchronized void startConfig() {
+    ConfigView cv = new ConfigView(this.controller);
+  }
+
   public void close() {
     this.controller.setProperty("MainX",  Integer.toString(this.getX()));
     this.controller.setProperty("MainY",  Integer.toString(this.getY()));
@@ -273,7 +277,6 @@ public class GameView extends JPanel implements View, MouseListener {
   public void modelPropertyChange(PropertyChangeEvent e) {
     if (e.getNewValue() == null) return;
     if (e.getPropertyName().equals(controller.TRUMP)) {
-      //trump.setText(controller.getProperty("GameBid"));
       if (e.getNewValue().equals("0")) {
         trump.setIcon(new TrumpIcon(Pinochle.HEARTS));
       }
@@ -290,9 +293,19 @@ public class GameView extends JPanel implements View, MouseListener {
     if (e.getPropertyName().equals(controller.HIGH_BID)) {
       trump.setText((String)e.getNewValue());
     }
-    if (e.getPropertyName().equals(controller.OURS)) {
-    }
-    if (e.getPropertyName().equals(controller.THEIRS)) {
+    if (e.getPropertyName().equals(controller.RECONFIG)) {
+      if (e.getOldValue().equals("EASTNAME")) {
+        setting[Pinochle.EAST].setName(controller.getName(Pinochle.EAST));
+      }
+      if (e.getOldValue().equals("WESTNAME")) {
+        setting[Pinochle.WEST].setName(controller.getName(Pinochle.WEST));
+      }
+      if (e.getOldValue().equals("NORTHNAME")) {
+        setting[Pinochle.NORTH].setName(controller.getName(Pinochle.NORTH));
+      }
+      if (e.getOldValue().equals("SOUTHNAME")) {
+        setting[Pinochle.SOUTH].setName(controller.getName(Pinochle.SOUTH));
+      }
     }
     if (e.getPropertyName().equals(controller.GAME_SCORE)) {
       last.clearLast();

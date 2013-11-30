@@ -22,6 +22,7 @@ public class GameController extends AbstractController {
   public final static int SCORE          = 5;
   public final static int OVER           = 6;
   public final static String RESET       = "NEWHAND";
+  public final static String RECONFIG    = "CONFIG";
   public final static String TRUMP       = "TRUMP";
   public final static String HIGH_BID    = "HIBID";
   public final static String OURS        = "OURS";
@@ -257,5 +258,14 @@ public class GameController extends AbstractController {
   public boolean cheatMode() {
     String mode = (String)getModelProperty("CheatMode");
     return Boolean.parseBoolean(mode);
+  }
+
+  public void checkConfig() {
+    String configged = (String)getModelProperty("ConfigStatus");
+    if (configged == null || configged.equals("false")) {
+      this.pause(true);
+      this.runViewMethod("startConfig");
+    }
+    System.out.println("done");
   }
 }

@@ -55,6 +55,10 @@ public class Configuration {
     return value;
   }
 
+  public boolean isConfigured() {
+    return (new File(this.cfgfile)).exists();
+  }
+
   public void save() {
     try {
       conf.store(new FileOutputStream(this.cfgfile), null);

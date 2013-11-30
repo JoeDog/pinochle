@@ -3,6 +3,8 @@ package org.joedog.pinochle.view;
 import java.awt.BorderLayout;
 import java.awt.Container;
 import java.awt.Component;
+import java.awt.event.FocusListener;
+import java.awt.event.FocusEvent;
 import java.awt.Dimension;
 import java.awt.Rectangle;
 import java.awt.Font;
@@ -43,12 +45,12 @@ public class ConfigView extends JFrame {
   private JLabel labelVariations;
   private JLabel labelMinimumBid;
   private JLabel labelBidType;
-  private JTextField textEastName;
-  private JTextField textWestName;
-  private JTextField textNorthName;
-  private JTextField textSouthName;
-  private JTextField textWinningScore;
-  private JTextField textMinimumBid;
+  private FocusTextField textEastName;
+  private FocusTextField textWestName;
+  private FocusTextField textNorthName;
+  private FocusTextField textSouthName;
+  private FocusTextField textWinningScore;
+  private FocusTextField textMinimumBid;
   private JRadioButton playSingle;
   private JRadioButton playDouble;
   private JRadioButton playSingleBid;
@@ -87,6 +89,7 @@ public class ConfigView extends JFrame {
 
   public void display() {
     //Dimension dim   = Toolkit.getDefaultToolkit().getScreenSize();
+    System.out.println("displaying config!");
     pinochle = this.getContentPane();
     pinochle.setLayout(new BorderLayout());
     int x = controller.getIntProperty("ConfigX");
@@ -177,49 +180,49 @@ public class ConfigView extends JFrame {
     return configPanel;
   }
 
-  private JTextField getEastNameField() {
+  private FocusTextField getEastNameField() {
     if (textEastName == null) {
-      textEastName = new JTextField(controller.getProperty("PlayerEastName"));
+      textEastName = new FocusTextField(controller.getProperty("PlayerEastName"));
       textEastName.setBounds(new Rectangle(136, 34, 161, 20));
     }
     return textEastName;
   }
 
-  private JTextField getWestNameField() {
+  private FocusTextField getWestNameField() {
     if (textWestName == null) {
-      textWestName = new JTextField(controller.getProperty("PlayerWestName"));
+      textWestName = new FocusTextField(controller.getProperty("PlayerWestName"));
       textWestName.setBounds(new Rectangle(136, 58, 161, 20));
     }
     return textWestName;
   }
 
-  private JTextField getNorthNameField() {
+  private FocusTextField getNorthNameField() {
     if (textNorthName == null) {
-      textNorthName = new JTextField(controller.getProperty("PlayerNorthName"));
+      textNorthName = new FocusTextField(controller.getProperty("PlayerNorthName"));
       textNorthName.setBounds(new Rectangle(136, 82, 161, 20));
     }
     return textNorthName;
   }
 
-  private JTextField getSouthNameField() {
+  private FocusTextField getSouthNameField() {
     if (textSouthName == null) {
-      textSouthName = new JTextField(controller.getProperty("PlayerSouthName"));
+      textSouthName = new FocusTextField(controller.getProperty("PlayerSouthName"));
       textSouthName.setBounds(new Rectangle(136, 106, 161, 20));
     }
     return textSouthName;
   }
 
-  private JTextField getWinningScoreField() {
+  private FocusTextField getWinningScoreField() {
     if (textWinningScore == null) {
-      textWinningScore = new JTextField(controller.getProperty("WinningScore"));
+      textWinningScore = new FocusTextField(controller.getProperty("WinningScore"));
       textWinningScore.setBounds(new Rectangle(136, 166, 161, 20));
     }
     return textWinningScore;
   }
 
-  private JTextField getMinimumBidField() {
+  private FocusTextField getMinimumBidField() {
     if (textMinimumBid == null) {
-      textMinimumBid = new JTextField(controller.getProperty("MinimumBid"));
+      textMinimumBid = new FocusTextField(controller.getProperty("MinimumBid"));
       textMinimumBid.setBounds(new Rectangle(136, 190, 161, 20));
     }
     return textMinimumBid;
@@ -299,6 +302,7 @@ public class ConfigView extends JFrame {
       playAuctionBid = new JRadioButton("Auction Bid");
       playAuctionBid.setActionCommand("auction");
       playAuctionBid.addActionListener(new BidButtonListener(this.controller));
+      playAuctionBid.setEnabled(false);
     }
     if (bidSelectPanel == null) {
       bidSelectPanel = new JPanel();
@@ -375,7 +379,25 @@ public class ConfigView extends JFrame {
   }
 
   private void closeFrame(){
+    this.controller.pause(false);
     this.setVisible(false);
+  }
+
+  static class FocusTextField extends JTextField { 
+    public FocusTextField(String s) {
+      super(s);
+      addFocusListener(new FocusListener() {
+        @Override
+        public void focusGained(FocusEvent e) {
+          FocusTextField.this.select(0, getText().length());
+        }
+
+        @Override
+        public void focusLost(FocusEvent e) {
+          FocusTextField.this.select(0, 0);
+        }
+      });
+    }
   }
 
   class TextFieldEditor extends DefaultCellEditor {

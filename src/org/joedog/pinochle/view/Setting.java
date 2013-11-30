@@ -42,7 +42,10 @@ public class Setting extends JPanel implements MouseListener {
   public void setText(final String text) {
     SwingUtilities.invokeLater(new Runnable() {
       public void run() {
-        notice.setText(name+" -- "+text);
+        if (text==null || text.length() < 1)
+          notice.setText(name);
+        else
+          notice.setText(name+" -- "+text);
       }
     });
   }
@@ -121,7 +124,7 @@ public class Setting extends JPanel implements MouseListener {
 
   public void setName(String name) {
     this.name = name;
-    this.refresh();
+    this.setText(null);
   }
 
   public Card getCard() {

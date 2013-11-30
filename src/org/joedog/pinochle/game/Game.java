@@ -82,7 +82,13 @@ public class Game {
     int x      = 0;
     int turn   = 0;
     int status = GameController.DEAL;
-
+   
+    controller.checkConfig();
+    while (controller.isPaused()) {
+      try {
+          Thread.sleep(500);
+      } catch (Exception e) {}
+    }
     controller.setProperty("GameWinningScore", controller.getProperty("WinningScore"));
 
     while (status != GameController.OVER) {
@@ -164,7 +170,10 @@ public class Game {
     }
 
     while (sum < (players.length - 1)) {
-      int ret = players[turn%players.length].bid(bid);
+      int ind = turn%players.length;
+      int prt = players[ind].getPartner();
+      int ret = players[ind].bid(bid, players[prt].lastBid());
+      Debug.print("Here's what we got from "+players[ind].getName()+ ": "+ret);
       if (ret < bid) {
         passes[turn%players.length] = 1;
       } else {

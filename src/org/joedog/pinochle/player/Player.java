@@ -5,6 +5,7 @@ import org.joedog.pinochle.view.Setting;
 import org.joedog.pinochle.game.*;
 import java.net.URL;
 import java.awt.Canvas;
+import java.util.Random;
 
 public abstract class Player {
   public static final  int HUMAN    = 0;
@@ -17,7 +18,8 @@ public abstract class Player {
   public   String      name;
   public   Setting     setting;
   public   int         maxBid;
-  public   int         myBid;
+  public   int         myBid  = 0;
+  public   int         pBid   = 0; 
   public   Assessment  assessment;
   public   boolean     bidder = false;
 
@@ -38,13 +40,44 @@ public abstract class Player {
     this.hand   = new Hand();
     this.myBid  = 0;
     this.maxBid = 0;
+    this.pBid   = 0;
   }
 
   public int assessHand() {
     meld = new Meld(this.hand);
     assessment   = meld.assessment(); 
     this.maxBid  = assessment.maxBid();
+    this.maxBid += guts();
     return 1;
+  }
+
+  private int guts() {
+    Random r = new Random();
+    int    n = 101;
+    int    i = r.nextInt() % n;
+    int  num =  1 + i;
+
+    if (num >= 90) {
+      System.out.println(this.name+" is feeling confident: +4");
+      return 4;
+    }
+    if (num >= 80) {
+      System.out.println(this.name+" is feeling pretty good: +3");
+      return 3;
+    }
+    if (num >= 70) {
+      System.out.println(this.name+" is feeling okay: +2");
+      return 2;
+    }
+    if (num >= 60) {
+      System.out.println(this.name+" is feeling meh: +1");
+      return 1;
+    }
+    if (num < 11) {
+      System.out.println(this.name+" is NOT feeling confident: -2");
+      return -2;
+    }
+    return 0;
   }
 
   public void setup(Setting setting, int position, int partner, String name) {
@@ -72,6 +105,10 @@ public abstract class Player {
 
   public int getPartner() {
     return this.partner;
+  }
+
+  public int lastBid() {
+    return this.myBid;
   }
 
   /**
@@ -103,6 +140,8 @@ public abstract class Player {
   public abstract Card playCard(Trick trick);
 
   public abstract int bid(int bid); 
+
+  public abstract int bid(int bid, int pbid);
 
   public abstract int nameTrump();
 

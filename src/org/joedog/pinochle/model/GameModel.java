@@ -42,6 +42,10 @@ public class GameModel extends AbstractModel {
     }
   }
 
+  public String getConfigStatus() {
+    return String.valueOf(conf.isConfigured());
+  }
+
   public void setMainX(String X) {
     conf.setProperty("MainX", X);
   }
@@ -60,18 +64,22 @@ public class GameModel extends AbstractModel {
 
   public void setPlayerEastName(String name) {
     conf.setProperty("PlayerEastName", name);
+    firePropertyChange(GameController.RECONFIG, "EASTNAME", name);
   }
 
   public void setPlayerWestName(String name) {
     conf.setProperty("PlayerWestName", name);
+    firePropertyChange(GameController.RECONFIG, "WESTNAME", name);
   }
 
   public void setPlayerNorthName(String name) {
     conf.setProperty("PlayerNorthName", name);
+    firePropertyChange(GameController.RECONFIG, "NORTHNAME", name);
   }
 
   public void setPlayerSouthName(String name) {
     conf.setProperty("PlayerSouthName", name);
+    firePropertyChange(GameController.RECONFIG, "SOUTHNAME", name);
   }
 
   public void setPlayerEastType(String type) {

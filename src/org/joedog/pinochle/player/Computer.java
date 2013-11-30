@@ -8,10 +8,12 @@ import org.joedog.pinochle.util.*;
 public class Computer extends Player {
   private GameController controller;
   private Brain          brain;
+  private int            ptops;
 
   public Computer(GameController controller) {
     this.type = COMPUTER;
     this.controller = controller;
+    this.ptops = 0;
     this.brain = new Brain();
   }
 
@@ -21,6 +23,8 @@ public class Computer extends Player {
     this.brain  = new Brain();
     this.myBid  = 0;
     this.maxBid = 0;
+    this.pBid   = 0;
+    this.ptops  = 0;
   }
  
   public void takeCard(Card c) {
@@ -58,6 +62,62 @@ public class Computer extends Player {
     }
   }
 
+  /**
+   * Returns a bid while at the same time, it considers 
+   * its partner's bid; if partner tops us twice then
+   * we'll let him/her have it but not befor we take the
+   * time to submit a serious bid if we have the cards
+   * to support it.
+   * <p>
+   * @param  int   The bid to beat
+   * @param  int   Our partner's bid for consideration
+   * @return int   Our bid or -1 for pass
+   */
+  public int bid (int bid, int pbid) {
+    if (myBid == -1) return myBid;
+
+    if (pbid > myBid) {
+      ptops += 1;
+    }
+    if (ptops  ==  1 && (this.maxBid-1) > bid) {
+      int tmp = this.maxBid - bid;
+      switch(tmp) {
+        case 15: case 14: case 13: case 12: case 11:
+          this.myBid = bid+11;
+          break;
+        case 10: case 9: case 8: case 7: case 6:
+          this.myBid = bid + 6;
+          break;
+        case 5: case 4: case 3:
+          this.myBid = bid + 3; 
+        case 2: case 1:
+          this.myBid = bid + 1;
+        default:
+          if (tmp > 15)  this.myBid = (this.maxBid - 2);
+          if (tmp < bid) this.myBid = -1;
+          break;
+      }
+      if (this.myBid == -1) 
+        this.setting.setText("Bid: Pass");
+      else 
+        this.setting.setText("Bid: "+this.myBid);
+      return this.myBid;
+    }
+    if (ptops  ==  2) {
+      this.myBid = -1;
+      this.setting.setText("Bid: Pass");
+      return this.myBid;
+    }
+    else return this.bid(bid);
+  }
+
+  /**
+   * Returns a bid up to maxBid which is determined
+   * by the hand assessment inside the Meld class.
+   * <p>
+   * @param  int   the bid we must beat
+   * @return int   our bid (which is assigned locally to myBid)
+   */
   public int bid (int bid) {
     if (myBid == -1) return myBid;
 
@@ -71,6 +131,14 @@ public class Computer extends Player {
     return this.myBid;
   }
 
+  /**
+   * Returns an int value which represents the
+   * meld in our hand; meld is calculated within
+   * the Meld class: org.joedog.pinochle.game.Meld
+   * <p>
+   * @param  none 
+   * @return int    the meld score within our hand
+   */
   public int meld() {
     int trump = controller.getIntProperty("GameTrump");
     Meld m = new Meld(this.hand, trump);
@@ -78,6 +146,13 @@ public class Computer extends Player {
     return m.getMeld();
   }
 
+  /**
+   * After meld is played face up, this method
+   * restores the hand to its playing state.
+   * <p>
+   * @param  none
+   * @return void
+   */
   public void clearMeld() {
     for (Card card: this.hand.getCards()) {
       card.unmeld();
@@ -89,6 +164,14 @@ public class Computer extends Player {
     }
   }
 
+  /**
+   * Returns Pinochle.SUIT representation of trump. 
+   * Trump is named based on a hand evaluation within
+   * org.joedog.pinochle.game.Meld
+   * <p>
+   * @param  none
+   * @return int    Pinochle.SUIT (see game.Pinochle)
+   */
   public int nameTrump() {
     this.bidder = true;
     if (this.assessment != null) {
@@ -98,6 +181,13 @@ public class Computer extends Player {
     return Pinochle.SPADES;
   }
 
+  /**
+   * Returns a Deck of three cards which are 
+   * passed to our partner if we've taken the bid
+   * <p>
+   * @param  boolean  True if we took the bid, false if partner did
+   * @return Deck     A small deck of the cards we're passing
+   */
   public Deck passCards(boolean bidder) {
     Deck deck = null;
     int trump = controller.getIntProperty("GameTrump");
@@ -106,9 +196,13 @@ public class Computer extends Player {
     return deck;
   }
 
-  public void finish (int status) {
-  }
-
+  /** 
+   * Selects a Card from this.hand and plays it 
+   * on the Trick
+   * <p>
+   * @param  Trick   The trick upon which we play
+   * @return Card    The Card we select to play
+   */
   public Card playCard(Trick trick) {
     Card card = null;
     Card temp = null;
@@ -161,7 +255,6 @@ public class Computer extends Player {
       for (int i : s) {
         if (brain.haveHighest(this.hand, i) == true) {
           if (i == trick.getTrump() && ! brain.outstandingTrump(this.hand, i)) {
-            System.out.println("Let's save our trump");
             continue;  
           }
           card = this.hand.getHighest(i);

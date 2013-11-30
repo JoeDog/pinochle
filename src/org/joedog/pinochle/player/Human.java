@@ -37,6 +37,17 @@ public class Human extends Player {
     this.setting.refresh();
   }
 
+  /**
+   * Returns a Human bid with no consideration
+   * for the partner's bid. 
+   * <p>
+   * @param  int  the bid to beat
+   * @param  int  our partner's bid (ignored by this class)
+   */ 
+  public int bid(int bid, int pbid) {
+    return this.bid(bid);
+  }
+
   public int bid(int bid) {
     int tmp       = bid + 1;
     String bids[] = new String[16];
