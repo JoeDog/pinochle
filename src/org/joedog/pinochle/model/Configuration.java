@@ -11,6 +11,7 @@ public class Configuration {
   private Properties conf       = null;
   private static String cfgfile = System.getProperty("user.home")+"/.pinochle.properties";
   private static Configuration  _instance = null;
+  private static Object mutex   = new Object();
 
   private Configuration() {
     conf = new Properties();
@@ -31,8 +32,13 @@ public class Configuration {
   }
 
   public synchronized static Configuration getInstance() {
-    if (_instance == null)
-      _instance = new Configuration();
+    if (_instance == null) {
+      synchronized(mutex) {
+        if (_instance == null) {
+          _instance = new Configuration();
+        }
+      }
+    }
     return _instance;
   }
 
