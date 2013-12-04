@@ -173,7 +173,7 @@ public class Game {
       int ind = turn%players.length;
       int prt = players[ind].getPartner();
       int ret = players[ind].bid(bid, players[prt].lastBid());
-      Debug.print("Here's what we got from "+players[ind].getName()+ ": "+ret);
+
       if (ret < bid) {
         passes[turn%players.length] = 1;
       } else {
@@ -373,8 +373,7 @@ public class Game {
       controller.store("Take", "EW|1");
     }
     controller.addScore();
-    Debug.print(controller.getGameScore()+"\n");
-    if (!controller.over()) {
+    if (controller.gameStatus() != GameController.OVER || ! controller.over()) {
       controller.newHand();
     }
   }

@@ -53,28 +53,25 @@ public abstract class Player {
 
   private int guts() {
     Random r = new Random();
-    int    n = 101;
-    int    i = r.nextInt() % n;
-    int  num =  1 + i;
+    int    n = 100;
+    int  num = r.nextInt(n) + 1;
 
+    if (num == 100) {
+      return 10;
+    }
     if (num >= 90) {
-      System.out.println(this.name+" is feeling confident: +4");
-      return 4;
+      return 5;
     }
     if (num >= 80) {
-      System.out.println(this.name+" is feeling pretty good: +3");
-      return 3;
+      return 4;
     }
     if (num >= 70) {
-      System.out.println(this.name+" is feeling okay: +2");
-      return 2;
+      return 3;
     }
     if (num >= 60) {
-      System.out.println(this.name+" is feeling meh: +1");
-      return 1;
+      return 2;
     }
     if (num < 11) {
-      System.out.println(this.name+" is NOT feeling confident: -2");
       return -2;
     }
     return 0;
