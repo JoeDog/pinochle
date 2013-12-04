@@ -66,8 +66,6 @@ public class Data {
   }
 
   public void addTake(int take) {
-    this.loTake = (take < this.loTake) ? take : this.loTake;
-    this.hiTake = (take > this.hiTake) ? take : this.hiTake;
     this.take  += take;
   }
 
@@ -76,11 +74,14 @@ public class Data {
     this.hand   = (this.take == 0)  ? 0 : this.meld + this.take;
     if (this.bidder == true) {
       this.hand = (this.hand < bid) ? (bid * -1) : this.hand;
-    } else {
     }
-    this.loHand = (this.hand < this.loHand) ? this.hand : this.loHand;
-    this.hiHand = (this.hand > this.hiHand) ? this.hand : this.hiHand;
-    this.game  += this.hand;
+    this.allMeld = this.meld;
+    this.allTake = this.take;
+    this.loTake  = (this.take < this.loTake) ? this.take : this.loTake;
+    this.hiTake  = (this.take > this.hiTake) ? this.take : this.hiTake;
+    this.loHand  = (this.hand < this.loHand) ? this.hand : this.loHand;
+    this.hiHand  = (this.hand > this.hiHand) ? this.hand : this.hiHand;
+    this.game   += this.hand;
 
     if (this.game >= wscore) {
       this.winner = true;
@@ -100,20 +101,29 @@ public class Data {
   }
 
   public int getMeld() {
-    return this.meld;
+    return this.allMeld;
   }
 
   public int getTotalMeld() {
     return this.allMeld;
   }
 
+  public int getHighestMeld() {
+    return this.hiMeld;
+  }
+
   public int getTake() {
-    return this.take;
+    return this.allTake;
   }
 
   public int getTotalTake() {
     return this.allTake;
   }
+  
+  public int getHighestTake() {
+    return this.hiTake;
+  }
+
 
   public int getHand() {
     return this.hand;
@@ -121,6 +131,10 @@ public class Data {
 
   public int getGame() {
     return this.game;
+  }
+
+  public int getNoTrickers() {
+    return this.noTrick;
   }
 
   public boolean isBidder() {

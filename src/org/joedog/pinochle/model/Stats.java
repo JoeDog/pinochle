@@ -50,6 +50,10 @@ public class Stats {
     (this.data.get(team)).addTake(take);
   }
 
+  public void addNoTricker(String team) {
+    (this.data.get(team)).addNoTricker();
+  }
+
   public void setBidder(String team) {
     for (Map.Entry<String, Data> d : this.data.entrySet()) {
       if (d.getKey().equals(team)) {
@@ -110,6 +114,18 @@ public class Stats {
 
   public int getGame(String team) {
     return (this.data.get(team)).getGame();
+  }
+
+  public int getNoTrickers(String team) {
+    return (this.data.get(team)).getNoTrickers();
+  }
+
+  public int getHighestMeld(String team) {
+    return (this.data.get(team)).getHighestMeld();
+  }
+
+  public int getHighestTake(String team) {
+    return (this.data.get(team)).getHighestTake();
   }
 
   public String getWinner() {

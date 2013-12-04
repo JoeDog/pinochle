@@ -120,6 +120,10 @@ public class ScoreModel extends AbstractModel {
     int i = Integer.parseInt(str[1]);
     stats.addTake(str[0], i);
     firePropertyChange(GameController.TAKE_SCORE, str[0]+"TAKE", ""+stats.getTake(str[0]));
+    int t = (this.deckSize() == 2) ? 50 : 25; 
+    if (stats.getTake(str[0]) == t) {
+      stats.addNoTricker(str[0]);
+    }
   }
   
   public void addScore() {
@@ -127,6 +131,11 @@ public class ScoreModel extends AbstractModel {
     if (stats.hasWinner()) {
       this.status = GameController.OVER;
     }
+    Debug.print(this.getGameInfo()); 
+
+    if (stats.hasWinner()) {
+      firePropertyChange(GameController.WINNER, "NONE", stats.getWinner());
+    } 
     firePropertyChange(GameController.MELD_SCORE, "NSMELD", ""+stats.getMeld("NS"));
     firePropertyChange(GameController.MELD_SCORE, "EWMELD", ""+stats.getMeld("EW"));
     firePropertyChange(GameController.TAKE_SCORE, "NSTAKE", ""+stats.getTake("NS"));
@@ -135,18 +144,17 @@ public class ScoreModel extends AbstractModel {
     firePropertyChange(GameController.HAND_SCORE, "EWHAND", ""+stats.getHand("EW"));
     firePropertyChange(GameController.GAME_SCORE, "NSGAME", ""+stats.getGame("NS"));
     firePropertyChange(GameController.GAME_SCORE, "EWGAME", ""+stats.getGame("EW"));
-    if (stats.hasWinner()) {
-      firePropertyChange(GameController.WINNER, "NONE", stats.getWinner());
-      Debug.print(this.getGameInfo());
-    }
   }
 
   public String getGameInfo() {
     String s = String.format(
-      "%6s %4d  %4d\n%6s %4d  %4d\n%6s %4d  %4d\n%6s %4d  %4d\n",
-      "Meld:", stats.getTotalMeld("NS"), stats.getTotalMeld("EW"),
-      "Take:", stats.getTotalTake("NS"), stats.getTotalTake("NS"),
-      "Game:", stats.getGame("NS"),      stats.getGame("EW")
+      "%14s %4d  %4d\n%14s %4d  %4d\n%14s %4d  %4d\n%14s %4d  %4d\n%14s %4d  %4d\n%14s %4d  %4d\n",
+      "Meld:",         stats.getTotalMeld("NS"),   stats.getTotalMeld("EW"),
+      "Take:",         stats.getTotalTake("NS"),   stats.getTotalTake("EW"),
+      "Game:",         stats.getGame("NS"),        stats.getGame("EW"),
+      "No Trickers:",  stats.getNoTrickers("NS"),  stats.getNoTrickers("EW"),
+      "Highest Meld:", stats.getHighestMeld("NS"), stats.getHighestMeld("EW"),
+      "Highest Take:", stats.getHighestTake("NS"), stats.getHighestTake("EW") 
     );
     return s;
   }
