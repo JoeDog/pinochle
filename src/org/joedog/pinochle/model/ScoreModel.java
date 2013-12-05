@@ -148,9 +148,10 @@ public class ScoreModel extends AbstractModel {
 
   public String getGameInfo() {
     String s = String.format(
-      "%14s %4d  %4d\n%14s %4d  %4d\n%14s %4d  %4d\n%14s %4d  %4d\n%14s %4d  %4d\n%14s %4d  %4d\n",
+      "%14s %4d  %4d\n%14s %4d  %4d\n%14s %4d  %4d\n%14s %4d  %4d\n%14s %4d  %4d\n%14s %4d  %4d\n%14s %4d  %4d\n",
       "Meld:",         stats.getTotalMeld("NS"),   stats.getTotalMeld("EW"),
       "Take:",         stats.getTotalTake("NS"),   stats.getTotalTake("EW"),
+      "Hand:",         stats.getHand("NS"),        stats.getHand("EW"),
       "Game:",         stats.getGame("NS"),        stats.getGame("EW"),
       "No Trickers:",  stats.getNoTrickers("NS"),  stats.getNoTrickers("EW"),
       "Highest Meld:", stats.getHighestMeld("NS"), stats.getHighestMeld("EW"),

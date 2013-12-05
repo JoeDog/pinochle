@@ -10,6 +10,7 @@ import javax.swing.JInternalFrame;
 import javax.swing.JOptionPane;
 import org.joedog.pinochle.control.GameController;
 import org.joedog.pinochle.game.*;
+import org.joedog.pinochle.util.*;
 import org.joedog.pinochle.view.Setting;
 import org.joedog.pinochle.view.TrumpDialog;
 
@@ -93,6 +94,8 @@ public class Human extends Player {
     boolean thinking = true;
     JFrame  frame    = new JFrame("Pass cards...");
     int     selected = 0;
+    
+    Debug.print(this.name+" was dealt:  "+this.hand.toString());
 
     //XXX: the okay button should be disabled until three cards are selected
     //XXX: three should be dynamic -- selected from config....
@@ -117,6 +120,7 @@ public class Human extends Player {
       }
     }
     this.setting.refresh(this.hand);
+    Debug.print(this.name+" passed:    "+deck.toString());
     return deck;
   } 
 

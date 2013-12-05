@@ -159,19 +159,18 @@ public class Meld {
         }
         if (marriage(trump, trump) == 0 && round(Pinochle.KING) < 1 && round(Pinochle.QUEEN) < 1) {
           Card king = new Card(Pinochle.KING, trump);
-          while (deck.count() < num && hand.contains(king) > 0) {
+          if (deck.count() < num && hand.contains(king) > 0) {
             deck.add(hand.pass(king));  
             hand.remove(king);  
           }
           Card queen = new Card(Pinochle.QUEEN, trump);
-          while (deck.count() < num && hand.contains(queen) > 0) {
+          if (deck.count() < num && hand.contains(queen) > 0) {
             deck.add(hand.pass(queen));  
             hand.remove(queen);  
           }
         } else 
           if (marriage(trump, trump) > 1 && deck.count() < 2 && 
               round(Pinochle.KING) < 1 && round(Pinochle.QUEEN) < 1) {
-          // XXX: is my 'else if' check sufficient???
           Card king  = new Card(Pinochle.KING, trump);
           Card queen = new Card(Pinochle.QUEEN, trump);
           if (trump == Pinochle.SPADES || trump == Pinochle.DIAMONDS) {
@@ -192,15 +191,10 @@ public class Meld {
         }
         if (round(Pinochle.JACK) < 1) {
           Card jack = new Card(Pinochle.JACK, trump);
-          while (deck.count() < num && hand.contains(jack) > 0) {
+          if (deck.count() < num && hand.contains(jack) > 0) {
             deck.add(hand.pass(jack));  
             hand.remove(jack);
           }
-        }
-        Card nine = new Card(Pinochle.NINE, trump);
-        while (deck.count() < num && hand.contains(nine) > 0) {
-          deck.add(hand.pass(nine));  
-          hand.remove(nine);
         }
       } // we're done passing trump...
       if (deck.count() == num) return deck;
@@ -212,6 +206,11 @@ public class Meld {
             hand.remove(c);
           }
         }
+      }
+      Card nine = new Card(Pinochle.NINE, trump);
+      while (deck.count() < num && hand.contains(nine) > 0) {
+        deck.add(hand.pass(nine));  
+        hand.remove(nine);
       }
     } else {
       /**

@@ -23,7 +23,7 @@ public class Configuration {
       Enumeration e = conf.propertyNames();
       while (e.hasMoreElements()) {
         String key = (String) e.nextElement();
-        System.out.println(key + " -- " + conf.getProperty(key));
+        //System.out.println(key + " -- " + conf.getProperty(key));
       }
        /**/
     } catch (Exception e) {

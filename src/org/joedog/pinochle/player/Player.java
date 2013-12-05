@@ -47,6 +47,12 @@ public abstract class Player {
     meld = new Meld(this.hand);
     assessment   = meld.assessment(); 
     this.maxBid  = assessment.maxBid();
+    if (assessment.getMeld() < 3) {
+      this.maxBid -= 5;
+    } 
+    if (assessment.getMeld() > 10) {
+      this.maxBid += 3;
+    }
     this.maxBid += guts();
     return 1;
   }
@@ -102,6 +108,10 @@ public abstract class Player {
 
   public int getPartner() {
     return this.partner;
+  }
+
+  public int getMaxBid() {
+    return this.maxBid;
   }
 
   public int lastBid() {

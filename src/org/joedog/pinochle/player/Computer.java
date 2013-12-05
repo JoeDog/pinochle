@@ -190,9 +190,11 @@ public class Computer extends Player {
    */
   public Deck passCards(boolean bidder) {
     Deck deck = null;
+    Debug.print(this.name+" was dealt: "+this.hand.toString());
     int trump = controller.getIntProperty("GameTrump");
     deck = meld.passables(bidder, 3, trump);
     this.setting.refresh(this.hand);
+    Debug.print(this.name+" passed:    "+deck.toString());
     return deck;
   }
 

@@ -192,6 +192,9 @@ public class Game {
     controller.store("Bidder",     ""+mark);
     controller.store("GameTrump",  ""+trump);
     controller.store("GameStatus", ""+GameController.PASS);
+    Debug.print(
+      players[mark].getName()+" won the bid with "+players[mark].lastBid()+" ("+players[mark].getMaxBid()+")"
+    );
     return;
   }
  
