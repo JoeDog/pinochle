@@ -60,13 +60,17 @@ public class Data {
   }
     
   public void addMeld(int meld) {
-    this.loMeld = (meld < this.loMeld) ? meld : this.loMeld; 
-    this.hiMeld = (meld > this.hiMeld) ? meld : this.hiMeld;
-    this.meld  += meld;
+    this.allMeld  = (this.meld == 0) ? 0 : this.allMeld;
+    this.loMeld   = (meld < this.loMeld) ? meld : this.loMeld; 
+    this.hiMeld   = (meld > this.hiMeld) ? meld : this.hiMeld;
+    this.meld    += meld;
+    this.allMeld += meld;
   }
 
   public void addTake(int take) {
-    this.take  += take;
+    this.allTake = (this.take == 0) ? 0 : this.allTake;
+    this.take    += take;
+    this.allTake += take;
   }
 
   public void addHand(int bid, int wscore) {

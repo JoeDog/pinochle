@@ -165,10 +165,10 @@ public class ScoreModel extends AbstractModel {
   }
 
   private int deckSize() {
-    if ((conf.getProperty("DeckSize")).equals("double")) {
+    String deck = conf.getProperty("DeckSize");
+    if (deck != null && deck.equals("double")) {
       return 2;
-    } else {
-      return 1;
-    }
+    } 
+    return 1;
   }
 }
