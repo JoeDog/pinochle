@@ -37,14 +37,14 @@ public class Splash {
 
   public void setMessage(String message) {
     int w     = 20;
-    int h     = 315;
+    int h     = 350;
 
     if (!okay) return;
 
     g.setComposite(AlphaComposite.Clear);
-    g.fillRect(0,0,300,320);
+    g.fillRect(0,0,340,360);
     g.setPaintMode();
-    g.setColor(Color.WHITE);
+    g.setColor(Color.BLACK);
 
     if (message.equals("close")) {
       g.drawString("Pinochle is ready ...", w, h);

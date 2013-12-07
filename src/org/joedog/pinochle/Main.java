@@ -20,7 +20,6 @@ import javax.swing.SwingUtilities;
  * @author Jeffrey Fulmer
  */
 public class Main {
-  private Splash splash;
   private static GameController controller;
   private static GameActions    actions;
   private static GameView       view;
@@ -67,21 +66,28 @@ public class Main {
     }
     catch (IllegalAccessException e) {
     }
+
+    Splash splash = new Splash();
     if (controller == null) {
       controller = new GameController();
+      splash.setMessage("controller");
     }
     if (model == null) {
       model = new GameModel();
+      splash.setMessage("configuration");
     }
     if (score == null) {
       score = new ScoreModel();
+      splash.setMessage("scoring");
     }
     if (view == null) {
       view = new GameView(controller);
+      splash.setMessage("view");
     }
     controller.addView(view);
     controller.addModel(model);
     controller.addModel(score);
+    splash.close();
     if (! controller.getHeadless()) {
       SwingUtilities.invokeLater(new Runnable() {
         public void run() {
