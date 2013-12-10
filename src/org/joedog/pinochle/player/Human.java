@@ -83,6 +83,7 @@ public class Human extends Player {
 
     //XXX: this is probably a Bad Idea to instantiate this here
     String trump = (String)td.getValue();
+    if (trump == null)            return Pinochle.SPADES;
     if (trump.equals("Hearts"))   return Pinochle.HEARTS;
     if (trump.equals("Clubs"))    return Pinochle.CLUBS;
     if (trump.equals("Diamonds")) return Pinochle.DIAMONDS;

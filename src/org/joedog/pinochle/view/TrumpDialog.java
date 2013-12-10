@@ -15,9 +15,16 @@ import org.joedog.pinochle.game.Pinochle;
 
 public class TrumpDialog extends JOptionPane implements View {
 
+  /** 
+   * This object displays a dialog from which a human player
+   * can select a trump suit from one of four buttons. Human
+   * can circumvent the dialog by closing the window. If that
+   * happens, player.Human will default to Pinochle.SPADES
+   */
   public TrumpDialog() {
     this.setMessage("Select Trump");
     this.setMessageType(JOptionPane.INFORMATION_MESSAGE);
+    this.setValue("Spades");
     String [] suits = {"Hearts", "Clubs", "Diamonds", "Spades"};
     Icon icons[] = new ImageIcon[4];
     for (int i = 0; i < 4; i++) {

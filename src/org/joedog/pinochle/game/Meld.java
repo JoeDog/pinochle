@@ -48,7 +48,7 @@ public class Meld {
    * Kings round       8,  80
    * Queens round      6,  60
    * Jacks round       4,  40
-   * Nines in trump    1 point each
+   
    * Marriages         4 points in trump, 2 pts otherwise
    * Pinochle Jack of Diamonds & Queen of Spades 4, 30
    * 
@@ -159,29 +159,29 @@ public class Meld {
         }
         if (marriage(trump, trump) == 0 && round(Pinochle.KING) < 1 && round(Pinochle.QUEEN) < 1) {
           Card king = new Card(Pinochle.KING, trump);
-          if (deck.count() < num && hand.contains(king) > 0) {
-            deck.add(hand.pass(king));  
-            hand.remove(king);  
-          }
-          Card queen = new Card(Pinochle.QUEEN, trump);
-          if (deck.count() < num && hand.contains(queen) > 0) {
-            deck.add(hand.pass(queen));  
-            hand.remove(queen);  
-          }
+          if (! (trump == Pinochle.SPADES && pinochle() > 1)) {
+            if (deck.count() < num && hand.contains(king) > 0) {
+              deck.add(hand.pass(king));  
+              hand.remove(king);  
+            }
+            Card queen = new Card(Pinochle.QUEEN, trump);
+            if (deck.count() < num && hand.contains(queen) > 0) {
+              deck.add(hand.pass(queen));  
+              hand.remove(queen);  
+            }
+          } 
         } else 
           if (marriage(trump, trump) > 1 && deck.count() < 2 && 
               round(Pinochle.KING) < 1 && round(Pinochle.QUEEN) < 1) {
           Card king  = new Card(Pinochle.KING, trump);
           Card queen = new Card(Pinochle.QUEEN, trump);
-          if (trump == Pinochle.SPADES || trump == Pinochle.DIAMONDS) {
-            if (pinochle() < 1) {
-              // We don't want to pass pinochle; 
-              // XXX: maybe we do but that's for later
-              deck.add(hand.pass(king));  
-              hand.remove(king);  
-              deck.add(hand.pass(queen));  
-              hand.remove(queen);  
-            }
+          if (! ((trump == Pinochle.SPADES || trump == Pinochle.DIAMONDS) && pinochle() > 1)) {
+            // We don't want to pass pinochle; 
+            // XXX: maybe we do but that's for later
+            deck.add(hand.pass(king));  
+            hand.remove(king);  
+            deck.add(hand.pass(queen));  
+            hand.remove(queen);  
           }
         } // else if marriage in trump
         Card ten = new Card(Pinochle.TEN, trump);
@@ -190,10 +190,12 @@ public class Meld {
           hand.remove(ten);
         }
         if (round(Pinochle.JACK) < 1) {
-          Card jack = new Card(Pinochle.JACK, trump);
-          if (deck.count() < num && hand.contains(jack) > 0) {
-            deck.add(hand.pass(jack));  
-            hand.remove(jack);
+          if (!(trump == Pinochle.DIAMONDS && pinochle() > 1)) {
+            Card jack = new Card(Pinochle.JACK, trump);
+            if (deck.count() < num && hand.contains(jack) > 0) {
+              deck.add(hand.pass(jack));  
+              hand.remove(jack);
+            }
           }
         }
       } // we're done passing trump...
@@ -235,15 +237,13 @@ public class Meld {
             round(Pinochle.KING) < 1 && round(Pinochle.QUEEN) < 1) {
         Card king  = new Card(Pinochle.KING, suit);
         Card queen = new Card(Pinochle.QUEEN, suit);
-        if (suit == Pinochle.SPADES || suit == Pinochle.DIAMONDS) {
-          if (pinochle() < 1) {
-            // We don't want to pass pinochle; 
-            // XXX: maybe we do but that's for later
-            deck.add(hand.pass(king));
-            deck.add(hand.pass(queen));
-            hand.remove(king);
-            hand.remove(queen);
-          }
+        if (! ((suit == Pinochle.SPADES || suit == Pinochle.DIAMONDS) && pinochle() > 1)) {
+          // We don't want to pass pinochle; 
+          // XXX: maybe we do but that's for later
+          deck.add(hand.pass(king));
+          deck.add(hand.pass(queen));
+          hand.remove(king);
+          hand.remove(queen);
         }
       }
       Card ten = new Card(Pinochle.TEN, suit);
@@ -252,10 +252,12 @@ public class Meld {
         hand.remove(ten);
       }
       if (round(Pinochle.JACK) < 1) {
-        Card jack = new Card(Pinochle.JACK, suit);
-        while (deck.count() < num && hand.contains(jack) > 0) {
-          deck.add(hand.pass(jack));  
-          hand.remove(jack);
+        if (!(suit == Pinochle.DIAMONDS && pinochle() > 0)) {
+          Card jack = new Card(Pinochle.JACK, suit);
+          while (deck.count() < num && hand.contains(jack) > 0) {
+            deck.add(hand.pass(jack));  
+            hand.remove(jack);
+          }
         }
       }
       Card nine = new Card(Pinochle.NINE, suit);
@@ -282,13 +284,19 @@ public class Meld {
           deck.add(hand.pass(card));
           hand.remove(card);
         } else if (card.getSuit() != trump && card.getRank() != Pinochle.ACE) {
-          // DO NOT PASS TRUMP OR ACES!!
+          if (!(pinochle() > 1 && card.isPinochleMate())) {
+            deck.add(hand.pass(card));
+            hand.remove(card);
+          }
+        }
+      } else {
+        if (tries >= 50) {
+          deck.add(hand.pass(card));
+          hand.remove(card);
+        } else if (!(pinochle() > 1 && card.isPinochleMate())) {
           deck.add(hand.pass(card));
           hand.remove(card);
         }
-      } else {
-        deck.add(hand.pass(card));
-        hand.remove(card);
       }
       tries++;
     }  

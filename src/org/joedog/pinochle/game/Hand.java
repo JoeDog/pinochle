@@ -186,6 +186,25 @@ public class Hand {
     return num;
   }
 
+  /**
+   * Returns are card which is not in trump; 
+   * generally invoked near the end of the 
+   * hand in order to preserve trump for the
+   * last trick.
+   * <p>
+   * @param  int   The named trump suit
+   * @return Card  A non-trump Card
+   */
+  public Card nonTrump(int trump) {
+    Card card = null;
+    for (Card c: this.getCards()) {
+      if (c != null && c.getSuit() != trump) {
+        card = c;
+      } 
+    }
+    return card;
+  }
+
   public Card getLowest() {
     //XXX: should call contains first  
     Card card  = this.get(0); 

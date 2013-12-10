@@ -19,7 +19,6 @@ public class NewAction implements ActionListener {
         controller.resetGame();
       }
     });
-
   }
 }
 

@@ -285,6 +285,23 @@ public class Computer extends Player {
         }
       }
     }
+    if (card == null && this.hand.size() == this.hand.contains(trick.getTrump())) {
+      card = this.hand.getHighest(trick.getTrump());
+      Debug.print(this.name+" has nothing but trump: "+card.toString());
+    }
+    if (card == null) {
+      // loop through the suits and see if we have as many 
+      // in a suit as we have in a hand....
+      for (int S = 0; S < 4; S++) {
+        if (this.hand.size() == this.hand.contains(S)) {
+          card = this.hand.getHighest(S);
+        }
+      }
+    }
+    if (card == null && this.hand.size() == 2 && this.hand.contains(trick.getTrump()) == 1) {
+      card = this.hand.nonTrump(trick.getTrump()); 
+      Debug.print(this.name+" is trying to preserve trump with this play: "+card.toString());
+    }
     while (card == null) {
       Random r = new Random();
       int    h = (this.hand.size() > 2) ? this.hand.size() : 2;

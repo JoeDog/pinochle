@@ -61,7 +61,11 @@ public class GameController extends AbstractController {
     runViewMethod("clearTrick");
     runViewMethod("clearLast");
     setModelProperty("GameStatus", ""+DEAL);
-    this.thread.stop();
+    if (this.isPaused()) {
+      this.pause(false);
+    } else {
+      this.thread.stop();
+    }
   }
 
   public void winner() {
@@ -266,6 +270,5 @@ public class GameController extends AbstractController {
       this.pause(true);
       this.runViewMethod("startConfig");
     }
-    System.out.println("done");
   }
 }

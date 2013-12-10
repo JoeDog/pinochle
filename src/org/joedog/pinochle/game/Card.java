@@ -291,6 +291,14 @@ public class Card {
     } 
   }
 
+  public boolean isPinochleMate() {
+    if (this.suit == Pinochle.DIAMONDS && this.rank == Pinochle.JACK) 
+      return true;
+    if (this.suit == Pinochle.SPADES && this.rank == Pinochle.QUEEN) 
+      return true;
+    return false;
+  }
+
   /**
    * Return a URL {@Link URL} which locates the image
    * of the card; automatically determines if it

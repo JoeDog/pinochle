@@ -12,9 +12,12 @@ import java.awt.BorderLayout;
 import java.awt.Dimension;
 import java.awt.Toolkit;
 import javax.swing.WindowConstants;
+import java.awt.Color;
 
 import javax.swing.UIManager;
 import javax.swing.SwingUtilities;
+import javax.swing.UIManager.LookAndFeelInfo;
+import javax.swing.UnsupportedLookAndFeelException;
 
 /**
  * @author Jeffrey Fulmer
@@ -52,9 +55,21 @@ public class Main {
     frame.setVisible(true);
   }
 
+  private static void adjustLAF() throws ClassNotFoundException,
+    InstantiationException, IllegalAccessException,
+    UnsupportedLookAndFeelException {
+    for (LookAndFeelInfo info : UIManager.getInstalledLookAndFeels()) {
+      if ("Nimbus".equals(info.getName())) {
+        //UIManager.setLookAndFeel(info.getClassName());
+        break;
+      }
+    }
+  }
+
   public static void main(String[] args) {
     try {
       UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
+      adjustLAF();
     }
     catch (javax.swing.UnsupportedLookAndFeelException e) {
       System.err.println("Pinochle requires java-1.6 or higher");

@@ -4,6 +4,7 @@ import java.util.Random;
 
 public class Deck extends Pack {
   public int size  = -1; 
+  public int count = 6;
 
   static final int ranks[] = {
     Pinochle.ACE,
@@ -39,8 +40,9 @@ public class Deck extends Pack {
   public Deck (int size) {
     int id = 0;
     this.size = size;
+    this.count = (this.size==2) ? 5 : 6;
     for (int x = 0; x < (this.size*2); x++) {
-      for (int i = 0; i < ranks.length; i++) {
+      for (int i = 0; i < this.count; i++) {
         for (int j = 0; j < suits.length; j++) {
           add(new Card(ranks[i], suits[j], id++));
         }
