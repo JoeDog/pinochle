@@ -97,6 +97,7 @@ public class Brain {
 
   public boolean outstandingTrump(Hand hand, int trump) {
     int num = deck.contains(trump) + hand.contains(trump);  
+    // XXX: HARD-CODE ALERT!!!!!!!!
     if (num == 12) return false; // no outstanding trump
     else return true;
   }

@@ -54,7 +54,73 @@ public abstract class Player {
       this.maxBid += 3;
     }
     this.maxBid += guts();
+   
+    // XXX: If we're not playing pass option, 
+    // then we have to remove this block 
+    if (this.maxBid < 25 && assessment.getMeld() >= 5) {
+      this.maxBid = this.miniMax();
+    } 
+
+    // adjust down a mediocre meld low power hand
+    if (this.maxBid >= 25 && (assessment.getAces() < 3 && assessment.getMeld() < 15)) {
+      this.maxBid = 21;
+    }
+
+    // no good ever came from a hand with no aces...
+    if (assessment.getAces() == 0) {
+      this.maxBid = assessment.getMeld() + 8;
+    }
+ 
+    // conversely, good things come to those with aces 
+    if (assessment.getAces() == 4 && this.maxBid < 16) {
+      this.maxBid = 21;
+    }
+
     return 1;
+  }
+
+  /**
+   * Return the minimum max bid. We tried
+   * everything to construct a competitive 
+   * bid but nothing worked. So now we'll 
+   * leave it to chance...
+   * <p>
+   * @param  none
+   * @return int    The minimum maxbid
+   */
+  private int miniMax() {
+    Random r = new Random();
+    int    n = 100;
+    int  num = r.nextInt(n) + 1;
+
+    if (num == 100) {
+      return 26;
+    } 
+    if (num >= 90) {
+      return 25;
+    }
+    if (num >= 80) {
+      return 24;
+    }
+    if (num >= 70) {
+      return 23;
+    }
+    if (num >= 60) {
+      return 22;
+    }
+    if (num >= 50) {
+      return 21;
+    }
+    if (num >= 40) {
+      return 20;
+    }
+    if (num >= 30) {
+      return 19;
+    }
+    if (num >= 20) {
+      return 18;
+    }
+    return -1;
   }
 
   private int guts() {

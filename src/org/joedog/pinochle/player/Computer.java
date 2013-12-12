@@ -233,18 +233,29 @@ public class Computer extends Player {
       Pinochle.DIAMONDS, 
       Pinochle.SPADES
     };
-    if (this.hand.aces(trick.getTrump()) > 0) {
-      if (this.hand.contains(new Card(Pinochle.ACE, trick.getTrump())) > 0) {
-        card = new Card(Pinochle.ACE, trick.getTrump());
-        Debug.print(this.name+" unleashes his fire power: "+card.toString());
-      }
+
+    if (this.bidder && brain.haveHighest(this.hand, trick.getTrump()) && 
+        brain.outstandingTrump(this.hand, trick.getTrump())) {
+      // XXX: This options plays well with a power hand but what about forcing
+      // out the other ace? We have beat-the-queen below but do we want to run
+      // all our aces first? 
+      card = this.hand.getHighest(trick.getTrump());
+      Debug.print(this.name+" plans to run you fsckers out of trump: "+card.toString());
     } else {
-      Debug.print(this.name+" is looking for aces");
-      for (int i = 0; i < 4; i++) {
-        if (this.hand.aces(i) > 0) {
-          card = new Card(Pinochle.ACE, i);
-          Debug.print(this.name+" fires an ace: "+card.toString());
-          break;
+      // We're not the bidder - we're mostly concerned with getting tricks
+      if (this.hand.aces(trick.getTrump()) > 0) {
+        if (this.hand.contains(new Card(Pinochle.ACE, trick.getTrump())) > 0) {
+          card = new Card(Pinochle.ACE, trick.getTrump());
+          Debug.print(this.name+" unleashes his fire power: "+card.toString());
+        }
+      } else {
+        Debug.print(this.name+" is looking for aces");
+        for (int i = 0; i < 4; i++) {
+          if (this.hand.aces(i) > 0) {
+            card = new Card(Pinochle.ACE, i);
+            Debug.print(this.name+" fires an ace: "+card.toString());
+            break;
+          }
         }
       }
     }

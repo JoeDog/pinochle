@@ -45,6 +45,10 @@ public class Assessment {
     this.aces = aces;
   }
 
+  public int getAces() {
+    return this.aces;
+  }
+
   public void setTrumpCount(int trump) {
     this.trump = trump;
   }

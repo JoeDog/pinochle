@@ -99,10 +99,10 @@ public class Meld {
       }
       if (cnt < matt) matt = cnt;
       if (this.hand.contains(new Card(Pinochle.ACE, suits[i])) == 2) {
-        power += 4;
+        power += 3;
       }  
       if (power == 4 && this.hand.contains(new Card(Pinochle.ACE, suits[i])) == 2) {
-        power += 4;
+        power += 3;
       }
       if (power == 4 && this.hand.contains(new Card(Pinochle.ACE, suits[i])) == 2) {
         power += 2;
@@ -111,13 +111,13 @@ public class Meld {
         power += 3;
       }
       if (matt < 2) {
-        power += 3;
+        power += 2;
       }
       if (meld < 6) {
         power -= 4;
       }
       if (run(suits[i]) > 0) {
-        power += 6;
+        power += 5;
       } else {
         switch(shy(suits[i])) {
           case 1: 
@@ -317,7 +317,7 @@ public class Meld {
         num += 1;
       }
     }
-    if (num > 1) return 5;
+    if (num > 1) return 4;
     else return 0;
   }
 
