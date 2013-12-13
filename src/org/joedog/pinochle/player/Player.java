@@ -55,6 +55,13 @@ public abstract class Player {
     }
     this.maxBid += guts();
    
+    // We need to shave some bid if we're lacking aces 
+    // We'll shave even more down below if we don't have
+    // adequate meld....
+    if (this.maxBid >= 30 && assessment.getAces() < 3) {
+      this.maxBid -= 3;
+    }
+   
     // XXX: If we're not playing pass option, 
     // then we have to remove this block 
     if (this.maxBid < 25 && assessment.getMeld() >= 5) {
@@ -66,14 +73,33 @@ public abstract class Player {
       this.maxBid = 21;
     }
 
+    if (this.maxBid >= 30 && assessment.getAces() < 3) {
+      this.maxBid -= 4;
+    }
+
     // no good ever came from a hand with no aces...
     if (assessment.getAces() == 0) {
       this.maxBid = assessment.getMeld() + 8;
     }
  
     // conversely, good things come to those with aces 
-    if (assessment.getAces() == 4 && this.maxBid < 16) {
+    if (assessment.getAces() >= 3 && this.maxBid < 16) {
+      this.maxBid = (assessment.getAces() >= 4) ? 25 : 21;
+    }
+
+    // Bids in the thirties with 4 cards in trump are nearly 
+    // impossible to achieve without a shitload of meld
+    if (assessment.getTrumpCount() < 5) {
+      this.maxBid = (assessment.getMeld() > 15) ? this.maxBid : (this.maxBid - 3); 
+    }
+
+    if (assessment.getTrumpCount() > 5 && this.maxBid < 16) {
       this.maxBid = 21;
+    }
+
+    if (assessment.getTrumpCount() >= 5 && assessment.getAces() >= 3 && this.maxBid < 16) {
+      // I'm not sure how this scenario occurs but I've seen it
+      this.maxBid = 25;
     }
 
     return 1;
@@ -161,7 +187,7 @@ public abstract class Player {
   }
 
   public String handToString() {
-    return this.name+" "+this.hand.toString();
+    return this.hand.toString();
   }
 
   public boolean wonBid() {

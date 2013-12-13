@@ -167,8 +167,7 @@ public class Game {
     for (Player player : players) {
       player.refresh();
       player.assessHand();
-      Debug.print(player.getName()+"'s max bid is: "+player.getMaxBid());
-      Debug.print("("+player.handToString()+")");
+      Debug.print(player.getName()+"'s max bid is: "+player.getMaxBid()+"\t["+player.handToString()+"]");
     }
 
     while (sum < (players.length - 1)) {

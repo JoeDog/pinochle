@@ -96,8 +96,6 @@ public class Human extends Player {
     JFrame  frame    = new JFrame("Pass cards...");
     int     selected = 0;
     
-    Debug.print(this.name+" was dealt:  "+this.hand.toString());
-
     //XXX: the okay button should be disabled until three cards are selected
     //XXX: three should be dynamic -- selected from config....
     //while (hand.numSelected() < 3) {
@@ -121,7 +119,7 @@ public class Human extends Player {
       }
     }
     this.setting.refresh(this.hand);
-    Debug.print(this.name+" passed:    "+deck.toString());
+    Debug.print(this.name+" passed:\t"+deck.toString());
     return deck;
   } 
 

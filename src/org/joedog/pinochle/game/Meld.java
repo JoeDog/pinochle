@@ -201,11 +201,14 @@ public class Meld {
       } // we're done passing trump...
       if (deck.count() == num) return deck;
       if (round(Pinochle.ACE) < 1) {
-        for (int i = 0; i < suits.length && deck.count() < num; i++) {
-          Card c = new Card(Pinochle.ACE, suits[i]);
-          if (hand.contains(c) > 0) {
-            deck.add(hand.pass(c));
-            hand.remove(c);
+        // loop twice because there's tow of each
+        for (int j = 0; j < 2 && deck.count() < num; j++) { 
+          for (int i = 0; i < suits.length && deck.count() < num; i++) {
+            Card c = new Card(Pinochle.ACE, suits[i]);
+            if (hand.contains(c) > 0) {
+              deck.add(hand.pass(c));
+              hand.remove(c);
+            }
           }
         }
       }

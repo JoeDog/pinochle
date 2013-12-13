@@ -80,23 +80,13 @@ public class Computer extends Player {
       ptops += 1;
     }
     if (ptops  ==  1 && (this.maxBid-1) > bid) {
-      int tmp = this.maxBid - bid;
-      switch(tmp) {
-        case 15: case 14: case 13: case 12: case 11:
-          this.myBid = bid+11;
-          break;
-        case 10: case 9: case 8: case 7: case 6:
-          this.myBid = bid + 6;
-          break;
-        case 5: case 4: case 3:
-          this.myBid = bid + 3; 
-        case 2: case 1:
-          this.myBid = bid + 1;
-        default:
-          if (tmp > 15)  this.myBid = (this.maxBid - 2);
-          if (tmp < bid) this.myBid = -1;
-          break;
-      }
+      // We'll place a bid that is 60% of the 
+      // difference between the current bid and
+      // our maxBid
+      int tmp    = (int)((this.maxBid - bid)*.5);
+      this.myBid = bid + tmp;
+      this.myBid = (this.myBid < bid) ? -1 : this.myBid; 
+
       if (this.myBid == -1) 
         this.setting.setText("Bid: Pass");
       else 
@@ -190,11 +180,10 @@ public class Computer extends Player {
    */
   public Deck passCards(boolean bidder) {
     Deck deck = null;
-    Debug.print(this.name+" was dealt: "+this.hand.toString());
     int trump = controller.getIntProperty("GameTrump");
     deck = meld.passables(bidder, 3, trump);
     this.setting.refresh(this.hand);
-    Debug.print(this.name+" passed:    "+deck.toString());
+    Debug.print(this.name+" passed:\t"+deck.toString());
     return deck;
   }
 
@@ -241,12 +230,34 @@ public class Computer extends Player {
       // all our aces first? 
       card = this.hand.getHighest(trick.getTrump());
       Debug.print(this.name+" plans to run you fsckers out of trump: "+card.toString());
-    } else {
+    } else if (this.hand.singletons() > 0) {
+      card = this.hand.getSingleton();
+      if (card != null) Debug.print(this.name+" better play a singleton: "+card.toString());
+    } else if (this.bidder && brain.outstandingTrump(this.hand, trick.getTrump())) {
+      // if we meet this condition, then there's outstanding trump but
+      // we don't have the highest card; let's throw some garbage and try
+      // to force it out...
+      if (this.hand.contains(new Card(Pinochle.QUEEN, trick.getTrump())) > 0) {
+        card = new Card(Pinochle.QUEEN, trick.getTrump());
+      }
+      if (card == null && this.hand.contains(new Card(Pinochle.JACK, trick.getTrump())) > 0) {
+        card = new Card(Pinochle.JACK, trick.getTrump());
+      }
+      if (card == null && this.hand.contains(new Card(Pinochle.NINE, trick.getTrump())) > 0) {
+        card = new Card(Pinochle.NINE, trick.getTrump());
+      }
+      if (card != null) 
+        Debug.print(this.name+" says, c'mon let's see some trump: "+card.toString());
+    }
+    if (brain.haveHighest(this.hand, trick.getTrump())) {
+      Debug.print(this.name+" has the highest trump...");
+    }
+    if (card == null) {
       // We're not the bidder - we're mostly concerned with getting tricks
       if (this.hand.aces(trick.getTrump()) > 0) {
         if (this.hand.contains(new Card(Pinochle.ACE, trick.getTrump())) > 0) {
           card = new Card(Pinochle.ACE, trick.getTrump());
-          Debug.print(this.name+" unleashes his fire power: "+card.toString());
+          Debug.print(this.name+" unleashes some fire power: "+card.toString());
         }
       } else {
         Debug.print(this.name+" is looking for aces");
@@ -260,10 +271,7 @@ public class Computer extends Player {
       }
     }
     if (card == null) {
-      Debug.print(this.name+" checked and found no aces....");
       // Let's see if we have a high card....
-      // XXX: we need to remove the position check. 
-      // XXX: we're gonna use NS as a control now.
       shuffle(s);
       for (int i : s) {
         if (brain.haveHighest(this.hand, i) == true) {
@@ -276,6 +284,24 @@ public class Computer extends Player {
           break;
         }
       }
+      // If we got here, we're vulnerable. 
+      // Let's try to save our firepower...
+      shuffle(s);
+      for (int i : s) {
+        Card tmp = this.hand.getLowest(i);
+        if (tmp != null) {
+          card = tmp;
+          break; 
+        }
+      } 
+    }
+    if (card == null) {
+      // Middle of the hand; trump is played out and so are our aces. Let's shorten
+      // the game with some superfluous trump and grab our partner's counters...
+      if (this.hand.size() > 4 && this.hand.contains(trick.getTrump()) > 2) {
+        card = this.hand.getHighest(trick.getTrump());
+      }
+      if (card != null) Debug.print(this.name+" has a monopoly on trump: "+card.toString());
     }
     if (card == null) {
       // Let's play Beat the Queen....
@@ -373,7 +399,7 @@ public class Computer extends Player {
           if (card != null) return card;
         } else {
           card = temp;
-          Debug.print(this.name+" has the highest card and [s]he's gonna play it! "+card.toString());
+          Debug.print(this.name+" has the highest card and here it comes: "+card.toString());
           if (card != null) return card;
         }
       } else {
@@ -422,13 +448,13 @@ public class Computer extends Player {
           card = this.hand.getCounter(sel);
           if (card == null) 
             card = this.hand.getCounter();
-          Debug.print(this.name+" says, '(281) Good job! I'll to give you a counter: "+card.toString()+"'");
+          Debug.print(this.name+" says, '(453) Good job! I'll to give you a counter: "+card.toString()+"'");
           if (card != null) return card;
         } else {
           card = this.hand.getLowest(sel);
           if (card.getRank() == Pinochle.ACE) 
             card = this.hand.getLowest();
-          Debug.print(this.name+" says, '(300) Bad guys got it. Here's my worst card: "+card.toString()+"'");
+          Debug.print(this.name+" says, '(459) Bad guys got it. Here's my worst card: "+card.toString()+"'");
           if (card != null) return card;
         }
       } else {
@@ -436,11 +462,11 @@ public class Computer extends Player {
           card = this.hand.getCounter();
           if (card == null)  
             card = this.hand.getLowest();
-          Debug.print(this.name+" says, '(291) Good job! I tried to give you a counter: "+card.toString()+"'");
+          Debug.print(this.name+" says, '(467) Good job! I tried to give you a counter: "+card.toString()+"'");
           if (card != null) return card;
         } else {
           card = this.hand.getLowest();
-          Debug.print(this.name+" says, '(310) Bad guys got it. Here's my worst card: "+card.toString()+"'");
+          Debug.print(this.name+" says, '(471) Bad guys got it. Here's my worst card: "+card.toString()+"'");
           if (card != null) return card;
         }
       }

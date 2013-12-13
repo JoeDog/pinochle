@@ -125,18 +125,6 @@ public class Hand {
     return found;
   }
 
-  public boolean canTop(Card card) {
-    if (card == null) {
-      return false;
-    }
-    for (Card c: this.getCards()){
-      if (c.getSuit() == card.getSuit() && c.getRank() > card.getRank()) {
-        return true;
-      }
-    }
-    return false;
-  }
- 
   /**
    * Returns an int which represents the number of 
    * instances of suit discovered in the hand
@@ -154,6 +142,53 @@ public class Hand {
     return num;
   }
 
+  /** 
+   * Returns an int which represents the number of
+   * singletons in our hand. A singleton is a bare
+   * ace in a suit. With nothing to play off on the
+   * other ace; we want to play our singletons
+   * <p>
+   * @param  none
+   * @return int   the number of suits containing singletons
+   */
+  public int singletons() {
+    int num = 0; //singletons
+    for (int i = 0; i < 4; i++) {
+      if (this.contains(new Card(Pinochle.ACE, i)) == 1 && this.contains(i) == 1) {
+        num ++;
+      }
+    }
+    return num;
+  }
+
+  public Card getSingleton() {
+    Card tmp = null;
+    for (int i = 0; i < 4; i++) {
+      if (this.contains(new Card(Pinochle.ACE, i)) == 1 && this.contains(i) == 1) {
+        tmp = new Card(Pinochle.ACE, i);
+        break;
+      }
+    }
+    // this check is probably not necessary, 
+    // but you can't be too cautious these days...
+    if (this.contains(tmp) > 0) 
+      return tmp;
+    else 
+      return null;
+  }
+
+  public boolean canTop(Card card) {
+    if (card == null) {
+      return false;
+    }
+    for (Card c: this.getCards()){
+      if (c.getSuit() == card.getSuit() && c.getRank() > card.getRank()) {
+        return true;
+      }
+    }
+    return false;
+  }
+ 
   /**
    * Returns an int which represents the number of aces
    * of parameter suit contained within the Hand
