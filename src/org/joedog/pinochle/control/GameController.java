@@ -163,6 +163,8 @@ public class GameController extends AbstractController {
   // ExitAction
   public void exit() {
     setStatus("Shutting down...");
+    this.setProperty("MainX", System.getProperty("main.X"));
+    this.setProperty("MainY", System.getProperty("main.Y"));
     this.save();
     try {
       TimeUnit.SECONDS.sleep(1);

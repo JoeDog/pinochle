@@ -62,6 +62,14 @@ public class GameModel extends AbstractModel {
     conf.setProperty("ConfigY", Y);
   }
 
+  public void setDialogX(String X) {
+    conf.setProperty("DialogX", X);
+  }
+
+  public void setDialogY(String Y) {
+    conf.setProperty("DialogY", Y);
+  }
+
   public void setPlayerEastName(String name) {
     conf.setProperty("PlayerEastName", name);
     firePropertyChange(GameController.RECONFIG, "EASTNAME", name);
@@ -121,6 +129,14 @@ public class GameModel extends AbstractModel {
     return conf.getProperty("Headless");
   }
 
+  public String getMainX() {
+    return conf.getProperty("MainX");
+  }
+
+  public String getMainY() {
+    return conf.getProperty("MainY");
+  }
+
   public String getConfigX() {
     return conf.getProperty("ConfigX");
   }
@@ -129,12 +145,18 @@ public class GameModel extends AbstractModel {
     return conf.getProperty("ConfigY");
   }
 
-  public String getMainX() {
-    return conf.getProperty("MainX");
+  public String getDialogX() {
+    if (conf.getProperty("DialogX") == null) {
+      return Integer.toString(650);
+    }
+    return conf.getProperty("DialogX");
   }
 
-  public String getMainY() {
-    return conf.getProperty("MainY");
+  public String getDialogY() {
+    if (conf.getProperty("DialogY") == null) {
+      return Integer.toString(400);
+    }
+    return conf.getProperty("DialogY");
   }
 
   public String getPlayerEastName() {

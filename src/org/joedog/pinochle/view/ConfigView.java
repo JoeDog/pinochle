@@ -89,7 +89,6 @@ public class ConfigView extends JFrame {
 
   public void display() {
     //Dimension dim   = Toolkit.getDefaultToolkit().getScreenSize();
-    System.out.println("displaying config!");
     pinochle = this.getContentPane();
     pinochle.setLayout(new BorderLayout());
     int x = controller.getIntProperty("ConfigX");

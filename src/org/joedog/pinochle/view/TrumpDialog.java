@@ -12,8 +12,11 @@ import javax.swing.JOptionPane;
 import javax.swing.SwingUtilities;
 
 import org.joedog.pinochle.game.Pinochle;
+import org.joedog.pinochle.control.GameController;
+
 
 public class TrumpDialog extends JOptionPane implements View {
+  GameController controller;
 
   /** 
    * This object displays a dialog from which a human player
@@ -21,7 +24,8 @@ public class TrumpDialog extends JOptionPane implements View {
    * can circumvent the dialog by closing the window. If that
    * happens, player.Human will default to Pinochle.SPADES
    */
-  public TrumpDialog() {
+  public TrumpDialog(GameController controller) {
+    this.controller = controller;
     this.setMessage("Select Trump");
     this.setMessageType(JOptionPane.INFORMATION_MESSAGE);
     this.setValue("Spades");
@@ -35,9 +39,13 @@ public class TrumpDialog extends JOptionPane implements View {
       objects[i] = getButton(this, suits[i], icons[i]);
     }
     this.setOptions(objects);
+    // We rely on the same coordinates captured by our BidDialog
+    int xpos = controller.getIntProperty("DialogX");
+    int ypos = controller.getIntProperty("DialogY");
+ 
     final JDialog dialog = this.createDialog(null, "Select Trump");
     dialog.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
-    dialog.setLocationRelativeTo(null);
+    dialog.setLocation(xpos, ypos);
     dialog.setVisible(true);
   }
 

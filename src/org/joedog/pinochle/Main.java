@@ -8,16 +8,19 @@ import org.joedog.pinochle.view.*;
 import org.joedog.pinochle.view.actions.*;
 
 import javax.swing.JFrame;
+import java.awt.Color;
 import java.awt.BorderLayout;
 import java.awt.Dimension;
 import java.awt.Toolkit;
-import javax.swing.WindowConstants;
-import java.awt.Color;
+import java.awt.event.ComponentListener;
+import java.awt.event.ComponentEvent;
+import java.awt.event.ComponentAdapter;
 
 import javax.swing.UIManager;
 import javax.swing.SwingUtilities;
 import javax.swing.UIManager.LookAndFeelInfo;
 import javax.swing.UnsupportedLookAndFeelException;
+import javax.swing.WindowConstants;
 
 /**
  * @author Jeffrey Fulmer
@@ -33,13 +36,20 @@ public class Main {
   public Main() { }
 
   private static void createAndShowGui(GameController controller, GameView view) {
-    JFrame   frame = new JFrame("Pinochle");
+    final JFrame frame = new JFrame("Pinochle");
     GameMenu menu  = new GameMenu(new GameActions(controller));
     frame.setJMenuBar(menu);
     frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
     frame.setContentPane(view.createContentPane());
     frame.setPreferredSize(new Dimension(970,630));
     frame.setSize(970, 630);
+    frame.addComponentListener(new ComponentAdapter() {
+      public void componentMoved(ComponentEvent e) {
+        //We'll snag and save these properties when we exit
+        System.getProperties().put("main.X", ""+frame.getX());
+        System.getProperties().put("main.Y", ""+frame.getY());
+      }
+    });
     Dimension dim  = Toolkit.getDefaultToolkit().getScreenSize();
     int x = controller.getIntProperty("MainX");
     int y = controller.getIntProperty("MainY");

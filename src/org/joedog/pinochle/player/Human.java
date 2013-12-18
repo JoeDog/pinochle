@@ -13,6 +13,7 @@ import org.joedog.pinochle.game.*;
 import org.joedog.pinochle.util.*;
 import org.joedog.pinochle.view.Setting;
 import org.joedog.pinochle.view.TrumpDialog;
+import org.joedog.pinochle.view.BidDialog;
 
 public class Human extends Player {
   private GameController controller;
@@ -50,6 +51,7 @@ public class Human extends Player {
   }
 
   public int bid(int bid) {
+    /**************************************************************************
     int tmp       = bid + 1;
     String bids[] = new String[16];
    
@@ -68,17 +70,24 @@ public class Human extends Player {
       // insert error handling if conversion to string is not successful
       myBid = -1;
     }
-    if (this.myBid < 0) 
+    **************************************************************************/
+    if (myBid == -1) return myBid;
+
+    BidDialog bd = new BidDialog(this.controller, bid+1); 
+    this.myBid   = bd.getValue();
+    if (this.myBid < 0) {
+      System.out.println(this.name+" passed.");
       this.setting.setText("Bid: Pass");
-    else
+    } else {
       this.setting.setText("Bid: "+this.myBid);
-    return myBid;
+    }
+    return this.myBid;
   }
 
   public int nameTrump() {
     String suits[] = new String[]{"Hearts", "Clubs", "Diamonds", "Spades"};
     JFrame frame   = new JFrame("Trump");
-    TrumpDialog td = new TrumpDialog();
+    TrumpDialog td = new TrumpDialog(this.controller);
     this.bidder    = true;
 
     //XXX: this is probably a Bad Idea to instantiate this here
