@@ -87,7 +87,7 @@ public class BidDialog extends JFrame {
     this.dialog.add(this.header, null);
     this.dialog.add(getComboBox(bid), null);
     this.buttons = new JPanel();
-    this.buttons.setBounds(new Rectangle(70, 60, 190, 30));
+    this.buttons.setBounds(new Rectangle(70, 60, 190, 35));
     this.buttons.setLayout(new FlowLayout());
     this.buttons.add(this.getOkayButton());
     this.buttons.add(this.getPassButton());
