@@ -47,6 +47,9 @@
 
   <target name="resources" >  
     <copy todir="${build.dir}/org/joedog/pinochle/images" >  
+      <fileset dir="${src.dir}/org/joedog/pinochle/images" includes="*.zip" />  
+    </copy>
+    <copy todir="${build.dir}/org/joedog/pinochle/images" >  
       <fileset dir="${src.dir}/org/joedog/pinochle/images" includes="*.png" />  
     </copy>
     <copy todir="${build.dir}/org/joedog/pinochle/images/cards" >  
@@ -54,8 +57,14 @@
     </copy>
   </target> 
 
+  <target name="memory">
+    <zip destfile="${src.dir}/org/joedog/pinochle/images/memory.zip">
+      <fileset dir="${user.home}/.pinochle" includes="memory.txt"/>
+    </zip>
+  </target>
+
   <target name="run" depends="clean,compile,resources">
-    <java classname="org.joedog.pinochle.Main" fork="true" spawn="false">
+    <java classname="org.joedog.pinochle.Main" fork="false" spawn="false">
       <classpath refid="classpath" />
       <jvmarg value="-splash:${build.dir}org/joedog/pinochle/images/splash.png -XX:-OmitStackTraceInFastThrow"/>
     </java>
