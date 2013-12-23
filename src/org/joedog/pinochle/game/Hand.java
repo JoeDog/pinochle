@@ -309,7 +309,6 @@ public class Hand {
     return null;
   }
   
-
   /**
    * Returns the total number of cards in the hand
    * which are higher than parameter card.
@@ -452,6 +451,45 @@ public class Hand {
       Card c = (Card)hand.get(i);
       String m = (c.melded()==true) ? "[*] " : "";
       str = str + c.toString()+" "+m;
+    }
+    return str;
+  }
+
+  public String asRanks() {
+    String str = "";
+    Comparator cc = Card.getComparator(
+      Card.SortParameter.SUIT_ASCENDING,
+      Card.SortParameter.RANK_DESCENDING
+    );
+    Collections.sort(hand, cc); 
+    for (int i = 0; i < hand.size(); i++) { 
+      Card c = (Card)hand.get(i);
+      str = str + Pinochle.store(c.getRank(), c.getSuit());
+    }
+    return str;
+  }
+
+  public String toMemory() {
+    String str = "";
+    for (int i = 0; i < 4; i++) {
+      str += memorize(i);
+      if (i < 3) str += "|";
+    }
+    return str;
+  }
+
+  public String memorize(int suit) {
+    String str = "";
+    Comparator cc = Card.getComparator(
+      Card.SortParameter.SUIT_ASCENDING,
+      Card.SortParameter.RANK_DESCENDING
+    );
+    Collections.sort(hand, cc); 
+    for (int i = 0; i < hand.size(); i++) { 
+      Card c = (Card)hand.get(i);
+      if (c.getSuit() == suit) {
+        str = str + Pinochle.store(c.getRank(), c.getSuit()); 
+      }
     }
     return str;
   }

@@ -63,5 +63,34 @@ public final class Pinochle {
     }
     return null;
   }
+
+  /**
+   * Programmer's convenience This method helps create
+   * a string interpretation of a hand that we can store
+   * inside our memory banks....
+   */
+  public final static String store (int rank, int suit) {
+    switch(rank) {
+      case ACE:
+        return "A";
+      case TEN:
+        return "T";
+      case KING:
+        return "K";
+      case QUEEN: 
+        if (suit == Pinochle.SPADES) 
+          return "S";
+        else 
+          return "Q";
+      case JACK:
+        if (suit == Pinochle.DIAMONDS) 
+          return "D";
+        else 
+          return "J";
+      case NINE:
+        return "9";
+    }
+    return null;
+  }
 }
 
