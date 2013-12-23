@@ -8,10 +8,6 @@ public final class Debug {
     }
   }
 
-  public final static void log(String s) {
-
-  }
-
   public static boolean debug() {
     String debug = (String)System.getProperty("pinochle.debug");
     if (debug != null && debug.equals("true")) {
