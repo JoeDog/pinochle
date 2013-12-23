@@ -3,6 +3,7 @@ package org.joedog.pinochle.player;
 import org.joedog.pinochle.control.GameController;
 import org.joedog.pinochle.view.Setting;
 import org.joedog.pinochle.game.*;
+import org.joedog.pinochle.util.*;
 import java.net.URL;
 import java.awt.Canvas;
 import java.util.Random;
@@ -10,6 +11,7 @@ import java.util.Random;
 public abstract class Player {
   public static final  int HUMAN    = 0;
   public static final  int COMPUTER = 1;
+  public static final  double ALPHA = (1 - 1.0/6);
   protected Hand       hand;
   protected Meld       meld;
   public   int         partner;
@@ -22,6 +24,8 @@ public abstract class Player {
   public   int         pBid   = 0; 
   public   Assessment  assessment;
   public   boolean     bidder = false;
+  public   String      memory;
+  public   String      memtxt = System.getProperty("pinochle.memory");
 
   public Player () {
     newHand();
@@ -43,110 +47,82 @@ public abstract class Player {
     this.pBid   = 0;
   }
 
-  public int assessHand() {
+  public void assessHand() {
     meld = new Meld(this.hand);
     assessment   = meld.assessment(); 
     this.maxBid  = assessment.maxBid();
-    if (assessment.getMeld() < 3) {
-      this.maxBid -= 5;
-    } 
-    if (assessment.getMeld() > 10) {
-      this.maxBid += 3;
-    }
+    // we want to rely on experience but that's 
+    // stored in a file that can be removed. If 
+    // the file is purged, experience returns the
+    // programmatic maxBid
+    this.maxBid  = experience(this.hand.asRanks());
     this.maxBid += guts();
-   
+
     // We need to shave some bid if we're lacking aces 
     // We'll shave even more down below if we don't have
     // adequate meld....
-    if (this.maxBid >= 30 && assessment.getAces() < 3) {
+    if (assessment.getAces() < 3) {
+      System.out.println("Less than three aces, shaving 3 points");
       this.maxBid -= 3;
     }
    
-    // XXX: If we're not playing pass option, 
-    // then we have to remove this block 
-    if (this.maxBid < 25 && assessment.getMeld() >= 5) {
-      this.maxBid = this.miniMax();
-    } 
-
     // adjust down a mediocre meld low power hand
-    if (this.maxBid >= 25 && (assessment.getAces() < 3 && assessment.getMeld() < 15)) {
-      this.maxBid = 21;
+    if (assessment.getAces() < 3 && assessment.getMeld() < 15) {
+      System.out.println("Mediocre meld, low power.");
+      this.maxBid = (assessment.getTrumpCount() >= 5) ? this.maxBid : (this.maxBid - 4);
     }
 
-    if (this.maxBid >= 30 && assessment.getAces() < 3) {
+    if (assessment.getAces() < 3) {
+      System.out.println("Less than three aces");
       this.maxBid -= 4;
+    }
+
+    if (this.maxBid >= 30 && assessment.getMeld() < 10) {
+      System.out.println("Too little meld to bid more than 30");
+      this.maxBid = 29;
     }
 
     // no good ever came from a hand with no aces...
     if (assessment.getAces() == 0) {
+      System.out.println("NO ACES (meld+8)");
       this.maxBid = assessment.getMeld() + 8;
     }
  
     // conversely, good things come to those with aces 
     if (assessment.getAces() >= 3 && this.maxBid < 16) {
-      this.maxBid = (assessment.getAces() >= 4) ? 25 : 21;
+      System.out.println("More than three acess (at least 24)");
+      this.maxBid = (assessment.getAces() >= 4) ? 28 : 24;
     }
 
     // Bids in the thirties with 4 cards in trump are nearly 
     // impossible to achieve without a shitload of meld
     if (assessment.getTrumpCount() < 5) {
-      this.maxBid = (assessment.getMeld() > 15) ? this.maxBid : (this.maxBid - 3); 
+      System.out.println("Inadequate trump");
+      this.maxBid -= 3;
+    }
+
+    if (assessment.getTrumpCount() >= 6) {
+      System.out.println("TONS of trump! bumping by six...");
+      this.maxBid += 6;
     }
 
     if (assessment.getTrumpCount() > 5 && this.maxBid < 16) {
-      this.maxBid = 21;
+      System.out.println("Lot's of trump! We have to make a few bids..");
+      this.maxBid = 26;
     }
 
     if (assessment.getTrumpCount() >= 5 && assessment.getAces() >= 3 && this.maxBid < 16) {
       // I'm not sure how this scenario occurs but I've seen it
-      this.maxBid = 25;
+      System.out.println("Weirdo scenario....");
+      this.maxBid = 30;
     }
 
-    return 1;
-  }
-
-  /**
-   * Return the minimum max bid. We tried
-   * everything to construct a competitive 
-   * bid but nothing worked. So now we'll 
-   * leave it to chance...
-   * <p>
-   * @param  none
-   * @return int    The minimum maxbid
-   */
-  private int miniMax() {
-    Random r = new Random();
-    int    n = 100;
-    int  num = r.nextInt(n) + 1;
-
-    if (num == 100) {
-      return 26;
-    } 
-    if (num >= 90) {
-      return 25;
+    // This is for experience generation. By forcing a high
+    // maxBid we're ensured of capturing a lot of different
+    // hand combinations...
+    if (this.name.equals("Limey")) {
+      this.maxBid = 30;
     }
-    if (num >= 80) {
-      return 24;
-    }
-    if (num >= 70) {
-      return 23;
-    }
-    if (num >= 60) {
-      return 22;
-    }
-    if (num >= 50) {
-      return 21;
-    }
-    if (num >= 40) {
-      return 20;
-    }
-    if (num >= 30) {
-      return 19;
-    }
-    if (num >= 20) {
-      return 18;
-    }
-    return -1;
   }
 
   private int guts() {
@@ -232,10 +208,101 @@ public abstract class Player {
     return this.hand;
   }
 
+  private int experience (String hand) {
+    int bid = -1;
+    int low = 1000;
+    RollingAverage avg = new RollingAverage();
+
+    if (! FileUtils.exists(this.memtxt)) {
+      // Somebody chucked his memory file;
+      // we'll revert to Old School guessing
+      return this.maxBid;  
+    }
+
+    String a [] = new String[2];
+    for (String line: FileUtils.readLines(this.memtxt)) {
+      String[] array = line.split("\\|",-1);
+      /** 
+       * Suits 2 and 3 are diamonds and spades they
+       * are treated as constants because of pinochle
+       * suits 0 and 1 are hearts and clubs and they
+       * are treated interchangeably...
+       */
+      a[0] = array[0]+array[1]+array[2]+array[3];
+      a[1] = array[1]+array[0]+array[2]+array[3];
+
+      for (String s: a) {
+        int d = computeDistance(hand, s);
+        if (d < low) {
+          low = d;
+          /**
+           * Each time d hits a new low; we
+           * have to reset the rolling average
+           */
+          avg.removeAll();
+          if (array.length == 5) {
+            bid = Integer.parseInt(array[4]);
+          }
+        }
+        if (d == low) {
+          if (array.length == 5) {
+            int tmp  = Integer.parseInt(array[4]);
+            avg.add(tmp);
+            bid = (int)avg.average();
+          }
+        }
+      }
+    }
+    Debug.print("Distance of the match:    "+low);
+    Debug.print("Average bid returned bid: "+bid);
+    // We'll adjust down high bids with high distances
+    if (bid >= 35 && low >= 4) return (bid - 6);
+    if (bid >= 35 && low >= 3) return (bid - 4);
+    if (bid >= 35 && low >= 2) return (bid - 2);
+    return bid;
+  }
+
+  private int computeDistance(String s1, String s2) {
+    s1 = s1.toLowerCase();
+    s2 = s2.toLowerCase();
+
+    int[] costs = new int[s2.length() + 1];
+    for (int i = 0; i <= s1.length(); i++) {
+      int lastValue = i;
+      for (int j = 0; j <= s2.length(); j++) {
+        if (i == 0)
+          costs[j] = j;
+        else {
+          if (j > 0) {
+            int newValue = costs[j - 1];
+            if (s1.charAt(i - 1) != s2.charAt(j - 1))
+              newValue = Math.min(Math.min(newValue, lastValue), costs[j]) + 1;
+            costs[j - 1] = lastValue;
+            lastValue = newValue;
+          }
+        }
+      }
+      if (i > 0)
+        costs[s2.length()] = lastValue;
+    }
+    return costs[s2.length()];
+  }
+
+  public void remember(int meld, int take) {
+    if (!this.bidder) return;
+    if (this.memory == null || this.memory.length() < 2) return;
+    int game = (meld+take);
+
+    //this.memory += "|"+game+","+meld+","+take;
+    this.memory += "|"+game;
+    Logger.remember(memtxt, memory);
+    this.memory = new String("");
+  }
+
   public abstract void remember(Deck cards);
   
   public abstract void remember(Card card);
-
+  
   public abstract Card playCard(Trick trick);
 
   public abstract int bid(int bid); 
