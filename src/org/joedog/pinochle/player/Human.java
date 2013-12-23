@@ -51,29 +51,9 @@ public class Human extends Player {
   }
 
   public int bid(int bid) {
-    /**************************************************************************
-    int tmp       = bid + 1;
-    String bids[] = new String[16];
-   
     if (myBid == -1) return myBid;
 
-    for (int i = 0; i < bids.length; i++) {
-      bids[i] = ""+tmp;
-      tmp++;
-    }
-    String num   = (String) JOptionPane.showInputDialog(null, 
-      "Bid", "Bid", JOptionPane.QUESTION_MESSAGE, null, bids, bids[0]
-    );
-    try {
-      myBid = Integer.parseInt(num);
-    } catch(Exception ex) {
-      // insert error handling if conversion to string is not successful
-      myBid = -1;
-    }
-    **************************************************************************/
-    if (myBid == -1) return myBid;
-
-    BidDialog bd = new BidDialog(this.controller, bid+1); 
+    BidDialog bd = new BidDialog(this.controller, bid); 
     this.myBid   = bd.getValue();
     if (this.myBid < 0) {
       System.out.println(this.name+" passed.");
@@ -89,6 +69,7 @@ public class Human extends Player {
     JFrame frame   = new JFrame("Trump");
     TrumpDialog td = new TrumpDialog(this.controller);
     this.bidder    = true;
+    this.memory    = this.hand.toMemory();
 
     //XXX: this is probably a Bad Idea to instantiate this here
     String trump = (String)td.getValue();
@@ -181,6 +162,16 @@ public class Human extends Player {
 
   public void remember(Card card) {
     // You're on your own, Human....
+  }
+
+  public void remember(int meld, int take) {
+    if (!this.bidder) return;
+    if (this.memory == null || this.memory.length() < 2) return;
+    int game = (meld+take);
+
+    this.memory += "|"+game;
+    Logger.remember(memtxt, memory);
+    this.memory = new String("");
   }
 
   public void finish (int status) {

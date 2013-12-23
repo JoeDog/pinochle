@@ -164,6 +164,7 @@ public class Computer extends Player {
    */
   public int nameTrump() {
     this.bidder = true;
+    this.memory = this.hand.toMemory();
     if (this.assessment != null) {
       return assessment.getTrump();
     }
