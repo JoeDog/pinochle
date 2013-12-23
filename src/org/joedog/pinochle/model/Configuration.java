@@ -7,14 +7,34 @@ import java.io.IOException;
 import java.util.Properties;
 import java.util.Enumeration;
 
+import org.joedog.pinochle.util.*;
+
 public class Configuration {
   private Properties conf       = null;
-  private static String cfgfile = System.getProperty("user.home")+"/.pinochle.properties";
+  private static String sep     = java.io.File.separator;
+  private static String cfgdir  = System.getProperty("user.home")+sep+".pinochle";
+  private static String cfgfile = cfgdir+sep+"game.conf";
+  private static String memfile = cfgdir+sep+"memory.txt";
   private static Configuration  _instance = null;
   private static Object mutex   = new Object();
 
   private Configuration() {
+    System.getProperties().put("pinochle.dir",    cfgdir);
+    System.getProperties().put("pinochle.conf",   cfgfile);
+    System.getProperties().put("pinochle.memory", memfile);
+
     conf = new Properties();
+    File dir = new File(this.cfgdir);
+    if (! dir.exists()) {
+      dir.mkdirs(); 
+    }
+    this.legacyFix();
+
+    File mem = new File(this.memfile);
+    if (! mem.exists()) {
+      Setup.install(Setup.MEMORY);
+    }
+
     try {
       FileInputStream fis = new FileInputStream(new File(this.cfgfile));
       conf.load(fis);
@@ -40,6 +60,13 @@ public class Configuration {
       }
     }
     return _instance;
+  }
+
+  private void legacyFix() {
+    File a = new File(System.getProperty("user.home")+"/.pinochle.properties");
+    if (a.exists()) {
+      a.renameTo(new File(this.cfgfile));
+    }
   }
 
   public Enumeration propertyNames() {
