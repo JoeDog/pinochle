@@ -146,16 +146,33 @@ public class ScoreModel extends AbstractModel {
     firePropertyChange(GameController.GAME_SCORE, "EWGAME", ""+stats.getGame("EW"));
   }
 
+  public String getNSMeld() {
+    return ""+stats.getMeld("NS");
+  }
+
+  public String getEWMeld() {
+    return ""+stats.getMeld("EW");
+  }
+
+  public String getNSTake() {
+    return ""+stats.getTake("NS");
+  }
+
+  public String getEWTake() {
+    return ""+stats.getTake("EW");
+  }
+
   public String getGameInfo() {
     String s = String.format(
-      "%14s %4d  %4d\n%14s %4d  %4d\n%14s %4d  %4d\n%14s %4d  %4d\n%14s %4d  %4d\n%14s %4d  %4d\n%14s %4d  %4d\n",
+      "%14s %4d  %4d\n%14s %4d  %4d\n%14s %4d  %4d\n%14s %4d  %4d\n%14s %4d  %4d\n%14s %4d  %4d\n%14s %4d  %4d\n%14s %4.2f %4.2f\n",
       "Meld:",         stats.getTotalMeld("NS"),   stats.getTotalMeld("EW"),
       "Take:",         stats.getTotalTake("NS"),   stats.getTotalTake("EW"),
       "Hand:",         stats.getHand("NS"),        stats.getHand("EW"),
       "Game:",         stats.getGame("NS"),        stats.getGame("EW"),
       "No Trickers:",  stats.getNoTrickers("NS"),  stats.getNoTrickers("EW"),
       "Highest Meld:", stats.getHighestMeld("NS"), stats.getHighestMeld("EW"),
-      "Highest Take:", stats.getHighestTake("NS"), stats.getHighestTake("EW") 
+      "Highest Take:", stats.getHighestTake("NS"), stats.getHighestTake("EW"),
+      "Avg Meld Take:",stats.getMeanBidderMeld(),  stats.getMeanBidderTake()  
     );
     return s;
   }
