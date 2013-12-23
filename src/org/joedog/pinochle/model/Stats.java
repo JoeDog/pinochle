@@ -5,6 +5,8 @@ import java.util.HashMap;
 
 public class Stats {
   private int     hands;
+  private int     bmeld;
+  private int     btake;
   private String  winner = ""; 
   private boolean over; 
   private Map<String, Data> data = new HashMap<String, Data>();
@@ -70,9 +72,14 @@ public class Stats {
 
   public void tally(int bid, int wscore) {
     int wins =  0;
+    this.addHand();
     for (Map.Entry<String, Data> d  : this.data.entrySet()) {
       (d.getValue()).addHand(bid, wscore);
       if ((d.getValue()).isWinner()) wins += 1;
+      if ((d.getValue()).isBidder()) {
+        this.bmeld += (d.getValue()).getMeld();
+        this.btake += (d.getValue()).getTake();
+      }
     }
     if (wins == 1) {
       for (Map.Entry<String, Data> d  : this.data.entrySet()) {
@@ -90,6 +97,20 @@ public class Stats {
 
   public int getHands() {
     return this.hands;
+  }
+
+  public double getMeanBidderMeld() {
+    if (this.hands > 0) {
+      return (this.bmeld / this.hands);
+    }
+    return -1.1;
+  }
+
+  public double getMeanBidderTake() {
+    if (this.hands > 0) {
+      return (this.btake / this.hands);
+    }
+    return -1.1;
   }
 
   public int getMeld(String team) {
