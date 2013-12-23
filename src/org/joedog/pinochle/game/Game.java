@@ -377,6 +377,13 @@ public class Game {
       controller.store("Take", "EW|1");
     }
     controller.addScore();
+    for (Player player : players) {
+      if (player.getPosition() == Pinochle.NORTH || player.getPosition() == Pinochle.SOUTH) {
+        player.remember(controller.getIntProperty("NSMeld"), controller.getIntProperty("NSTake"));
+      } else {
+        player.remember(controller.getIntProperty("EWMeld"), controller.getIntProperty("EWTake"));
+      }
+    }
     if (controller.gameStatus() != GameController.OVER || ! controller.over()) {
       controller.newHand();
     }
