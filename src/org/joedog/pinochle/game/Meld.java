@@ -297,9 +297,13 @@ public class Meld {
           deck.add(hand.pass(card));
           hand.remove(card);
         } else if (!(pinochle() > 1 && card.isPinochleMate())) {
-          deck.add(hand.pass(card));
-          hand.remove(card);
-        }
+          if (tries < 40 && card.getRank() != Pinochle.NINE && card.getRank() != Pinochle.TEN) {
+            if (this.hand.isMarried(card) == false && round(card.getRank()) < 1) {
+              deck.add(hand.pass(card));
+              hand.remove(card);
+            }
+          }
+        } 
       }
       tries++;
     }  
