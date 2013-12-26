@@ -9,7 +9,7 @@ public class Knowledge {
   public Knowledge() {
   }
 
-  public void addResult(Result result) {
+  public void addResult() {
   
   }
 }

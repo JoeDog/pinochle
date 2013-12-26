@@ -121,7 +121,7 @@ public abstract class Player {
     // maxBid we're ensured of capturing a lot of different
     // hand combinations...
     if (this.name.equals("Limey")) {
-      this.maxBid = 30;
+      this.maxBid = 28;
     }
   }
 
