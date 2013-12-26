@@ -142,6 +142,37 @@ public class Hand {
     return num;
   }
 
+  public boolean isMarried(Card card) {
+    if (card.getRank() == Pinochle.KING) {
+      //System.out.println("Checking to see if the king is married");
+      Card queen = new Card(Pinochle.QUEEN, card.getSuit());
+      if (this.contains(queen) >= 1) {
+        //System.out.println("checking for more kings than queens");
+        //System.out.println("KINGS: "+this.contains(card)+" QUEENS: "+ this.contains(queen));
+        // If the numbers match, he's married
+        return (this.contains(card) == this.contains(queen) || this.contains(card) > this.contains(queen));
+      } else {
+        //System.out.println("no partners in the hand...");
+        return false; 
+      }
+    }
+    if (card.getRank() == Pinochle.QUEEN) {
+      //System.out.println("Checking to see if the queen is married");
+      Card king = new Card(Pinochle.KING, card.getSuit());
+      if (this.contains(king) >= 1) {
+        //System.out.println("checking for more queens than kings");
+        //System.out.println("QUEENS: "+this.contains(card)+" KINGS: "+ this.contains(king));
+        // If the numbers match, she's married
+        return (this.contains(card) == this.contains(king) || this.contains(card) > this.contains(king)); 
+      } else {
+        //System.out.println("no partners in the hand...");
+        return false; 
+      }
+    }
+    //System.out.println("NO CRITERIA MATCH - conclusion: NOT married");
+    return false;
+  }
+
   /** 
    * Returns an int which represents the number of
    * singletons in our hand. A singleton is a bare
