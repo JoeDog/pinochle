@@ -40,8 +40,8 @@ public class TrumpDialog extends JOptionPane implements View {
     }
     this.setOptions(objects);
     // We rely on the same coordinates captured by our BidDialog
-    int xpos = controller.getIntProperty("DialogX");
-    int ypos = controller.getIntProperty("DialogY");
+    int xpos = (controller.getIntProperty("DialogX") - 50);
+    int ypos = (controller.getIntProperty("DialogY") - 50);
  
     final JDialog dialog = this.createDialog(null, "Select Trump");
     dialog.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);

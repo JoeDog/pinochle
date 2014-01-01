@@ -1,5 +1,7 @@
 package org.joedog.pinochle.game;
 
+import org.joedog.pinochle.util.*;
+
 import java.util.Random;
 
 public class Meld {
@@ -249,11 +251,6 @@ public class Meld {
           hand.remove(queen);
         }
       }
-      Card ten = new Card(Pinochle.TEN, suit);
-      while (deck.count() < num && hand.contains(ten) > 0) {
-        deck.add(hand.pass(ten));  
-        hand.remove(ten);
-      }
       if (round(Pinochle.JACK) < 1) {
         if (!(suit == Pinochle.DIAMONDS && pinochle() > 0)) {
           Card jack = new Card(Pinochle.JACK, suit);
@@ -262,6 +259,35 @@ public class Meld {
             hand.remove(jack);
           }
         }
+      }
+      // Looking for meldables...
+      for (int i = 0; i < 4 && deck.count() < num; i++) {
+        if (i != trump) {
+          Card king = new Card(Pinochle.KING, i);
+          if (hand.contains(king) > 0 && deck.count() < num && ! this.hand.isMarried(king)) {
+            if ((! this.hand.isMarried(king)) && (round(Pinochle.KING) < 1)) {
+              deck.add(hand.pass(king));
+              hand.remove(king);    
+            }
+          } 
+        }
+      }
+      // Looking for meldable queens....
+      for (int i = 0; i < 4 && deck.count() < num; i++) {
+        if (i != trump && i != Pinochle.SPADES) {
+          Card queen = new Card(Pinochle.QUEEN, i);
+          if (hand.contains(queen) > 0 && deck.count() < num) {
+            if ((! this.hand.isMarried(queen)) && (round(Pinochle.QUEEN) < 1)) {
+              deck.add(hand.pass(queen));
+              hand.remove(queen);    
+            } 
+          } 
+        }
+      }
+      Card ten = new Card(Pinochle.TEN, suit);
+      while (deck.count() < num && hand.contains(ten) > 0) {
+        deck.add(hand.pass(ten));  
+        hand.remove(ten);
       }
       Card nine = new Card(Pinochle.NINE, suit);
       while (deck.count() < num && hand.contains(nine) > 0) {

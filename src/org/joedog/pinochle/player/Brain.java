@@ -95,6 +95,12 @@ public class Brain {
     }
   }
 
+  public void forget() {
+    for (int i = deck.size() - 1; i >= 0; i--) {
+      deck.remove(i);
+    }
+  }
+
   public boolean outstandingTrump(Hand hand, int trump) {
     int num = deck.contains(trump) + hand.contains(trump);  
     // XXX: HARD-CODE ALERT!!!!!!!!

@@ -56,7 +56,7 @@ public class Human extends Player {
     BidDialog bd = new BidDialog(this.controller, bid); 
     this.myBid   = bd.getValue();
     if (this.myBid < 0) {
-      System.out.println(this.name+" passed.");
+      Debug.print(this.name+" passed.");
       this.setting.setText("Bid: Pass");
     } else {
       this.setting.setText("Bid: "+this.myBid);
@@ -200,6 +200,7 @@ public class Human extends Player {
     } while (! okay);
     this.hand.remove(card);
     this.setting.refresh(this.hand);
+    this.controller.setPlayable(false);
     return card;
   }
 }

@@ -138,19 +138,19 @@ public class GameController extends AbstractController {
     runViewMethod("addMeldButton");
   }
   
-  public void setMeldable(boolean meldable) {
+  public synchronized void setMeldable(boolean meldable) {
     this.meldable = meldable;
   }
 
-  public boolean isMeldable() {
+  public synchronized boolean isMeldable() {
     return meldable;
   }
 
-  public void setPlayable(boolean playable) {
+  public synchronized void setPlayable(boolean playable) {
     this.playable = playable;
   }
 
-  public boolean isPlayable() {
+  public synchronized boolean isPlayable() {
     return playable;
   }
 

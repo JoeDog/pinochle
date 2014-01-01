@@ -92,7 +92,7 @@ public class BidDialog extends JFrame {
     this.buttons.add(this.getOkayButton());
     this.buttons.add(this.getPassButton());
     this.dialog.add(buttons, null);
-    this.setPreferredSize(new Dimension(268,129));
+    this.setPreferredSize(new Dimension(268,132));
     JRootPane root = this.getRootPane();
     root.setDefaultButton(okay);
     this.addWindowListener(new WindowAdapter() {

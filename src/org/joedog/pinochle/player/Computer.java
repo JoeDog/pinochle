@@ -20,7 +20,11 @@ public class Computer extends Player {
   @Override
   public synchronized void newHand() {
     this.hand   = new Hand();
-    this.brain  = new Brain();
+    //this.brain  = new Brain();
+    if (this.brain == null) {
+      this.brain = new Brain();
+    }
+    this.brain.forget(); 
     this.myBid  = 0;
     this.maxBid = 0;
     this.pBid   = 0;
@@ -341,9 +345,8 @@ public class Computer extends Player {
       Debug.print(this.name+" is trying to preserve trump with this play: "+card.toString());
     }
     while (card == null) {
-      Random r = new Random();
       int    h = (this.hand.size() > 2) ? this.hand.size() : 2;
-      int    i = r.nextInt(h-1) + 1;
+      int    i =  RandomUtils.number(h); 
       Debug.print("Random i: "+i+" hand size: "+hand.size());
       card = this.hand.get(i-1);
       Debug.print(this.name+" Look what I pulled out of my ass: "+card.toString());

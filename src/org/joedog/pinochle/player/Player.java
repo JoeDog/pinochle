@@ -11,7 +11,6 @@ import java.util.Random;
 public abstract class Player {
   public static final  int HUMAN    = 0;
   public static final  int COMPUTER = 1;
-  public static final  double ALPHA = (1 - 1.0/6);
   protected Hand       hand;
   protected Meld       meld;
   public   int         partner;
@@ -26,9 +25,12 @@ public abstract class Player {
   public   boolean     bidder = false;
   public   String      memory;
   public   String      memtxt = System.getProperty("pinochle.memory");
+  public   Knowledge   knowledge = null;
+  public   int         distance;
 
   public Player () {
     newHand();
+    this.knowledge = knowledge.getInstance();
   }
 
   public void takeCard(Card c) {
@@ -36,7 +38,6 @@ public abstract class Player {
   }
 
   public void refresh() {
-    //this.hand.display();
     this.setting.refresh(this.hand);
   }
 
@@ -57,78 +58,81 @@ public abstract class Player {
     // programmatic maxBid
     this.maxBid  = experience(this.hand.asRanks());
     this.maxBid += guts();
+    Debug.print("  "+this.name+"'s assessment: "+assessment.toString());
 
     // We need to shave some bid if we're lacking aces 
     // We'll shave even more down below if we don't have
     // adequate meld....
-    if (assessment.getAces() < 3) {
-      System.out.println("Less than three aces, shaving 3 points");
-      this.maxBid -= 3;
-    }
+    if (this.distance >= 2) {
+      Debug.print("  Too much distance to trust experience....");
+      if (assessment.getAces() < 3) {
+        Debug.print("  Less than three aces, shaving 3 points");
+        this.maxBid -= 3;
+      }
    
-    // adjust down a mediocre meld low power hand
-    if (assessment.getAces() < 3 && assessment.getMeld() < 15) {
-      System.out.println("Mediocre meld, low power.");
-      this.maxBid = (assessment.getTrumpCount() >= 5) ? this.maxBid : (this.maxBid - 4);
-    }
+      // adjust down a mediocre meld low power hand
+      if (assessment.getAces() < 3 && assessment.getMeld() < 15) {
+        Debug.print("  Mediocre meld, low power.");
+        this.maxBid = (assessment.getTrumpCount() >= 5) ? this.maxBid : (this.maxBid - 4);
+      }
 
-    if (assessment.getAces() < 3) {
-      System.out.println("Less than three aces");
-      this.maxBid -= 4;
-    }
+      if (assessment.getAces() < 3) {
+        Debug.print("  Less than three aces");
+        this.maxBid -= 2;
+      }
 
-    if (this.maxBid >= 30 && assessment.getMeld() < 10) {
-      System.out.println("Too little meld to bid more than 30");
-      this.maxBid = 29;
-    }
+      if (this.maxBid >= 30 && assessment.getMeld() < 10) {
+        Debug.print("  Too little meld to bid more than 30");
+        this.maxBid -= 2;
+      }
 
-    // no good ever came from a hand with no aces...
-    if (assessment.getAces() == 0) {
-      System.out.println("NO ACES (meld+8)");
-      this.maxBid = assessment.getMeld() + 8;
-    }
+      // no good ever came from a hand with no aces...
+      if (assessment.getAces() == 0) {
+        Debug.print("  NO ACES (meld+8)");
+        this.maxBid = assessment.getMeld() + 8;
+      }
  
-    // conversely, good things come to those with aces 
-    if (assessment.getAces() >= 3 && this.maxBid < 16) {
-      System.out.println("More than three acess (at least 24)");
-      this.maxBid = (assessment.getAces() >= 4) ? 28 : 24;
-    }
+      // conversely, good things come to those with aces 
+      if (assessment.getAces() >= 3 && this.maxBid < 16) {
+        Debug.print("  More than three acess (at least 24)");
+        this.maxBid = (assessment.getAces() >= 4) ? 28 : 24;
+      }
 
-    // Bids in the thirties with 4 cards in trump are nearly 
-    // impossible to achieve without a shitload of meld
-    if (assessment.getTrumpCount() < 5) {
-      System.out.println("Inadequate trump");
-      this.maxBid -= 3;
-    }
+      // Bids in the thirties with 4 cards in trump are nearly 
+      // impossible to achieve without a shitload of meld
+      if (assessment.getTrumpCount() < 5) {
+        Debug.print("  Inadequate trump");
+        this.maxBid -= 2;
+      }
 
-    if (assessment.getTrumpCount() >= 6) {
-      System.out.println("TONS of trump! bumping by six...");
-      this.maxBid += 6;
-    }
+      if (assessment.getTrumpCount() >= 6) {
+        Debug.print("  TONS of trump! bumping by six...");
+        this.maxBid += 6;
+      }
 
-    if (assessment.getTrumpCount() > 5 && this.maxBid < 16) {
-      System.out.println("Lot's of trump! We have to make a few bids..");
-      this.maxBid = 26;
-    }
+      if (assessment.getTrumpCount() > 5 && this.maxBid < 16) {
+        Debug.print("  Lot's of trump! We have to make a few bids..");
+        this.maxBid = 29;
+      }
 
-    if (assessment.getTrumpCount() >= 5 && assessment.getAces() >= 3 && this.maxBid < 16) {
-      // I'm not sure how this scenario occurs but I've seen it
-      System.out.println("Weirdo scenario....");
-      this.maxBid = 30;
+      if (assessment.getTrumpCount() >= 5 && assessment.getAces() >= 3 && this.maxBid < 16) {
+        // I'm not sure how this scenario occurs but I've seen it
+        Debug.print("  Weirdo scenario....");
+        this.maxBid = 30;
+      }
     }
 
     // This is for experience generation. By forcing a high
     // maxBid we're ensured of capturing a lot of different
     // hand combinations...
     if (this.name.equals("Limey")) {
-      this.maxBid = 28;
+      if (this.maxBid < 28) 
+        this.maxBid = 28;
     }
   }
 
   private int guts() {
-    Random r = new Random();
-    int    n = 100;
-    int  num = r.nextInt(n) + 1;
+    int num = RandomUtils.number(100);
 
     if (num == 100) {
       return 10;
@@ -220,7 +224,7 @@ public abstract class Player {
     }
 
     String a [] = new String[2];
-    for (String line: FileUtils.readLines(this.memtxt)) {
+    for (String line: knowledge.getMemory()) {
       String[] array = line.split("\\|",-1);
       /** 
        * Suits 2 and 3 are diamonds and spades they
@@ -253,8 +257,9 @@ public abstract class Player {
         }
       }
     }
-    Debug.print("Distance of the match:    "+low);
-    Debug.print("Average bid returned bid: "+bid);
+    Debug.print("  Distance of the match:    "+low);
+    Debug.print("  Average bid returned bid: "+bid);
+    this.distance = low;
     // We'll adjust down high bids with high distances
     if (bid >= 35 && low >= 4) return (bid - 6);
     if (bid >= 35 && low >= 3) return (bid - 4);

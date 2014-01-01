@@ -48,7 +48,7 @@ public class Splash {
     g.setColor(new Color(223,0,0));
     g.setFont(new Font("Helvetica", Font.BOLD, 24));
     g.drawString("Let's Play Pinochle", 20, 450);
-    g.drawString("with Your Joe Dog!!", 20, 475);
+    g.drawString("with Your JoeDog!!", 20, 475);
     g.setColor(Color.BLACK);
     g.setFont(new Font("Helvetica", Font.PLAIN, 12));
 

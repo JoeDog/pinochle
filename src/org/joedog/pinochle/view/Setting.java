@@ -85,6 +85,9 @@ public class Setting extends JPanel implements MouseListener {
     this.setting.removeAll();
     this.setting = null;
     createPanel();
+    if (this.hand != null && this.hand.size() == 0) {
+      this.setting.repaint();
+    }
   }
   
   private void createPanel() {

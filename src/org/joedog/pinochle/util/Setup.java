@@ -3,6 +3,7 @@ package org.joedog.pinochle.util;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
+import java.io.InputStream;
 import java.io.IOException;
 import java.net.URL;
 import java.net.MalformedURLException;
@@ -26,19 +27,9 @@ public final class Setup {
   }
 
   public final static void install_memory() {
-    URL    memzip = null;
+    String memzip = "/org/joedog/pinochle/images/memory.zip";
     String memtxt = System.getProperty("pinochle.memory");
     String cfgdir = System.getProperty("pinochle.dir");
-    try {
-      memzip = Setup.class.getResource(
-        "/org/joedog/pinochle/images/memory.zip"
-      ); 
-    } catch (Exception e) {
-      e.printStackTrace();
-    }
-    if (memzip == null) {
-      return;
-    }
 
     byte[] buf = new byte[1024];
     try {
@@ -47,9 +38,11 @@ public final class Setup {
       if (! dir.exists()) {
         dir.mkdirs();
       }
-   
-      ZipInputStream zis = new ZipInputStream(new FileInputStream(memzip.getPath()));
-      ZipEntry ze        = zis.getNextEntry();
+      //ZipInputStream zis  = new ZipInputStream(new FileInputStream(memzip.getPath()));
+  
+      InputStream     is  = Setup.class.getResourceAsStream(memzip); 
+      ZipInputStream zis  = new ZipInputStream(is);
+      ZipEntry ze         = zis.getNextEntry();
       while (ze != null) {
         File file = new File(memtxt);
         FileOutputStream fos = new FileOutputStream(file);             
@@ -65,7 +58,7 @@ public final class Setup {
       zis.closeEntry();
       zis.close();
  
-    } catch(IOException ex) {
+    } catch (IOException ex) {
       ex.printStackTrace(); 
     }
   }

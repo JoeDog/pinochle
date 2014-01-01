@@ -8,7 +8,6 @@ import org.joedog.pinochle.view.*;
 import org.joedog.pinochle.view.actions.*;
 import org.joedog.pinochle.util.*;
 
-import java.util.Random;
 import java.util.concurrent.TimeUnit;
 import javax.swing.UIManager;
 import javax.swing.SwingUtilities;
@@ -86,7 +85,7 @@ public class Game {
     controller.checkConfig();
     while (controller.isPaused()) {
       try {
-          Thread.sleep(500);
+        Thread.sleep(500);
       } catch (Exception e) {}
     }
     controller.setProperty("GameWinningScore", controller.getProperty("WinningScore"));
@@ -351,11 +350,10 @@ public class Game {
             controller.display("WestPlay", card);
             break;
         }
-        controller.setPlayable(false);
         try {
           int lo = (sim==true) ?  20 : 300;
           int hi = (sim==true) ?  80 : 700;
-          Thread.sleep(randInt(lo, hi));
+          Thread.sleep(RandomUtils.range(lo, hi));
         } catch (Exception e) {}
         turn++;
       }
@@ -387,20 +385,6 @@ public class Game {
     if (controller.gameStatus() != GameController.OVER || ! controller.over()) {
       controller.newHand();
     }
-  }
-
-  /**
-   * Returns a psuedo random int between min and max
-   * <p>
-   * @param  int    the minimum number in the range
-   * @param  int    the maximum number in the range
-   * @return int    a psuedo random number between min and max
-   */  
-  private static int randInt(int min, int max) {
-    Random rand = new Random();
-
-    int randomNum = rand.nextInt((max - min) + 1) + min;
-    return randomNum;
   }
 }
 
