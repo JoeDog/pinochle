@@ -24,16 +24,16 @@ public class Configuration {
     System.getProperties().put("pinochle.memory", memfile);
 
     conf = new Properties();
-    File dir = new File(this.cfgdir);
-    if (! dir.exists()) {
-      dir.mkdirs(); 
+
+    if (! FileUtils.exists(this.cfgdir)) {
+      FileUtils.mkdirs(this.cfgdir); 
     }
+      
     this.legacyFix();
 
-    File mem = new File(this.memfile);
-    if (! mem.exists()) {
+    //if (! FileUtils.exists(this.memfile)) {
       Setup.install(Setup.MEMORY);
-    }
+    //}
 
     try {
       FileInputStream fis = new FileInputStream(new File(this.cfgfile));

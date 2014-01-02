@@ -9,12 +9,18 @@ import java.io.IOException;
 import java.io.RandomAccessFile;
 import java.util.Vector;
 import java.util.zip.GZIPInputStream;
+import java.util.zip.ZipInputStream;
 
 public final class FileUtils {
 
   public final static boolean exists(String name) {
     File   file = new File(name);
     return file.exists();
+  }
+
+  public final static void mkdirs(String name) {
+    File file = new File(name);
+    file.mkdirs();
   }
 
   /**
@@ -24,15 +30,23 @@ public final class FileUtils {
    * @param  String   the path to the file
    * @return boolean  true for Zip format; false if not
    */
-  public final static boolean isZipped(String name) {
+  public final static boolean isZipped(String name) {  
     long n    = 0x0;
     File file = null;
     RandomAccessFile raf = null; 
     try {
-      file = new File(name);
-      raf  = new RandomAccessFile(file, "r");  
-      n = raf.readInt();  
-      raf.close();  
+      try {
+        file = new File(name);
+        if (! file.exists()) {
+          return false;
+        }
+        raf  = new RandomAccessFile(file, "r");  
+        n = raf.readInt();  
+      } finally {
+        if (raf != null) {
+          raf.close();
+        } 
+      }
     } catch (java.io.IOException ioe) { 
       System.err.println("Unable to read: "+name);
     }
@@ -53,10 +67,18 @@ public final class FileUtils {
     File file = null;
     RandomAccessFile raf = null; 
     try {
-      file = new File(name);
-      raf  = new RandomAccessFile(file, "r");
-      n    = raf.read() & 0xff | ((raf.read() << 8) & 0xff00);
-      raf.close();
+      try {
+        file = new File(name);
+        if (! file.exists()) {
+          return false;
+        }
+        raf  = new RandomAccessFile(file, "r");
+        n    = raf.read() & 0xff | ((raf.read() << 8) & 0xff00);
+      } finally {
+        if (raf != null) {
+          raf.close();
+        } 
+      }
     } catch (Throwable e) {
       e.printStackTrace(System.err);
     }
@@ -65,7 +87,10 @@ public final class FileUtils {
 
   /**
    * Returns a String array of all the lines
-   * in file 'name'. 
+   * in an ASCII, gzip'd or zipped file whose
+   * full path is 'name' NOTE: a zip file may
+   * contain multiple files. This method will
+   * only read the first file in an zip archive
    * <p>
    * @param  String   path to the the file
    * @return String[] an array containing lines in the file
@@ -80,27 +105,36 @@ public final class FileUtils {
       FileInputStream   fis = null; 
       GZIPInputStream   gis = null;
       InputStreamReader isr = null;
-
-      if (FileUtils.isGZipped(name)) {
-        fis = new FileInputStream(name);
-        gis = new GZIPInputStream(fis);
-        isr = new InputStreamReader(gis);
-        br  = new BufferedReader(isr);
-      } else {
-        fr = new FileReader(file);
-        br  = new BufferedReader(fr);
-      }
-
-      boolean eof = false;
-      while (!eof) {
-        String line = br.readLine();
-        if (line == null) {
-          eof = true;
+      ZipInputStream    zis = null;
+      try {
+        if (FileUtils.isGZipped(name)) {
+          fis = new FileInputStream(name);
+          gis = new GZIPInputStream(fis);
+          isr = new InputStreamReader(gis);
+          br  = new BufferedReader(isr);
+        } else if (FileUtils.isZipped(name)) {
+          fis = new FileInputStream(name);
+          zis = new ZipInputStream(fis); 
+          zis.getNextEntry();
+          isr = new InputStreamReader(zis);
+          br  = new BufferedReader(isr);
         } else {
-          linesVector.add(line);
+          fr = new FileReader(file);
+          br = new BufferedReader(fr);
         }
+
+        boolean eof = false;
+        while (!eof) {
+          String line = br.readLine();
+          if (line == null) {
+            eof = true;
+          } else {
+            linesVector.add(line);
+          }
+        }
+      } finally {
+        br.close();
       }
-      br.close();
     } catch (IOException e) {
       throw new IllegalArgumentException("File " + file.getName() + " is unreadable : " + e.toString());
     }
@@ -111,4 +145,63 @@ public final class FileUtils {
     }
     return lines;
   }
+ 
+  /**
+   * Returns an int which represents the number of
+   * lines in a file whose path is 'name' NOTE: This 
+   * method will automagically detect ASCII, gzip'd 
+   * or zipped files. 
+   * <p>
+   * @param  String  the path to the file
+   * @return int     the number of lines in the file
+   */
+  public final static int countLines(String name) {
+    int    num  = 0;
+    File   file = new File(name);
+    if (! FileUtils.exists(name)) {
+      return 0;
+    }
+
+    try {
+      FileReader        fr  = null;
+      BufferedReader    br  = null;
+      FileInputStream   fis = null;
+      GZIPInputStream   gis = null;
+      InputStreamReader isr = null;
+      ZipInputStream    zis = null;
+      try {
+        if (FileUtils.isGZipped(name)) {
+          fis = new FileInputStream(name);
+          gis = new GZIPInputStream(fis);
+          isr = new InputStreamReader(gis);
+          br  = new BufferedReader(isr);
+        } else if (FileUtils.isZipped(name)) {
+          fis = new FileInputStream(name);
+          zis = new ZipInputStream(fis);
+          zis.getNextEntry();
+          isr = new InputStreamReader(zis);
+          br  = new BufferedReader(isr);
+        } else {
+          fr = new FileReader(file);
+          br = new BufferedReader(fr);
+        }
+
+  
+        boolean eof = false;
+        while (!eof) {
+          String line = br.readLine();
+          if (line == null) {
+            eof = true;
+          } else {
+            num++;
+          }
+        }
+      } finally {
+        br.close();
+      }
+    } catch (IOException e) {
+      throw new IllegalArgumentException("File " + file.getName() + " is unreadable : " + e.toString());
+    }
+    return num;
+  } 
 }
