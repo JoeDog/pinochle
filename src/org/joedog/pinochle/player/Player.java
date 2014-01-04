@@ -121,6 +121,14 @@ public abstract class Player {
         this.maxBid = 30;
       }
     }
+    
+    if (this.maxBid >= 40 && assessment.getMeld() < 10) {
+      this.maxBid = 36;
+    }
+
+    if (this.maxBid >= 50 && assessment.getMeld() < 25) {
+      this.maxBid = 38;
+    }
 
     // This is for experience generation. By forcing a high
     // maxBid we're ensured of capturing a lot of different
@@ -128,7 +136,7 @@ public abstract class Player {
     if (this.name.equals("Limey")) {
       if (this.maxBid < 28) 
         this.maxBid = 28;
-    }
+    } 
   }
 
   private int guts() {

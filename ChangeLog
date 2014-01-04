@@ -3,6 +3,12 @@
 # Date:       Wed, Nov 13, 2013 19:12:50 PM
 # Version:    1.00
 
+2014/01/04 Jeffrey Fulmer <http://www.joedog.org/support/>
+ * view.BidDialog        Force dialog toFront on focus lost
+ * util.Setup            Install memory if has more lines 
+ * player.Player         Added safety checks for high bids
+ * images/memory.zip     Added more experience
+
 2013/11/13 Jeffrey Fulmer <http://www.joedog.org/support/>
   * PINOCHLE DEBUT       RELEASE_0-9-0_NOV-13-2013
 			 (Alpha-ish release. It's functional but buggy)

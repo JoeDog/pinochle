@@ -61,7 +61,7 @@ public class Setting extends JPanel implements MouseListener {
                 c.validate();
                 c.repaint();
               } catch (java.lang.NullPointerException ne) {
-                System.out.println("Setting Count: "+c.getComponentCount()+": "+ne.toString());
+                System.out.println("Valid: "+c.isValid()+": "+ne.toString());
               }
             }
           }

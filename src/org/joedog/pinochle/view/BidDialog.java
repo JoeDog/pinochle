@@ -22,6 +22,7 @@ import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JRootPane;
+import javax.swing.SwingUtilities;
 import java.util.concurrent.atomic.AtomicBoolean;
 
 import org.joedog.pinochle.control.*;
@@ -55,7 +56,11 @@ public class BidDialog extends JFrame {
     this.bid = bid;
     this.controller = controller;
     this.paused     = true;
-    this.createAndShowGui();
+    SwingUtilities.invokeLater(new Runnable() {
+      public void run() {
+        createAndShowGui();
+      }
+    });
   }
 
   /**
@@ -95,11 +100,19 @@ public class BidDialog extends JFrame {
     this.setPreferredSize(new Dimension(268,132));
     JRootPane root = this.getRootPane();
     root.setDefaultButton(okay);
-    this.addWindowListener(new WindowAdapter() {
+    //WindowAdapter adapter = new WindowAdapter() {
+    this.addWindowFocusListener(new WindowAdapter() {
+      @Override
+      public void windowLostFocus(WindowEvent e) {
+        toFront();
+      }
+      @Override
       public void windowGainedFocus(WindowEvent e) {
         okay.requestFocusInWindow();
       }
     });
+    //this.addWindowListener(adapter);
+    //this.addWindowFocusListener(adapter);
     this.addComponentListener(new ComponentAdapter() {
       public void componentMoved(ComponentEvent e) {
         x  = getX();  
