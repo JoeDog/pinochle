@@ -34,47 +34,46 @@ public class Setting extends JPanel implements MouseListener {
     createPanel();
   }
 
-  /*public void display(Hand hand) {
-    this.hand = hand;
-    createPanel();
-  }*/
-
   public void setText(final String text) {
-    SwingUtilities.invokeLater(new Runnable() {
-      public void run() {
-        if (text==null || text.length() < 1)
-          notice.setText(name);
-        else
-          notice.setText(name+" -- "+text);
-      }
-    });
+    if (! this.controller.getHeadless()) {
+      SwingUtilities.invokeLater(new Runnable() {
+        public void run() {
+          if (text==null || text.length() < 1)
+            notice.setText(name);
+          else
+            notice.setText(name+" -- "+text);
+        }
+      });
+    }
   }
 
   public void refresh() {
-    SwingUtilities.invokeLater(new Runnable() {
-      public void run() {
-        if (setting != null) {
-          for (Component c: setting.getComponents()) {
-            if (c == null) {
-              try {
-                c.invalidate();
-                c.validate();
-                c.repaint();
-              } catch (java.lang.NullPointerException ne) {
-                System.out.println("Valid: "+c.isValid()+": "+ne.toString());
+    if (! this.controller.getHeadless()) {
+      SwingUtilities.invokeLater(new Runnable() {
+        public void run() {
+          if (setting != null) {
+            for (Component c: setting.getComponents()) {
+              if (c == null) {
+                try {
+                  c.invalidate();
+                  c.validate();
+                  c.repaint();
+                } catch (java.lang.NullPointerException ne) {
+                  System.out.println("Valid: "+c.isValid()+": "+ne.toString());
+                }
               }
             }
-          }
-          try {
-            setting.invalidate();
-            setting.validate();
-            setting.repaint();
-          } catch (java.lang.NullPointerException ne) {
-            System.out.println("Setting Count: "+setting.getComponentCount()+": "+ne.toString());
+            try {
+              setting.invalidate();
+              setting.validate();
+              setting.repaint();
+            } catch (java.lang.NullPointerException ne) {
+              System.out.println("Null object: "+ne.toString());
+            }
           }
         }
-      }
-    });
+      });
+    }
   }
 
   public void refresh(Hand hand) {

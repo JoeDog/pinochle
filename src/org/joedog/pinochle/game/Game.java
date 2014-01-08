@@ -132,15 +132,21 @@ public class Game {
 
     Deck deck = new Deck(1);
     int turn  = controller.getIntProperty("Dealer");
-    int next  = (turn < players.length-1)? turn + 1 : 0;
+    int next  = (turn < players.length-1) ? turn + 1 : 0;
 
-    for (int i = 0; i < players.length; i++)
-      players[i].newHand();
+    for (Player player : players) {
+      player.newHand();
+      player.setText("");
+    }
 
     deck.shuffle();
     for (int i = 0; i < deck.count(); i++) {
       players[turn%players.length].takeCard(deck.dealCard(i));
       turn++;
+    }
+    
+    for (Player player : players) {
+      player.refresh();
     }
 
     controller.store("GameTrump",    "-1");
@@ -158,14 +164,14 @@ public class Game {
    */
   public void bid(Player[] players) {
     int bid       = (controller.getIntProperty("MinimumBid") - 1);
-    int turn      = 0;
+    int turn      = controller.getIntProperty("ActivePlayer");
     int sum       = 0;  // sum of the number of passes
     int mark      = 0;
     int [] passes = new int[players.length];
 
     for (Player player : players) {
-      player.refresh();
       player.assessHand();
+      player.refresh();
       Debug.print(player.getName()+"'s max bid is: "+player.getMaxBid()+"\t["+player.handToString()+"]");
     }
 
@@ -383,6 +389,7 @@ public class Game {
       }
     }
     if (controller.gameStatus() != GameController.OVER || ! controller.over()) {
+      controller.store("GameTrump", "-1");
       controller.newHand();
     }
   }

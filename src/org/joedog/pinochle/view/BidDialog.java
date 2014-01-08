@@ -100,7 +100,6 @@ public class BidDialog extends JFrame {
     this.setPreferredSize(new Dimension(268,132));
     JRootPane root = this.getRootPane();
     root.setDefaultButton(okay);
-    //WindowAdapter adapter = new WindowAdapter() {
     this.addWindowFocusListener(new WindowAdapter() {
       @Override
       public void windowLostFocus(WindowEvent e) {
@@ -111,8 +110,6 @@ public class BidDialog extends JFrame {
         okay.requestFocusInWindow();
       }
     });
-    //this.addWindowListener(adapter);
-    //this.addWindowFocusListener(adapter);
     this.addComponentListener(new ComponentAdapter() {
       public void componentMoved(ComponentEvent e) {
         x  = getX();  

@@ -170,6 +170,10 @@ public abstract class Player {
     this.name     = name;
   } 
 
+  public void setText(String text) {
+    this.setting.setText(text);
+  }
+
   public void showHand() {
     System.out.println(this.name+" "+this.hand.toString());
   }

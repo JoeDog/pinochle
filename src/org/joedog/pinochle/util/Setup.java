@@ -28,7 +28,6 @@ public final class Setup {
         } catch (Exception e) {}
         int a = Setup.countLines(memzip);
         int b = FileUtils.countLines(memtxt);
-        System.out.println("File: "+FileUtils.exists(memtxt)+", a: "+a+", b: "+b);
         if (! FileUtils.exists(memtxt) || (a > b)) {
           install_memory();
         }

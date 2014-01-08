@@ -277,6 +277,11 @@ public class GameView extends JPanel implements View, MouseListener {
   public void modelPropertyChange(PropertyChangeEvent e) {
     if (e.getNewValue() == null) return;
     if (e.getPropertyName().equals(controller.TRUMP)) {
+      if (e.getNewValue().equals("-1")) {
+        trump.setIcon(null);
+        trump.setText("New hand!");
+        trump.revalidate();
+      }
       if (e.getNewValue().equals("0")) {
         trump.setIcon(new TrumpIcon(Pinochle.HEARTS));
       }
@@ -310,6 +315,17 @@ public class GameView extends JPanel implements View, MouseListener {
     if (e.getPropertyName().equals(controller.GAME_SCORE)) {
       last.clearLast();
       trick.clearTrick();
+    }
+    if (e.getPropertyName().equals(controller.WINNER)) {
+      if (e.getNewValue().equals("NS")) {
+        String np = controller.getName(Pinochle.NORTH);
+        String sp = controller.getName(Pinochle.SOUTH);
+        setStatus(np+" and "+sp+" are winners!!!!");
+      } else {
+        String ep = controller.getName(Pinochle.EAST);
+        String wp = controller.getName(Pinochle.WEST);
+        setStatus(ep+" and "+wp+" are winners!!!!");
+      }
     }
   }
 
