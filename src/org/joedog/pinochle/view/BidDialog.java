@@ -14,6 +14,7 @@ import java.awt.event.WindowEvent;
 import java.awt.event.ComponentListener;
 import java.awt.event.ComponentEvent;
 import java.awt.event.ComponentAdapter;
+import java.beans.PropertyChangeEvent;
 import javax.swing.JButton;
 import javax.swing.JComboBox;
 import javax.swing.JDialog;
@@ -28,7 +29,7 @@ import java.util.concurrent.atomic.AtomicBoolean;
 import org.joedog.pinochle.control.*;
 import org.joedog.pinochle.game.*;
 
-public class BidDialog extends JFrame {
+public class BidDialog extends JFrame implements View {
   private int       x, y;
   private int       value;
   private int       bid;
@@ -39,7 +40,7 @@ public class BidDialog extends JFrame {
   private JPanel    buttons;
   private JLabel    header;
   private JLabel    suit;
-  private boolean   paused;
+  public  boolean   paused;
   private GameController controller;
 
   /** 
@@ -56,6 +57,7 @@ public class BidDialog extends JFrame {
     this.bid = bid;
     this.controller = controller;
     this.paused     = true;
+    this.controller.addView(this);
     SwingUtilities.invokeLater(new Runnable() {
       public void run() {
         createAndShowGui();
@@ -77,8 +79,20 @@ public class BidDialog extends JFrame {
         } catch (Exception e) {}
       } else {
         this.setVisible(false);
+        this.controller.removeView(this);
         return this.value;
       }
+    }
+  }
+
+  public void modelPropertyChange(PropertyChangeEvent e) {
+    if (e.getNewValue() == null) return;
+    if (e.getPropertyName().equals(controller.RESET)) {
+      this.paused = false;
+      this.value  = -1;
+      this.controller.removeView(this);
+      this.setVisible(false);
+      this.dispose();
     }
   }
 
