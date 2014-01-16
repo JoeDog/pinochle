@@ -31,7 +31,7 @@ public class CardPanel extends JPanel {
    */
   public boolean included() {
     for (Component c: this.setting.getComponents()) {
-      if (this.id == ((CardPanel)c).id) {
+      if (c != null && this.id == ((CardPanel)c).id) {
         return true;
       }
     }
