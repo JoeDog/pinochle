@@ -61,6 +61,7 @@ public class GameController extends AbstractController {
     runViewMethod("clearTrick");
     runViewMethod("clearLast");
     setModelProperty("GameStatus", ""+DEAL);
+    setStatus("Dealing a new hand....");
     if (this.isPaused()) {
       this.pause(false);
     } else {

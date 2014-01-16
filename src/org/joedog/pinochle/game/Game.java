@@ -176,9 +176,15 @@ public class Game {
     }
 
     while (sum < (players.length - 1)) {
+      boolean opponents = false;
       int ind = turn%players.length;
       int prt = players[ind].getPartner();
-      int ret = players[ind].bid(bid, players[prt].lastBid());
+      for (int i = 0; i < players.length; i++) {
+        if (i != ind && i != prt) {
+          opponents = (players[i].lastBid() >= 0 || opponents != false) ? true : false;
+        }
+      } 
+      int ret = players[ind].bid(bid, players[prt].lastBid(), opponents);
 
       if (ret < bid) {
         passes[turn%players.length] = 1;
@@ -193,6 +199,7 @@ public class Game {
     for (int i = 0; i < passes.length; i++) {
       if (passes[i] == 0) mark = i;
     }
+
     int trump = players[mark].nameTrump();
     controller.store("GameBid",    ""+bid);
     controller.store("Bidder",     ""+mark);

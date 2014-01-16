@@ -46,7 +46,7 @@ public class Human extends Player {
    * @param  int  the bid to beat
    * @param  int  our partner's bid (ignored by this class)
    */ 
-  public int bid(int bid, int pbid) {
+  public int bid(int bid, int pbid, boolean opponents) {
     return this.bid(bid);
   }
 

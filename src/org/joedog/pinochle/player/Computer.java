@@ -77,27 +77,12 @@ public class Computer extends Player {
    * @param  int   Our partner's bid for consideration
    * @return int   Our bid or -1 for pass
    */
-  public int bid (int bid, int pbid) {
+  public int bid (int bid, int pbid, boolean opponents) {
     if (myBid == -1) return myBid;
-
-    if (pbid > myBid) {
+    if (! opponents && pbid > myBid) {
       ptops += 1;
     }
-    if (ptops  ==  1 && (this.maxBid-1) > bid) {
-      // We'll place a bid that is 60% of the 
-      // difference between the current bid and
-      // our maxBid
-      int tmp    = (int)((this.maxBid - bid)*.5);
-      this.myBid = bid + tmp;
-      this.myBid = (this.myBid < bid) ? -1 : this.myBid; 
-
-      if (this.myBid == -1) 
-        this.setting.setText("Bid: Pass");
-      else 
-        this.setting.setText("Bid: "+this.myBid);
-      return this.myBid;
-    }
-    if (ptops  ==  2) {
+    if (ptops == 2) {
       this.myBid = -1;
       this.setting.setText("Bid: Pass");
       return this.myBid;

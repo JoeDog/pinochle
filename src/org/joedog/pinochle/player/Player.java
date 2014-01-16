@@ -18,7 +18,7 @@ public abstract class Player {
   public   int         type;
   public   String      name;
   public   Setting     setting;
-  public   int         maxBid;
+  public   int         maxBid = 0;
   public   int         myBid  = 0;
   public   int         pBid   = 0; 
   public   Assessment  assessment;
@@ -324,7 +324,7 @@ public abstract class Player {
 
   public abstract int bid(int bid); 
 
-  public abstract int bid(int bid, int pbid);
+  public abstract int bid(int bid, int pbid, boolean opponents);
 
   public abstract int nameTrump();
 
