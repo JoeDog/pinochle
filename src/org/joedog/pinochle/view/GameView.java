@@ -61,7 +61,7 @@ public class GameView extends JPanel implements View, MouseListener {
 
   public void setTrumpLabel() {
     if (trump == null) {
-      trump = new JLabel(" * ");
+      trump = new JLabel(" ");
     }
   }
 
@@ -80,8 +80,8 @@ public class GameView extends JPanel implements View, MouseListener {
       last = new LastTrick(this.controller);
       this.controller.addView(last);
     }
-    this.addPassButton();
-    table.add(getMsgBox(), 0, 0, 84, 42);
+    //this.addPlayButton();
+    table.add(getMsgBox(), 0, 0, 104, 42);
     table.add(getSetting(Pinochle.NORTH), 290, 10,  355, 132);
     table.add(getSetting(Pinochle.EAST),  570, 180, 355, 132);
     table.add(getSetting(Pinochle.SOUTH), 290, 340, 355, 132);
@@ -105,6 +105,9 @@ public class GameView extends JPanel implements View, MouseListener {
   public JPanel getMsgBox() {
     if (trump == null) {
       trump = new JLabel("", null, JLabel.CENTER);
+      Font font = trump.getFont();
+      Font bold = new Font(font.getFontName(), Font.BOLD, font.getSize());
+      trump.setFont(bold);
     }
     if (msgbox == null) {
       msgbox = new JPanel();
@@ -132,9 +135,8 @@ public class GameView extends JPanel implements View, MouseListener {
       switch (position) {
         case Pinochle.NORTH:
           setting[position] = new Setting(this.controller);
-          //setting[position].setBackground(Color.yellow);
           setting[position].setName(controller.getName(position));
-          setting[position].show();
+          //setting[position].setBackground(Color.yellow);
           break;
         case Pinochle.SOUTH:
           setting[position] = new Setting(this.controller);
@@ -279,7 +281,11 @@ public class GameView extends JPanel implements View, MouseListener {
     if (e.getPropertyName().equals(controller.TRUMP)) {
       if (e.getNewValue().equals("-1")) {
         trump.setIcon(null);
-        trump.setText("New hand!");
+        int b = controller.getIntProperty("GameBid");  
+        if (b > 0)  
+          trump.setText("Last bid: "+b);
+        else 
+          trump.setText("");
         trump.revalidate();
       }
       if (e.getNewValue().equals("0")) {
@@ -355,6 +361,19 @@ public class GameView extends JPanel implements View, MouseListener {
     } 
   }
 
+  private class ResetAction extends AbstractAction {
+    private GameController controller;
+
+    public ResetAction(GameController controller) {
+      putValue(NAME, "Reset");
+      this.controller = controller;
+    }
+
+    public void actionPerformed(ActionEvent ae) {
+      controller.resetGame();
+    } 
+  }
+
   private class PlayAction extends AbstractAction {
     private GameController controller;
 
@@ -366,19 +385,5 @@ public class GameView extends JPanel implements View, MouseListener {
     public void actionPerformed(ActionEvent ae) {
       this.controller.pause(false);
     } 
-  }
-
-  private class ResetAction extends AbstractAction {
-    public ResetAction() {
-      putValue(NAME, "Reset");
-      putValue(SHORT_DESCRIPTION, "Reset Game");
-      putValue(MNEMONIC_KEY, new Integer(KeyEvent.VK_ENTER));
-    }
-    public void actionPerformed(ActionEvent ae) {
-      //if (controller.isGameOver()) {
-      //  controller.newGame();
-      //  return;
-      //}
-    }
   }
 }
