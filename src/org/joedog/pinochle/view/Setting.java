@@ -31,7 +31,11 @@ public class Setting extends JPanel implements MouseListener {
     Insets popupInsets = new Insets(20, 0, 0, 0);
     layout.setPopupInsets(popupInsets);
     layout.setIncludeInvisible(true);
-    createPanel();
+    SwingUtilities.invokeLater(new Runnable() {
+      public void run() {
+        createPanel();
+      }
+    });
   }
 
   public void setText(final String text) {
@@ -89,12 +93,27 @@ public class Setting extends JPanel implements MouseListener {
     } else {
       this.hand = hand;
     }
-    this.setting.removeAll();
+    try {
+      this.setting.removeAll();
+    } catch (Exception e) {}
     this.setting = null;
     createPanel();
     if (this.hand != null && this.hand.size() == 0) {
-      this.setting.repaint();
-    }
+      this.setting.repaint(); 
+    } 
+    /**
+     * UGH - this is what we want but the cards
+     * disappear when we have wrong clicks...
+    SwingUtilities.invokeLater(new Runnable() {
+      public void run() {
+        setting.removeAll();
+        setting = null;
+        createPanel();
+        setting.repaint();
+        setting.setVisible(true);
+      }
+    });
+    */
   }
   
   private void createPanel() {
