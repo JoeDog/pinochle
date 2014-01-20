@@ -18,6 +18,7 @@ public class TrumpIcon extends ImageIcon {
       getClass().getClassLoader().getResource(this.path+"/clubs.png"),
       getClass().getClassLoader().getResource(this.path+"/diamonds.png"),
       getClass().getClassLoader().getResource(this.path+"/spades.png"),
+      getClass().getClassLoader().getResource(this.path+"/spacer.png")
     };
     return url[suit];
   }
