@@ -2,14 +2,18 @@ package org.joedog.pinochle.view;
 
 import java.awt.*;
 import java.awt.event.*;
+import java.lang.Runnable;
 import javax.swing.JPanel;
 import javax.swing.JLabel;
 import javax.swing.SwingUtilities;
+import java.util.concurrent.locks.Lock;
+import java.util.concurrent.locks.ReadWriteLock;
+import java.util.concurrent.locks.ReentrantReadWriteLock;
 import org.joedog.pinochle.view.OverlapLayout;
 import org.joedog.pinochle.game.*;
 import org.joedog.pinochle.control.GameController;
 
-public class Setting extends JPanel implements MouseListener {
+public class Setting extends JPanel implements MouseListener, Runnable {
   private String         name;
   private Hand           hand       = null;
   private Card           card       = null;
@@ -18,6 +22,7 @@ public class Setting extends JPanel implements MouseListener {
   private GameController controller = null;
   private JPanel setting = null;
   private JLabel notice  = null;
+  private final ReadWriteLock lock  = new ReentrantReadWriteLock();
 
   public Setting(GameController controller) {
     this.name = "";
@@ -36,6 +41,20 @@ public class Setting extends JPanel implements MouseListener {
         createPanel();
       }
     });
+    new Thread(this).start();
+  }
+
+  @Override
+  public void run() {
+    try {
+      while (true) {
+        Thread.sleep(500);
+        if (setting != null) {
+          // "Fix" disappearances...
+          setting.repaint();
+        }
+      }
+    } catch (InterruptedException e) {}
   }
 
   public void setText(final String text) {
@@ -122,15 +141,29 @@ public class Setting extends JPanel implements MouseListener {
     }
     setting.setBackground(new Color(48,200,126));
     if (this.hand != null) {
+      final Lock w = lock.writeLock();
+      w.lock();
       hand.sort();
+      try {
+        for (Card card: hand.getCards()) {
+          if (card.melded() == true) {
+            card.setFaceUp();
+          }
+          CardPanel cp = new CardPanel(setting, card);
+          cp.addMouseListener(this);
+        }
+      } finally {
+        w.unlock();
+      }
+      /*hand.sort();
       for (Card card: hand.getCards()) {
         if (card.melded() == true) {
           card.setFaceUp();
         }
         CardPanel cp = new CardPanel(setting, card);
         cp.addMouseListener(this);
-      }
-    } 
+      }*/
+    }
     try {
       int index = layout.convertIndex(1);
       int count = setting.getComponentCount();
