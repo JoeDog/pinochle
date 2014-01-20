@@ -54,7 +54,8 @@ public class BidDialog extends JFrame implements View {
    * @return BidDialog
    */
   public BidDialog(GameController controller, int bid) {
-    this.bid = bid;
+    this.bid        = bid;
+    this.value      = -1;
     this.controller = controller;
     this.paused     = true;
     this.controller.addView(this);
