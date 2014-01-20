@@ -39,6 +39,7 @@ public class GameView extends JPanel implements View, MouseListener {
   private JPanel         msgbox;
   private JLabel         trump       = null;
   private JLabel[]       spacer      = new JLabel[3];
+  private JLabel         filler      = null;
   public  Setting[]      setting     = new Setting[4]; 
   public  TrickArea      trick       = null;
   public  LastTrick      last        = null;
@@ -80,7 +81,7 @@ public class GameView extends JPanel implements View, MouseListener {
       last = new LastTrick(this.controller);
       this.controller.addView(last);
     }
-    //this.addPlayButton();
+    this.addFiller();
     table.add(getMsgBox(), 0, 0, 104, 42);
     table.add(getSetting(Pinochle.NORTH), 290, 10,  355, 132);
     table.add(getSetting(Pinochle.EAST),  570, 180, 355, 132);
@@ -156,6 +157,27 @@ public class GameView extends JPanel implements View, MouseListener {
       }
     }
     return setting[position];
+  }
+
+  public void addFiller() {
+    SwingUtilities.invokeLater(new Runnable() {
+      public void run() {
+        if (filler == null) {
+          filler = new JLabel();
+          filler.setIcon(new TrumpIcon(4));
+        }
+        buttons.removeAll();
+        buttons.add(filler);
+        invalidate();
+        revalidate();
+        repaint();
+        main.revalidate();
+        main.repaint();
+        for (int i = 0; i < setting.length; i++) {
+          setting[i].refresh();
+        }
+      }
+    });
   }
 
   public void addPassButton() {
@@ -321,6 +343,7 @@ public class GameView extends JPanel implements View, MouseListener {
     if (e.getPropertyName().equals(controller.GAME_SCORE)) {
       last.clearLast();
       trick.clearTrick();
+      this.addFiller();
     }
     if (e.getPropertyName().equals(controller.WINNER)) {
       if (e.getNewValue().equals("NS")) {
