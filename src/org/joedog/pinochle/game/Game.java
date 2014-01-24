@@ -291,7 +291,7 @@ public class Game {
     controller.addPlayButton();
     return;
   }
-  
+ 
   /** 
    * Referees the trick taking phase of a pinochle hand.
    * <p>
@@ -388,13 +388,25 @@ public class Game {
       controller.store("Take", "EW|1");
     }
     controller.addScore();
-    for (Player player : players) {
-      if (player.getPosition() == Pinochle.NORTH || player.getPosition() == Pinochle.SOUTH) {
-        player.remember(controller.getIntProperty("NSMeld"), controller.getIntProperty("NSTake"));
-      } else {
-        player.remember(controller.getIntProperty("EWMeld"), controller.getIntProperty("EWTake"));
-      }
-    }
+   
+    // we pass this information to all players but only the bidder stores it 
+    players[Pinochle.NORTH].remember(controller.getIntProperty("NSMeld"), controller.getIntProperty("NSTake"));
+    players[Pinochle.EAST].remember (controller.getIntProperty("EWMeld"), controller.getIntProperty("EWTake"));
+    players[Pinochle.SOUTH].remember(controller.getIntProperty("NSMeld"), controller.getIntProperty("NSTake"));
+    players[Pinochle.WEST].remember (controller.getIntProperty("EWMeld"), controller.getIntProperty("EWTake"));
+
+    controller.store(
+      "HighScore",
+      controller.getProperty("PlayerNorthName")+" / "+
+      controller.getProperty("PlayerSouthName")+"|"+
+      controller.getProperty("NSHand")
+    ); 
+    controller.store(
+      "HighScore",
+      controller.getProperty("PlayerEastName")+" / "+
+      controller.getProperty("PlayerWestName")+"|"+
+      controller.getProperty("EWHand")
+    ); 
     if (controller.gameStatus() != GameController.OVER || ! controller.over()) {
       controller.store("GameTrump", "-1");
       controller.newHand();
