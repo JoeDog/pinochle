@@ -310,7 +310,6 @@ public abstract class Player {
     if (this.memory == null || this.memory.length() < 2) return;
     int game = (meld+take);
 
-    //this.memory += "|"+game+","+meld+","+take;
     this.memory += "|"+game;
     Logger.remember(memtxt, memory);
     this.memory = new String("");
