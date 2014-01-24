@@ -11,9 +11,9 @@ import org.joedog.pinochle.view.actions.*;
 
 public class GameMenu extends JMenuBar {
   private String fileItems[]  = new String [] {"New", "Exit"};
-  private String prefItems[]  = new String [] {"Configure...", "Guru"};
+  private String prefItems[]  = new String [] {"Configure...", "Scores..."};
   char    fileShorts[] = {'N', 'X'};
-  char    prefShorts[] = {'C', 'G'};
+  char    prefShorts[] = {'C', 'S'};
   private JMenu  fileMenu; 
   private JMenu  prefMenu;
   private GameActions actions;
