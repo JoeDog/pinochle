@@ -162,6 +162,14 @@ public class ScoreModel extends AbstractModel {
     return ""+stats.getTake("EW");
   }
 
+  public String getNSHand() {
+    return ""+stats.getHand("NS");
+  }
+
+  public String getEWHand() {
+    return ""+stats.getHand("EW");
+  }
+
   public String getGameInfo() {
     String s = String.format(
       "%14s %4d  %4d\n%14s %4d  %4d\n%14s %4d  %4d\n%14s %4d  %4d\n%14s %4d  %4d\n%14s %4d  %4d\n%14s %4d  %4d\n%14s %4.2f %4.2f\n",
