@@ -21,13 +21,14 @@ import javax.swing.JTextField;
 import javax.swing.WindowConstants;
 import javax.swing.event.*;
 import javax.swing.table.*;
+import javax.swing.SwingUtilities;
 
 import org.joedog.pinochle.control.*;
 import org.joedog.pinochle.view.actions.*;
 import org.joedog.pinochle.model.HighScoreTableModel;
 
 public class HighScorePanel extends JFrame implements TableModelListener {
-  private JLabel header = new JLabel("Pinochle Hall of Fame"); 
+  private JLabel header = new JLabel("Highest Hands"); 
   private JTable table;
   private JPanel south;
   private JButton okay;
@@ -37,14 +38,18 @@ public class HighScorePanel extends JFrame implements TableModelListener {
   static final long serialVersionUID = -687991492884005033L;
   
   public HighScorePanel () {
-    super("Highest Hands");
+    super("Hall of Fame");
+    SwingUtilities.invokeLater(new Runnable() {
+      public void run() {
+        createAndShowGui();
+      }
+    });
+  }
+
+  public void createAndShowGui() {
     main = this.getContentPane();
     main.setLayout(new BorderLayout());
     this.setPreferredSize(new Dimension(280,280));
-    this.display();
-  }
-
-  public void display() {
     this.model = new HighScoreTableModel();
     this.model.addTableModelListener(this);
     this.table = new JTable(model);
