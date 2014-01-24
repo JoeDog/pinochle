@@ -30,6 +30,7 @@ public class Main {
   private static GameActions    actions;
   private static GameView       view;
   private static GameModel      model;
+  private static HighScoreModel highs;
   private static ScoreModel     score;
   private static GameMenu       menu;
 
@@ -105,12 +106,17 @@ public class Main {
       score = new ScoreModel();
       splash.setMessage("scoring");
     }
+    if (highs == null) {
+      highs = new HighScoreModel();
+      splash.setMessage("high scores");
+    }
     if (view == null) {
       view = new GameView(controller);
       splash.setMessage("view");
     }
     controller.addView(view);
     controller.addModel(model);
+    controller.addModel(highs);
     controller.addModel(score);
     splash.close();
     if (! controller.getHeadless()) {
