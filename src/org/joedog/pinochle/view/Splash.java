@@ -7,6 +7,7 @@ import java.awt.Font;
 import java.awt.Graphics2D;
 import java.awt.SplashScreen;
 
+import org.joedog.pinochle.Version;
 
 public class Splash {
   final   SplashScreen splash;
@@ -37,23 +38,27 @@ public class Splash {
   }
 
   public void setMessage(String message) {
-    int w     = 20;
-    int h     = 500;
+    int w     = 245;
+    int h     = 190;
 
     if (!okay) return;
 
     g.setComposite(AlphaComposite.Clear);
     g.fillRect(0,0,490,510);
     g.setPaintMode();
-    g.setColor(new Color(223,0,0));
+    g.setColor(new Color(248,248,248));
     g.setFont(new Font("Helvetica", Font.BOLD, 24));
-    g.drawString("Let's Play Pinochle", 20, 450);
-    g.drawString("with Your JoeDog!!", 20, 475);
-    g.setColor(Color.BLACK);
+    g.drawString("Pinochle", 240, 90);
+    g.setFont(new Font("Helvetica", Font.BOLD, 12));
+    g.drawString("version: "+Version.version, w, 110);
+    g.setFont(new Font("Helvetica", Font.BOLD, 10));
+    g.drawString(Version.author, w, 124);
+    g.drawString("© "+Version.copyright, w, 138);
+    g.setColor(new Color(64,64,64));
     g.setFont(new Font("Helvetica", Font.PLAIN, 12));
 
     if (message.equals("close")) {
-      g.drawString("Pinochle is ready ...", w, h);
+      g.drawString("Pinochle is ready ...",  w, h);
     } else {
       g.drawString("Loading "+message+"...", w, h);
     }
