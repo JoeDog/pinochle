@@ -4,7 +4,30 @@
   <property name="build.dir" value="out" />
   <property name="lib.dir"   value="lib" />
   <property name="dist.dir"  value="${basedir}" />
-  <property name="version"   value="1.0.5" />
+
+  <!-- 
+    This version number is sourced in org.joedog.pinochle.Version
+    This target parses that file, trims white space and newlines 
+    and assigns the release number to the version property.
+   -->
+  <target name="release">
+  <loadfile srcfile="${src.dir}/org/joedog/pinochle/Version.java" property="version"> 
+    <filterchain> 
+      <linecontainsregexp> 
+        <regexp pattern='public final static String version   = ".*";'/> 
+      </linecontainsregexp> 
+      <tokenfilter> 
+        <replaceregex pattern='public final static String version   = "(.*)";' replace='\1'/> 
+        <replaceregex pattern=" "  replace="" flags="g"/>
+      </tokenfilter> 
+    </filterchain> 
+  </loadfile> 
+  <script language="javascript">
+    var version = project.getProperty("version");
+    project.setProperty("version", version.replaceAll("\n", ""));
+  </script>
+  <echo>"${version}"</echo> 
+  </target>
 
   <target name="clean">
     <delete dir="${build.dir}"></delete>
@@ -67,7 +90,8 @@
     </java>
   </target>
 
-  <target name="jar" depends="clean,compile,resources">
+  <target name="jar" depends="release,clean,compile,resources">
+    <echo>${version}</echo> 
     <jar jarfile="${dist.dir}/${ant.project.name}-${version}.jar" basedir="${build.dir}">  
       <manifest>  
         <attribute name="Built-By"           value="${user.name}" />  

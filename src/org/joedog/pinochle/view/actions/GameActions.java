@@ -18,6 +18,8 @@ public class GameActions {
       return new ExitAction(controller);
     else if (item.equals("Configure..."))
       return new ConfigAction(controller);
+    else if (item.equals("Scores..."))
+      return new ScoresAction(controller);
     else 
       return null;
   }
