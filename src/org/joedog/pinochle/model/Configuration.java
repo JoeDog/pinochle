@@ -15,6 +15,7 @@ public class Configuration {
   private static String cfgdir  = System.getProperty("user.home")+sep+".pinochle";
   private static String cfgfile = cfgdir+sep+"game.conf";
   private static String memfile = cfgdir+sep+"memory.txt";
+  private static String hsfile  = cfgdir+sep+"scores.data";
   private static Configuration  _instance = null;
   private static Object mutex   = new Object();
 
@@ -22,6 +23,7 @@ public class Configuration {
     System.getProperties().put("pinochle.dir",    cfgdir);
     System.getProperties().put("pinochle.conf",   cfgfile);
     System.getProperties().put("pinochle.memory", memfile);
+    System.getProperties().put("pinochle.scores", hsfile);
 
     conf = new Properties();
 
