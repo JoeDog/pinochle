@@ -91,7 +91,6 @@
   </target>
 
   <target name="jar" depends="release,clean,compile,resources">
-    <echo>${version}</echo> 
     <jar jarfile="${dist.dir}/${ant.project.name}-${version}.jar" basedir="${build.dir}">  
       <manifest>  
         <attribute name="Built-By"           value="${user.name}" />  
