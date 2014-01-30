@@ -45,6 +45,7 @@ public class ConfigView extends JFrame {
   private JLabel labelVariations;
   private JLabel labelMinimumBid;
   private JLabel labelBidType;
+  private JLabel labelOverstick;
   private FocusTextField textEastName;
   private FocusTextField textWestName;
   private FocusTextField textNorthName;
@@ -55,13 +56,17 @@ public class ConfigView extends JFrame {
   private JRadioButton playDouble;
   private JRadioButton playSingleBid;
   private JRadioButton playAuctionBid;
+  private JRadioButton playTopTrump;
+  private JRadioButton playTopAll;
   private ButtonGroup  deckGroup;
   private ButtonGroup  bidGroup;
+  private ButtonGroup  topGroup;
   private JButton    saveButton;
   private JPanel south;
   private JPanel configPanel;
   private JPanel deckSelectPanel;
   private JPanel bidSelectPanel;
+  private JPanel topSelectPanel;
   private JScrollPane scroll;
   private Container pinochle;
   private String playerEastName;
@@ -149,7 +154,10 @@ public class ConfigView extends JFrame {
       labelDeckSize.setText("Deck Size:");
       labelVariations  = new JLabel();
       labelVariations.setBounds(new Rectangle(19, 262, 120, 24));
-      labelVariations.setText("Variations:");
+      labelVariations.setText("<html><b>Variations:</b></html>");
+      labelOverstick = new JLabel();
+      labelOverstick.setBounds(new Rectangle(19, 286, 120, 24));
+      labelOverstick.setText("Overstick rule: ");
       configPanel = new JPanel();
       configPanel.setLayout(null);
       configPanel.add(labelPlayers,  null);
@@ -175,6 +183,8 @@ public class ConfigView extends JFrame {
       configPanel.add(labelDeckSize, null);
       configPanel.add(getDeckSelectPanel(), null);
       configPanel.add(labelVariations, null);
+      configPanel.add(labelOverstick, null);
+      configPanel.add(getTopSelectPanel(), null);
     }
     return configPanel;
   }
@@ -308,7 +318,7 @@ public class ConfigView extends JFrame {
       bidGroup       = new ButtonGroup();
       bidGroup.add(playSingleBid);
       bidGroup.add(playAuctionBid);
-      if ((controller.getProperty("BidType")).equals("auction")) {
+      if ((controller.getProperty("BidVariation")).equals("auction")) {
         playAuctionBid.setSelected(true);
       } else {
         playSingleBid.setSelected(true);
@@ -349,6 +359,35 @@ public class ConfigView extends JFrame {
       deckSelectPanel.setBounds(new Rectangle(136, 238, 220, 20));
     }
     return deckSelectPanel;
+  }
+
+  private JPanel getTopSelectPanel() {
+    if (playTopTrump == null) {
+      playTopTrump = new JRadioButton("Trump Only");
+      playTopTrump.setActionCommand("trump");
+      playTopTrump.addActionListener(new TopButtonListener(this.controller));
+    }
+    if (playTopAll == null) {
+      playTopAll = new JRadioButton("All Suits");
+      playTopAll.setActionCommand("all");
+      playTopAll.addActionListener(new TopButtonListener(this.controller));
+    }
+    if (topSelectPanel == null) {
+      topSelectPanel = new JPanel();
+      topGroup       = new ButtonGroup();
+      topGroup.add(playTopTrump);
+      topGroup.add(playTopAll);
+      if ((controller.getProperty("TopVariation")).equals("trump")) {
+        playTopTrump.setSelected(true);
+      } else {
+        playTopAll.setSelected(true);
+      }
+      topSelectPanel.setLayout(new java.awt.GridLayout(1, 2));
+      topSelectPanel.add(playTopAll);
+      topSelectPanel.add(playTopTrump);
+      topSelectPanel.setBounds(new Rectangle(136, 286, 220, 20));
+    }
+    return topSelectPanel;
   }
 
   private JButton getButtonSave() {
