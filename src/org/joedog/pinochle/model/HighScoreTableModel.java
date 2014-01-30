@@ -25,7 +25,6 @@ public class HighScoreTableModel extends AbstractTableModel {
         return null;
       }
     });
-    System.out.println(path);
     try {
       scores = this.read();
     } catch (Exception e) {} 
