@@ -110,8 +110,16 @@ public class GameModel extends AbstractModel {
     conf.setProperty("DeckSize", size);
   }
 
-  public void setBidType(String type) {
-    conf.setProperty("BidType", type);
+  public void setBidVariation(String variation) {
+    conf.setProperty("BidVariation", variation);
+  }
+
+  public void setTopVariation(String variation) {
+    if (variation.equals("trump")) {
+      conf.setProperty("TopVariation", "1");
+    } else {
+      conf.setProperty("TopVariation", "0");
+    }
   }
 
   public void setWinningScore(String score) {
@@ -257,11 +265,18 @@ public class GameModel extends AbstractModel {
     return conf.getProperty("DeckSize");
   }
 
-  public String getBidType() {
-    if (conf.getProperty("BidType")==null) {
-      return "single"; 
+  public String getBidVariation() {
+    if (conf.getProperty("BidVariation")==null) {
+      return "0"; 
     }
-    return conf.getProperty("BidType");
+    return conf.getProperty("BidVariation");
+  }
+
+  public String getTopVariation() {
+    if (conf.getProperty("TopVariation") == null) {
+      return "0";
+    }
+    return conf.getProperty("TopVariation");
   }
 
   public String getSimulation() {
