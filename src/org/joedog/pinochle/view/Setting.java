@@ -35,7 +35,7 @@ public class Setting extends JPanel implements MouseListener, Runnable {
     layout = new OverlapLayout(overlap, true);
     Insets popupInsets = new Insets(20, 0, 0, 0);
     layout.setPopupInsets(popupInsets);
-    layout.setIncludeInvisible(true);
+    layout.setIncludeInvisible(false);
     SwingUtilities.invokeLater(new Runnable() {
       public void run() {
         createPanel();
