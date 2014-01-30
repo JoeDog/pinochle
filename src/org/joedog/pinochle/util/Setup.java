@@ -24,8 +24,6 @@ public final class Setup {
 
     switch (what) {
       case MEMORY:
-        try {
-        } catch (Exception e) {}
         int a = Setup.countLines(memzip);
         int b = FileUtils.countLines(memtxt);
         if (! FileUtils.exists(memtxt) || (a > b)) {
