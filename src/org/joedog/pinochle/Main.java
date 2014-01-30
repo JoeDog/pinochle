@@ -119,6 +119,7 @@ public class Main {
     controller.addModel(highs);
     controller.addModel(score);
     splash.close();
+
     if (! controller.getHeadless()) {
       SwingUtilities.invokeLater(new Runnable() {
         public void run() {
