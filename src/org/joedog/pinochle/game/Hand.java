@@ -360,6 +360,10 @@ public class Hand {
   }
 
   public Card beat(Card card) {
+    return this.beat(card, false);
+  }
+
+  public Card beat(Card card, boolean counter) {
     int i = card.getRank()+1;
     for ( ; i <= Pinochle.ACE; i++) {
       for (Card c: this.getCards()) { 
@@ -368,7 +372,10 @@ public class Hand {
         }
       }
     }
-    return null;
+    if (counter == true && this.counters(card.getSuit()) > 0) { 
+      return this.getCounter(card.getSuit());
+    }
+    return this.getLowest(card.getSuit());
   }
   
   public Card getHighest(int suit) {
