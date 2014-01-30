@@ -44,10 +44,17 @@ public class Rules {
       }
     }
     if (card.getSuit() == suit) {
+      if (controller.getIntProperty("TopVariation") == 0) {
+        if (tops != null && (card.getRank() > tops.getRank() || tops.getRank() == Pinochle.ACE)) {
+          return true;
+        } else if (hand.canTop(tops))  {
+          controller.setStatus("CHEATER!! You must beat the "+tops.toString());
+          return false;
+        } 
+      } 
       // it doesn't matter which rank we played....
       return true;
     } else {
-      // we have to play trump AND we have to top a trump
       if (card.getSuit() == trump) {
         if (hand.contains(suit) > 0) {
           controller.setStatus("CHEATER!! You must follow suit by playing "+Pinochle.suitname(suit));
