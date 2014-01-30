@@ -11,6 +11,6 @@ public class BidButtonListener implements ActionListener {
     this.controller = controller;
   }
   public void actionPerformed(ActionEvent e) {
-    controller.setProperty("BidType", e.getActionCommand());
+    controller.setProperty("BidVariation", e.getActionCommand());
   }
 }
