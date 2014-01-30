@@ -211,6 +211,14 @@ public class OverlapLayout implements LayoutManager2, java.io.Serializable {
   public void addLayoutComponent(Component component, Object constraint) {
     //  Support simple Boolean constraint for painting a Component in
     //  its "popped up" position
+    if (component == null) {
+      return;
+    }
+
+    if (component.getParent() == null) {
+      return;
+    }
+
     if (constraint == null) {
       constraints.remove(component);
     } else if (constraint instanceof Boolean) {
