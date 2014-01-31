@@ -269,6 +269,7 @@ public class Computer extends Player {
             continue;  
           }
           card = this.hand.getHighest(i);
+          // XXX: said 10D and played 10C WTF??
           Debug.print(this.name+" says, I'll hit you with my best shot: "+card.toString()); 
           if (card == null) return card;
           break;
@@ -365,21 +366,29 @@ public class Computer extends Player {
             Debug.print("Never fear! "+this.name+" is here!!! "+card.toString());
             if (card != null) return card;
           } else {
-            card = this.hand.getLowest(suit);
+            if (controller.getIntProperty("TopVariation") == 0) {
+              card = this.hand.beat(high, false);
+              Debug.print(this.name+" must try to overstick: "+card.toString());
+            } else {
+              card = this.hand.getLowest(suit);
+              Debug.print(this.name+" is tossing off: "+card.toString());
+            }
             Debug.print(this.name+" says, 'Sorry, partner. They're gonna take it....' ("+card.toString()+")");
             if (card != null) return card;
           }
         } else if (total == 0) {
           // My parter is gonna win it
-          card = this.hand.getCounter(suit);
+          card = this.hand.beat(high, true);
           if (card == null) 
              card = this.hand.getLowest(suit);
           Debug.print(this.name+" says, '(226) Good job! I tried to give a counter' ("+card.toString()+")");
           if (card != null) return card;
         } else {
-          card = this.hand.getLowest(suit);
-          Debug.print(this.name+" is no help at all: "+card.toString());
-          if (card != null) return card;
+          card = (controller.getIntProperty("TopVariation")==0) ? hand.beat(high) : hand.getLowest(suit);
+          if (card != null) {
+            Debug.print(this.name+" is no help at all: "+card.toString());
+            return card;
+          }
         }
       } else if (this.brain.haveHighest(this.hand, suit)) {
         if (temp.getRank() <= high.getRank()) {
@@ -392,8 +401,9 @@ public class Computer extends Player {
           if (card != null) return card;
         }
       } else {
-        card = this.hand.getLowest(suit);
-        Debug.print(this.name+" is powerless to do anything: "+card.toString());
+        card = (controller.getIntProperty("TopVariation") == 0) ? hand.beat(high) : hand.getLowest(suit);
+        if (card == null) 
+          card = this.hand.getLowest(trick.getLeadingSuit()); 
         if (card != null) return card;
       }
     } else {
@@ -443,6 +453,8 @@ public class Computer extends Player {
           card = this.hand.getLowest(sel);
           if (card.getRank() == Pinochle.ACE) 
             card = this.hand.getLowest();
+          // XXX: this didn;t work.  player didn't have trump of the suit 
+          //      and she played a COUNTER with non-counters in her hand...
           Debug.print(this.name+" says, '(459) Bad guys got it. Here's my worst card: "+card.toString()+"'");
           if (card != null) return card;
         }

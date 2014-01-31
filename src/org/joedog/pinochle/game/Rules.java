@@ -47,6 +47,14 @@ public class Rules {
       if (controller.getIntProperty("TopVariation") == 0) {
         if (tops != null && (card.getRank() > tops.getRank() || tops.getRank() == Pinochle.ACE)) {
           return true;
+        } else if (card.getSuit() == trick.getLeadingSuit()) {
+          if (hand.canTop(tops)) {
+            controller.setStatus("CHEATER!! You must beat the "+tops.toString());
+            return false;
+          } else {
+            // someone trumped but we can follow suit....
+            return true;
+          }
         } else if (hand.canTop(tops))  {
           controller.setStatus("CHEATER!! You must beat the "+tops.toString());
           return false;

@@ -214,9 +214,11 @@ public class Hand {
     }
     for (Card c: this.getCards()){
       if (c.getSuit() == card.getSuit() && c.getRank() > card.getRank()) {
+        System.out.println("Can top: true ("+c.toString()+" > "+card.toString()+")");
         return true;
       }
     }
+    System.out.println("Can't top");
     return false;
   }
  
@@ -365,17 +367,23 @@ public class Hand {
 
   public Card beat(Card card, boolean counter) {
     int i = card.getRank()+1;
+    int s = card.getSuit();
     for ( ; i <= Pinochle.ACE; i++) {
       for (Card c: this.getCards()) { 
-        if (c.getRank() == i) {
+        if (c.getSuit() == s && c.getRank() == i) {
           return c;
         }
       }
     }
+    Card tmp = null;
     if (counter == true && this.counters(card.getSuit()) > 0) { 
-      return this.getCounter(card.getSuit());
+      tmp = this.getCounter(card.getSuit());
+      if (tmp != null) return tmp;
     }
-    return this.getLowest(card.getSuit());
+    tmp = this.getLowest(card.getSuit());
+    if (tmp != null) return tmp;
+
+    return this.getLowest();
   }
   
   public Card getHighest(int suit) {
