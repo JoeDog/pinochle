@@ -4,7 +4,6 @@ import org.joedog.pinochle.control.*;
 import org.joedog.pinochle.util.*;
 
 public class Rules {
-  // We want a controller to set status
   private GameController controller;
 
   public Rules(GameController controller) { 
@@ -44,23 +43,32 @@ public class Rules {
       }
     }
     if (card.getSuit() == suit) {
+      /**
+       * This first block is for the overstick variation;
+       * we must top the highest card in the trick if we can.
+       */
       if (controller.getIntProperty("TopVariation") == 0) {
         if (tops != null && (card.getRank() > tops.getRank() || tops.getRank() == Pinochle.ACE)) {
           return true;
-        } else if (card.getSuit() == trick.getLeadingSuit()) {
-          if (hand.canTop(tops)) {
+        } 
+        if (card.getSuit() == trick.getLeadingSuit()) {
+          if (hand.canTop(tops) && ! trick.containsTrump()) {
             controller.setStatus("CHEATER!! You must beat the "+tops.toString());
             return false;
           } else {
             // someone trumped but we can follow suit....
+            controller.setStatus("You're okay. The lead was trumped but  "+tops.toString());
             return true;
           }
         } else if (hand.canTop(tops))  {
           controller.setStatus("CHEATER!! You must beat the "+tops.toString());
           return false;
         } 
-      } 
-      // it doesn't matter which rank we played....
+      }
+      /**
+       * This applies to slough variation; since we're not in
+       * trump, we're not required to overstick.
+       */
       return true;
     } else {
       if (card.getSuit() == trump) {

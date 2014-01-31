@@ -11,6 +11,7 @@ import java.awt.Font;
 import java.awt.Toolkit;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
+import javax.swing.AbstractButton;
 import javax.swing.ButtonGroup;
 import javax.swing.JButton;
 import javax.swing.JCheckBox;
@@ -28,6 +29,7 @@ import javax.swing.table.TableColumn;
 import javax.swing.JTextField;
 import javax.swing.WindowConstants;
 import javax.swing.event.*;
+import java.util.Enumeration;
 
 import org.joedog.pinochle.control.*;
 import org.joedog.pinochle.view.actions.*;
@@ -146,15 +148,15 @@ public class ConfigView extends JFrame {
       labelMinimumBid  = new JLabel();
       labelMinimumBid.setBounds(new Rectangle(19, 190, 120, 24));
       labelMinimumBid.setText("Minimum Bid:");
-      labelBidType  = new JLabel();
-      labelBidType.setBounds(new Rectangle(19, 214, 120, 24));
-      labelBidType.setText("Bid Type:");
       labelDeckSize  = new JLabel();
-      labelDeckSize.setBounds(new Rectangle(19, 238, 120, 24));
+      labelDeckSize.setBounds(new Rectangle(19, 214, 120, 24));
       labelDeckSize.setText("Deck Size:");
       labelVariations  = new JLabel();
-      labelVariations.setBounds(new Rectangle(19, 262, 120, 24));
+      labelVariations.setBounds(new Rectangle(19, 238, 120, 24));
       labelVariations.setText("<html><b>Variations:</b></html>");
+      labelBidType  = new JLabel();
+      labelBidType.setBounds(new Rectangle(19, 262, 120, 24));
+      labelBidType.setText("Bid Type:");
       labelOverstick = new JLabel();
       labelOverstick.setBounds(new Rectangle(19, 286, 120, 24));
       labelOverstick.setText("Overstick rule: ");
@@ -311,7 +313,6 @@ public class ConfigView extends JFrame {
       playAuctionBid = new JRadioButton("Auction Bid");
       playAuctionBid.setActionCommand("auction");
       playAuctionBid.addActionListener(new BidButtonListener(this.controller));
-      playAuctionBid.setEnabled(false);
     }
     if (bidSelectPanel == null) {
       bidSelectPanel = new JPanel();
@@ -326,7 +327,7 @@ public class ConfigView extends JFrame {
       bidSelectPanel.setLayout(new java.awt.GridLayout(1, 2));
       bidSelectPanel.add(playSingleBid);
       bidSelectPanel.add(playAuctionBid);
-      bidSelectPanel.setBounds(new Rectangle(136, 214, 220, 20));
+      bidSelectPanel.setBounds(new Rectangle(136, 262, 220, 20));
     }
     return bidSelectPanel;
   }
@@ -356,7 +357,7 @@ public class ConfigView extends JFrame {
       deckSelectPanel.setLayout(new java.awt.GridLayout(1, 2));
       deckSelectPanel.add(playSingle);
       deckSelectPanel.add(playDouble);
-      deckSelectPanel.setBounds(new Rectangle(136, 238, 220, 20));
+      deckSelectPanel.setBounds(new Rectangle(136, 214, 220, 20));
     }
     return deckSelectPanel;
   }
@@ -377,10 +378,10 @@ public class ConfigView extends JFrame {
       topGroup       = new ButtonGroup();
       topGroup.add(playTopTrump);
       topGroup.add(playTopAll);
-      if ((controller.getProperty("TopVariation")).equals("trump")) {
-        playTopTrump.setSelected(true);
-      } else {
+      if ((controller.getProperty("TopVariation")).equals("0")) {
         playTopAll.setSelected(true);
+      } else {
+        playTopTrump.setSelected(true);
       }
       topSelectPanel.setLayout(new java.awt.GridLayout(1, 2));
       topSelectPanel.add(playTopAll);
@@ -408,12 +409,35 @@ public class ConfigView extends JFrame {
           controller.setProperty("ConfigY",  Integer.toString(getY()));
           controller.setProperty("WinningScore",  textWinningScore.getText());
           controller.setProperty("MinimumBid",    textMinimumBid.getText());
+          controller.setProperty("BidVariation",  getSelectedButtonValue(bidGroup));
+          controller.setProperty("TopVariation",  getSelectedButtonValue(topGroup));
           controller.save();
           closeFrame();
         }
       });
     }
     return saveButton;
+  }
+
+  private String getSelectedButtonValue(ButtonGroup buttonGroup) {
+    String value;
+    for (Enumeration<AbstractButton> buttons = buttonGroup.getElements(); buttons.hasMoreElements();) {
+      AbstractButton button = buttons.nextElement();
+
+      if (button.isSelected()) {
+        value = button.getText();
+        if (value.equals("Single Bid")) 
+          return "single";
+        if (value.equals("Auction Bid"))
+          return "auction";
+        if (value.equals("All Suits"))
+          return "0";
+        if (value.equals("Trump Only"))
+          return "1";
+        return value;
+      }
+    }
+    return null;
   }
 
   private void closeFrame(){

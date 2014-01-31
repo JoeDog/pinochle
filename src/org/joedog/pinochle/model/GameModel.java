@@ -115,7 +115,7 @@ public class GameModel extends AbstractModel {
   }
 
   public void setTopVariation(String variation) {
-    if (variation.equals("trump")) {
+    if (variation.equals("1")) {
       conf.setProperty("TopVariation", "1");
     } else {
       conf.setProperty("TopVariation", "0");
@@ -267,13 +267,14 @@ public class GameModel extends AbstractModel {
 
   public String getBidVariation() {
     if (conf.getProperty("BidVariation")==null) {
-      return "0"; 
+      return "auction"; 
     }
     return conf.getProperty("BidVariation");
   }
 
   public String getTopVariation() {
     if (conf.getProperty("TopVariation") == null) {
+      System.out.println("TOP VAR IS NULL!!!!!!!!!!!!!!!");
       conf.setProperty("TopVariation", "0");
       return "0";
     }

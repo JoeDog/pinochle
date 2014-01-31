@@ -6,10 +6,10 @@ import java.util.HashMap;
 import org.joedog.pinochle.player.*;
 
 public class Trick {
-  private int     lead = -1; // the suit which was led
   private int     trump;     // the named trump suit
   private int     winner;    // the winning position
   private Card    card;      // the winning card
+  private Card    lead;      // the winning card
   private Deck    deck;      // easy to pass reference of all cards
   private Hand    hand;      // programmer's convenience...
   private boolean trumped;   // does the trick contain trump?
@@ -29,7 +29,7 @@ public class Trick {
     this.hand.add(card);
     if (cards.size() == 0) { 
       this.card   = card;
-      this.lead   = card.getSuit();
+      this.lead   = card;
       this.winner = player.getPosition();
     } else {
       if (this.card.getSuit() == this.trump && card.getSuit() == this.trump) {
@@ -43,7 +43,7 @@ public class Trick {
         this.winner  = player.getPosition();
         this.trumped = true;
       } else {
-        if (card.getSuit() == this.lead) {
+        if (card.getSuit() == this.lead.getSuit()) {
           if (card.getRank() > this.card.getRank()) {
             this.card   = card;
             if (! this.trumped) {
@@ -74,7 +74,11 @@ public class Trick {
   }
 
   public int getLeadingSuit() {
-    return this.lead; 
+    return (this.lead == null) ? -1 : this.lead.getSuit(); 
+  }
+
+  public Card getLeadingCard() {
+    return this.lead;
   }
 
   public boolean containsTrump() {

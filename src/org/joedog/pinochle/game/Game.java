@@ -167,6 +167,8 @@ public class Game {
     int turn      = controller.getIntProperty("ActivePlayer");
     int sum       = 0;  // sum of the number of passes
     int mark      = 0;
+    int limit     = (controller.getProperty("BidVariation").equals("auction")) ? 
+                    (players.length - 1) : players.length;
     int [] passes = new int[players.length];
 
     for (Player player : players) {
@@ -175,7 +177,7 @@ public class Game {
       Debug.print(player.getName()+"'s max bid is: "+player.getMaxBid()+"\t["+player.handToString()+"]");
     }
 
-    while (sum < (players.length - 1)) {
+    while (sum < limit) {
       boolean opponents = false;
       int ind = turn%players.length;
       int prt = players[ind].getPartner();
@@ -185,20 +187,32 @@ public class Game {
         }
       } 
       int ret = players[ind].bid(bid, players[prt].lastBid(), opponents);
+      Debug.print(players[ind].getName()+" bids: "+((players[ind].lastBid()==-1)?"pass":""+players[ind].lastBid()));
 
       if (ret < bid) {
         passes[turn%players.length] = 1;
       } else {
         bid  = ret;
+        mark = turn%players.length;
       }
       turn++;
-      sum = 0;
-      for (int i : passes) sum += i; // get the total passes
+
+      if (controller.getProperty("BidVariation").equals("auction")) {
+        // If we're playing an auction, then we need to count
+        // the number of passes to determine the end of bidding
+        sum = 0;
+        for (int i : passes) sum += i; // get the total passes
+      } else {
+        //If we're playing single bid, then we just increment sum
+        sum++;
+      }
     }
 
-    for (int i = 0; i < passes.length; i++) {
-      if (passes[i] == 0) mark = i;
-    }
+    if (controller.getProperty("BidVariation").equals("auction")) {
+      for (int i = 0; i < passes.length; i++) {
+        if (passes[i] == 0) mark = i;
+      } 
+    } // else mark is already set for us....
 
     int trump = players[mark].nameTrump();
     controller.store("GameBid",    ""+bid);
@@ -326,7 +340,7 @@ public class Game {
       Card [] cards = new Card[4];
       Debug.print("Trump: "+Pinochle.suitname(controller.getTrump()));
       for (Player player : players) {
-        Debug.print(player.handToString());
+        Debug.print(player.getName()+": "+player.handToString());
       }
       for (int j = 0; j < players.length; j++) {
         Card card = null;

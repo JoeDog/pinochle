@@ -20,7 +20,6 @@ public class Computer extends Player {
   @Override
   public synchronized void newHand() {
     this.hand   = new Hand();
-    //this.brain  = new Brain();
     if (this.brain == null) {
       this.brain = new Brain();
     }
@@ -30,7 +29,14 @@ public class Computer extends Player {
     this.pBid   = 0;
     this.ptops  = 0;
   }
- 
+
+  /**
+   * Takes a single card and adds
+   * it to the player's hand.
+   * <p>
+   * @param  Card  that we're adding to the hand
+   * @return void   
+   */
   public void takeCard(Card c) {
     if (controller.cheatMode()) {
       c.setFaceUp();
@@ -40,6 +46,13 @@ public class Computer extends Player {
     this.hand.add(c);
   }
 
+  /**
+   * Takes a deck of cards and inserts
+   * them into the player's hand
+   * <p>
+   * @param  Deck  structure to hold the cards
+   * @return void 
+   */ 
   public void takeCards(Deck d) {
     for (Card c: d.getCards()) {
       if (controller.cheatMode()) {
@@ -79,6 +92,25 @@ public class Computer extends Player {
    */
   public int bid (int bid, int pbid, boolean opponents) {
     if (myBid == -1) return myBid;
+
+    /** 
+     * Single bid variation; we'll just take our best shot
+     */
+    if (controller.getProperty("BidVariation").equals("single")) {
+      if (bid >= this.maxBid) {
+        this.setting.setText("Bid: Pass");
+        myBid = -1;
+        return myBid;
+      } else {
+        myBid = this.maxBid;
+        this.setting.setText("Bid: "+myBid);
+        return myBid;
+      }
+    }
+
+    /**
+     * Auction bid variation; increment the bid
+     */ 
     if (! opponents && pbid > myBid) {
       ptops += 1;
     }
@@ -239,9 +271,6 @@ public class Computer extends Player {
       if (card != null) 
         Debug.print(this.name+" says, c'mon let's see some trump: "+card.toString());
     }
-    if (brain.haveHighest(this.hand, trick.getTrump())) {
-      Debug.print(this.name+" has the highest trump...");
-    }
     if (card == null) {
       // We're not the bidder - we're mostly concerned with getting tricks
       if (this.hand.aces(trick.getTrump()) > 0) {
@@ -250,7 +279,6 @@ public class Computer extends Player {
           Debug.print(this.name+" unleashes some fire power: "+card.toString());
         }
       } else {
-        Debug.print(this.name+" is looking for aces");
         for (int i = 0; i < 4; i++) {
           if (this.hand.aces(i) > 0) {
             card = new Card(Pinochle.ACE, i);
@@ -258,6 +286,7 @@ public class Computer extends Player {
             break;
           }
         }
+        if (card != null) return card;
       }
     }
     if (card == null) {
@@ -356,11 +385,9 @@ public class Computer extends Player {
         // partner has it, but will it stand?
         int total   = this.brain.cardsHigherThan(high);
         int winners = this.hand.cardsHigherThan(high);
-        Debug.print(this.name+"'s partner is winning but will it stand?");
         if (winners > 0 && winners < total) {
           // Oh noes, there are outstanding cards
           // which can beat my partner...
-          Debug.print(this.name+"'s partner's card can be beaten!!!");
           if (this.brain.haveHighest(this.hand, suit)) {
             card = temp;
             Debug.print("Never fear! "+this.name+" is here!!! "+card.toString());
@@ -368,10 +395,16 @@ public class Computer extends Player {
           } else {
             if (controller.getIntProperty("TopVariation") == 0) {
               card = this.hand.beat(high, false);
-              Debug.print(this.name+" must try to overstick: "+card.toString());
+              if (card != null) {
+                Debug.print(this.name+" must try to overstick: "+card.toString());
+                return card;
+              }
             } else {
               card = this.hand.getLowest(suit);
-              Debug.print(this.name+" is tossing off: "+card.toString());
+              if (card != null) {
+                Debug.print(this.name+" is tossing off: "+card.toString());
+                return card;
+              }
             }
             Debug.print(this.name+" says, 'Sorry, partner. They're gonna take it....' ("+card.toString()+")");
             if (card != null) return card;
@@ -379,6 +412,8 @@ public class Computer extends Player {
         } else if (total == 0) {
           // My parter is gonna win it
           card = this.hand.beat(high, true);
+          if (card == null) 
+             card = this.hand.getCounter();
           if (card == null) 
              card = this.hand.getLowest(suit);
           Debug.print(this.name+" says, '(226) Good job! I tried to give a counter' ("+card.toString()+")");
@@ -393,18 +428,25 @@ public class Computer extends Player {
       } else if (this.brain.haveHighest(this.hand, suit)) {
         if (temp.getRank() <= high.getRank()) {
           card = this.hand.getLowest(suit);
-          Debug.print(this.name+" says, 'Crap, we can only tie...' playing lowest: "+card.toString());
-          if (card != null) return card;
+          if (card != null) {
+            Debug.print(this.name+" says, 'Crap, we can only tie...' playing lowest: "+card.toString());
+            return card;
+          }
         } else {
           card = temp;
-          Debug.print(this.name+" has the highest card and here it comes: "+card.toString());
-          if (card != null) return card;
+          if (card != null) {
+            Debug.print(this.name+" has the highest card and here it comes: "+card.toString());
+            return card;
+          }
         }
       } else {
         card = (controller.getIntProperty("TopVariation") == 0) ? hand.beat(high) : hand.getLowest(suit);
         if (card == null) 
           card = this.hand.getLowest(trick.getLeadingSuit()); 
-        if (card != null) return card;
+        if (card != null) {
+          Debug.print(this.name+" tried to overstick: "+card.toString());
+          return card;
+        }
       }
     } else {
       int cnt;
@@ -444,17 +486,28 @@ public class Computer extends Player {
       if (card != null) return card;
       if (card == null && sel < 100) {
         if (trick.winner() == this.partner) {
+          /**
+           * Our partner is winning the trick; 
+           * we'll try to short-suit ourselves 
+           * but we want to make sure we throw
+           * a counter...
+           */
           card = this.hand.getCounter(sel);
-          if (card == null) 
+          if (card == null || card.getRank() < Pinochle.KING) 
             card = this.hand.getCounter();
+          if (card == null)
+            card = this.hand.getLowest();
           Debug.print(this.name+" says, '(453) Good job! I'll to give you a counter: "+card.toString()+"'");
           if (card != null) return card;
         } else {
+          /**
+           * The trick winner is NOT our partner;
+           * we'll try to short-suit ourselves but
+           * we don't want to throw a counter....
+           */
           card = this.hand.getLowest(sel);
-          if (card.getRank() == Pinochle.ACE) 
+          if (card.getRank() >= Pinochle.KING)
             card = this.hand.getLowest();
-          // XXX: this didn;t work.  player didn't have trump of the suit 
-          //      and she played a COUNTER with non-counters in her hand...
           Debug.print(this.name+" says, '(459) Bad guys got it. Here's my worst card: "+card.toString()+"'");
           if (card != null) return card;
         }
