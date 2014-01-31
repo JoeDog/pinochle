@@ -9,7 +9,7 @@ public class GameThread extends Thread {
     this.game = game;
     Thread.UncaughtExceptionHandler h = new Thread.UncaughtExceptionHandler() {
       public void uncaughtException(Thread th, Throwable ex) {
-        System.out.println("Uncaught exception: " + ex);
+        System.out.println("Uncaught exception in Game Thread: " + ex);
         ex.printStackTrace();
       }
     };
