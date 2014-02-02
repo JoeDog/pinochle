@@ -304,29 +304,29 @@ public class ConfigView extends JFrame {
   }
 
   private JPanel getBidSelectPanel() {
-    if (playSingleBid == null) {
-      playSingleBid = new JRadioButton("Single Bid");
-      playSingleBid.setActionCommand("single");
-      playSingleBid.addActionListener(new BidButtonListener(this.controller));
-    }
     if (playAuctionBid == null) {
       playAuctionBid = new JRadioButton("Auction Bid");
       playAuctionBid.setActionCommand("auction");
       playAuctionBid.addActionListener(new BidButtonListener(this.controller));
     }
+    if (playSingleBid == null) {
+      playSingleBid = new JRadioButton("Single Bid");
+      playSingleBid.setActionCommand("single");
+      playSingleBid.addActionListener(new BidButtonListener(this.controller));
+    }
     if (bidSelectPanel == null) {
       bidSelectPanel = new JPanel();
       bidGroup       = new ButtonGroup();
-      bidGroup.add(playSingleBid);
       bidGroup.add(playAuctionBid);
+      bidGroup.add(playSingleBid);
       if ((controller.getProperty("BidVariation")).equals("auction")) {
         playAuctionBid.setSelected(true);
       } else {
         playSingleBid.setSelected(true);
       }
       bidSelectPanel.setLayout(new java.awt.GridLayout(1, 2));
-      bidSelectPanel.add(playSingleBid);
       bidSelectPanel.add(playAuctionBid);
+      bidSelectPanel.add(playSingleBid);
       bidSelectPanel.setBounds(new Rectangle(136, 262, 220, 20));
     }
     return bidSelectPanel;

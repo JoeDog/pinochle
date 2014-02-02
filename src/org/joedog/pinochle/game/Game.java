@@ -187,7 +187,6 @@ public class Game {
         }
       } 
       int ret = players[ind].bid(bid, players[prt].lastBid(), opponents);
-      Debug.print(players[ind].getName()+" bids: "+((players[ind].lastBid()==-1)?"pass":""+players[ind].lastBid()));
 
       if (ret < bid) {
         passes[turn%players.length] = 1;
@@ -411,13 +410,13 @@ public class Game {
 
     controller.store(
       "HighScore",
-      controller.getProperty("PlayerNorthName")+" / "+
+      controller.getProperty("PlayerNorthName")+"/"+
       controller.getProperty("PlayerSouthName")+"|"+
       controller.getProperty("NSHand")
     ); 
     controller.store(
       "HighScore",
-      controller.getProperty("PlayerEastName")+" / "+
+      controller.getProperty("PlayerEastName")+"/"+
       controller.getProperty("PlayerWestName")+"|"+
       controller.getProperty("EWHand")
     ); 

@@ -11,7 +11,7 @@ import java.security.*;
 import javax.swing.table.*;
 
 public class HighScoreTableModel extends AbstractTableModel {
-  private String[]   headers = {"Name", "Score"};
+  private String[]   headers = {"Name", "Score", "Date"};
   private File       file;
   private String     path;
   private HighScores scores; 
@@ -30,9 +30,9 @@ public class HighScoreTableModel extends AbstractTableModel {
     } catch (Exception e) {} 
   } 
 
-  public void add(String name, int score) {
+  public void add(String name, int score, String timestamp) {
     if ((score > 0.0) && (scores.isHighScore(score))) {
-      scores.add(new Score(name, score));
+      scores.add(new Score(name, score, timestamp));
       this.save();
     } 
   } 
@@ -79,6 +79,8 @@ public class HighScoreTableModel extends AbstractTableModel {
       return new String(score.getName());
     case 1:
       return new Double(score.getScore());
+    case 2:
+      return new String(score.getStamp());
     }
     throw new IllegalArgumentException("Bad selection ("+row+", "+col+")");
   } 

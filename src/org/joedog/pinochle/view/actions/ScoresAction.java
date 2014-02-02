@@ -13,7 +13,7 @@ public class ScoresAction implements ActionListener {
   }
 
   public void actionPerformed (ActionEvent e) {
-    new HighScorePanel();
+    new HighScorePanel(this.controller);
   }
 }
 

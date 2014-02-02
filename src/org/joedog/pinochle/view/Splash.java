@@ -11,6 +11,7 @@ import org.joedog.pinochle.Version;
 
 public class Splash {
   final   SplashScreen splash;
+  final   String COPYRIGHT  = "\u00a9";
 
   private Graphics2D   g;
   private boolean      okay;
@@ -53,7 +54,7 @@ public class Splash {
     g.drawString("version: "+Version.version, w, 110);
     g.setFont(new Font("Helvetica", Font.BOLD, 10));
     g.drawString(Version.author, w, 124);
-    g.drawString("© "+Version.copyright, w, 138);
+    g.drawString(COPYRIGHT+" "+Version.copyright, w, 138);
     g.setColor(new Color(64,64,64));
     g.setFont(new Font("Helvetica", Font.PLAIN, 12));
 

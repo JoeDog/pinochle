@@ -2,6 +2,7 @@ package org.joedog.pinochle.model;
 
 import java.lang.NumberFormatException;
 import org.joedog.pinochle.control.*;
+import org.joedog.pinochle.util.DateUtils;
 
 public class HighScoreModel extends AbstractModel {
   HighScoreTableModel model = new HighScoreTableModel();
@@ -28,7 +29,7 @@ public class HighScoreModel extends AbstractModel {
       value = 0;
     }
     if (value == 0) return;
-    model.add(names, value); 
+    model.add(names, value, DateUtils.now()); 
   }
 }
 
