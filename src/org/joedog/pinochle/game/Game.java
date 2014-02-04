@@ -139,10 +139,34 @@ public class Game {
       player.setText("");
     }
 
-    deck.shuffle();
-    for (int i = 0; i < deck.count(); i++) {
-      players[turn%players.length].takeCard(deck.dealCard(i));
-      turn++;
+    /** 
+     * The first part of this if-check is a programmer's
+     * helper; it reads cards from $HOME/.pinochle/cards.txt
+     * and loads them into the game. The file's format looks
+     * like this:
+     * north: 10H KH 9H 9H 10C QC JC KD KD 9D AS KS
+     * east: 10H KH QH AC AC KC JC 9C QD JD AS QS
+     * south: AH QH JH 9C AD JD 9D 10S KS JS 9S 9S
+     * west: AH JH 10C KC QC AD 10D 10D QD 10S QS JS
+     */
+    CustomHands ch = new CustomHands();
+    if (ch.hasCustomHands()) {
+      int id = 0;
+      for (Player player : players) {
+        CustomHandsList<String> tmp = ch.get(player.getPosition());
+        for (String s : tmp) {
+          Card c = new Card(id, s);
+          player.takeCard(c);
+          id++;
+        }
+      }
+    } else {
+      // this section handles normal play
+      deck.shuffle();
+      for (int i = 0; i < deck.count(); i++) {
+        players[turn%players.length].takeCard(deck.dealCard(i));
+        turn++;
+      }
     }
     
     for (Player player : players) {

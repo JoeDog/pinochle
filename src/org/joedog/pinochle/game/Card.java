@@ -68,6 +68,43 @@ public class Card {
     createCard();
   }
 
+  public Card(int id, String s) {
+    this.id = id;
+
+    if (s.startsWith("A")) {
+      this.rank = Pinochle.ACE;
+    }
+    if (s.startsWith("10")) {
+      this.rank = Pinochle.TEN;
+    }
+    if (s.startsWith("K")) {
+      this.rank = Pinochle.KING;
+    }
+    if (s.startsWith("Q")) {
+      this.rank = Pinochle.QUEEN;
+    }
+    if (s.startsWith("J")) {
+      this.rank = Pinochle.JACK;
+    }
+    if (s.startsWith("9")) {
+      this.rank = Pinochle.NINE;
+    }
+
+    if (s.endsWith("H")) {
+      this.suit = Pinochle.HEARTS;
+    }
+    if (s.endsWith("C")) {
+      this.suit = Pinochle.CLUBS;
+    }
+    if (s.endsWith("D")) {
+      this.suit = Pinochle.DIAMONDS;
+    }
+    if (s.endsWith("S")) {
+      this.suit = Pinochle.SPADES;
+    }
+    createCard();
+  }
+
   /**
    * Return the ID of the card as an int;
    * untracked generic cards contain ID -1

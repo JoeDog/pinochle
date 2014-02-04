@@ -214,7 +214,6 @@ public class Hand {
     }
     for (Card c: this.getCards()){
       if (c.getSuit() == card.getSuit() && c.getRank() > card.getRank()) {
-        System.out.println("Can top: true ("+c.toString()+" > "+card.toString()+")");
         return true;
       }
     }

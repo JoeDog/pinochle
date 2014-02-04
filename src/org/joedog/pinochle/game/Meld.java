@@ -160,20 +160,24 @@ public class Meld {
           hand.remove(ace);  
         }
         if (marriage(trump, trump) == 0 && round(Pinochle.KING) < 1 && round(Pinochle.QUEEN) < 1) {
-          Card king = new Card(Pinochle.KING, trump);
+          Card king  = new Card(Pinochle.KING, trump);
+          Card queen = new Card(Pinochle.QUEEN, trump);
           if (! (trump == Pinochle.SPADES && pinochle() > 1)) {
             if (deck.count() < num && hand.contains(king) > 0) {
               deck.add(hand.pass(king));  
               hand.remove(king);  
             }
-            Card queen = new Card(Pinochle.QUEEN, trump);
             if (deck.count() < num && hand.contains(queen) > 0) {
               deck.add(hand.pass(queen));  
               hand.remove(queen);  
             }
+          } else if (deck.count() < num && this.hand.contains(queen) == 2 && pinochle() < 30) {
+            // we have an extra queen. Let's pass it.
+            deck.add(hand.pass(queen));
+            hand.remove(queen);
           } 
         } else 
-          if (marriage(trump, trump) > 1 && deck.count() < 2 && 
+          if (marriage(trump, trump) == 4 && deck.count() < 2 && 
               round(Pinochle.KING) < 1 && round(Pinochle.QUEEN) < 1) {
           Card king  = new Card(Pinochle.KING, trump);
           Card queen = new Card(Pinochle.QUEEN, trump);
@@ -184,6 +188,10 @@ public class Meld {
             hand.remove(king);  
             deck.add(hand.pass(queen));  
             hand.remove(queen);  
+          } else if (deck.count() < num && this.hand.contains(queen) == 2 && pinochle() < 30) {
+            // we have an extra queen. Let's pass it.
+            deck.add(hand.pass(queen));
+            hand.remove(queen);
           }
         } // else if marriage in trump
         Card ten = new Card(Pinochle.TEN, trump);
@@ -324,7 +332,9 @@ public class Meld {
           hand.remove(card);
         } else if (!(pinochle() > 1 && card.isPinochleMate())) {
           if (tries < 40 && card.getRank() != Pinochle.NINE && card.getRank() != Pinochle.TEN) {
-            if (this.hand.isMarried(card) == false && round(card.getRank()) < 1) {
+            // we don't want to break up marriages, rounds or pass trump at this point. We 
+            // thoroughly vetted trump above. No reason to buck those rules down here.
+            if (this.hand.isMarried(card) == false && round(card.getRank()) < 1 && card.getSuit() != trump) {
               deck.add(hand.pass(card));
               hand.remove(card);
             }

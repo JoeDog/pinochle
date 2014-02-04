@@ -254,7 +254,10 @@ public class Computer extends Player {
       Debug.print(this.name+" plans to run you fsckers out of trump: "+card.toString());
     } else if (this.hand.singletons() > 0) {
       card = this.hand.getSingleton();
-      if (card != null) Debug.print(this.name+" better play a singleton: "+card.toString());
+      if (card != null) {
+        Debug.print(this.name+" better play a singleton: "+card.toString());
+        return card;
+      }
     } else if (this.bidder && brain.outstandingTrump(this.hand, trick.getTrump())) {
       // if we meet this condition, then there's outstanding trump but
       // we don't have the highest card; let's throw some garbage and try
@@ -288,6 +291,17 @@ public class Computer extends Player {
         }
         if (card != null) return card;
       }
+    }
+    if (card == null && brain.haveHighest(this.hand, trick.getTrump()) && this.hand.size() > 2) {
+      /**
+       * If we meet this criteria, we're probably sitting
+       * on a good deal of trump late in the game; we'll 
+       * shorten the game and hope our opponents toss the
+       * wrong cards to set us up for the last trick...
+       */
+      card = this.hand.getHighest(trick.getTrump());
+      Debug.print(this.name+" still has some power left: "+card.toString());
+      if (card != null) return card;
     }
     if (card == null) {
       // Let's see if we have a high card....

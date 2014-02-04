@@ -274,7 +274,6 @@ public class GameModel extends AbstractModel {
 
   public String getTopVariation() {
     if (conf.getProperty("TopVariation") == null) {
-      System.out.println("TOP VAR IS NULL!!!!!!!!!!!!!!!");
       conf.setProperty("TopVariation", "0");
       return "0";
     }
