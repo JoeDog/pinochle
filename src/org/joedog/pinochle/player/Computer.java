@@ -299,9 +299,11 @@ public class Computer extends Player {
        * shorten the game and hope our opponents toss the
        * wrong cards to set us up for the last trick...
        */
-      card = this.hand.getHighest(trick.getTrump());
-      Debug.print(this.name+" still has some power left: "+card.toString());
-      if (card != null) return card;
+      if (this.hand.contains(trick.getTrump()) > this.hand.nonTrumpCount(trick.getTrump())) {
+        card = this.hand.getHighest(trick.getTrump());
+        Debug.print(this.name+" still has some power left: "+card.toString());
+        if (card != null) return card;
+      }
     }
     if (card == null) {
       // Let's see if we have a high card....

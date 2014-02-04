@@ -272,6 +272,24 @@ public class Hand {
     return card;
   }
 
+  /**
+   * Returns the number of cards left in
+   * the hand which are not members of the
+   * trump suit.
+   * <p>
+   * @param   int  The named trump suit
+   * @return  int  The count of non-trump cards
+   */
+  public int nonTrumpCount(int trump) {
+    int count = 0;
+    for (Card c: this.getCards()) {
+      if (c != null && c.getSuit() != trump) {
+        count++;
+      }
+    }
+    return count;
+  }
+
   public Card getLowest() {
     //XXX: should call contains first  
     Card card  = this.get(0); 
