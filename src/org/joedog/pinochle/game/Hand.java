@@ -368,11 +368,9 @@ public class Hand {
    */
   public int cardsHigherThan(Card card) {
     int cnt = 0;
-    for (int i = card.getRank()+1; i <= Pinochle.ACE; i++) {
-      for (Card c: this.getCards()) { 
-        if (c.getRank() > card.getRank()) {
-          cnt += 1;
-        }
+    for (Card c: this.getCards()) { 
+      if (c.getRank() > card.getRank() && c.getSuit() == card.getSuit()) {
+        cnt += 1;
       }
     }
     return cnt;

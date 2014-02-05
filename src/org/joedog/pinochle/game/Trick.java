@@ -81,6 +81,10 @@ public class Trick {
     return this.lead;
   }
 
+  public boolean isTrumped() {
+    return this.trumped;
+  }
+
   public boolean containsTrump() {
     return this.trumped;
   }
