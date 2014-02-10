@@ -13,11 +13,11 @@ import org.joedog.pinochle.game.Pinochle;
 public class Scenario {
   private boolean scenario = false;
   private String  cardstxt = System.getProperty("pinochle.cards");
-  private Map<Integer,CustomHandsList<String>> map = new HashMap<Integer,CustomHandsList<String>>(); 
+  private Map<Integer,ScenarioList<String>> map = new HashMap<Integer,ScenarioList<String>>(); 
   public  enum Seats { NORTH, SOUTH, EAST, WEST, BLANK };
 
-  public CustomHands() {
-    this.custom = parseHands();
+  public Scenario() {
+    this.scenario = parseHands();
   }
 
   public boolean hasScenario() {
@@ -52,19 +52,19 @@ public class Scenario {
         switch (seat) {
           case NORTH:
             cards = array[1].replaceFirst("^ ", "").split(" ", -1);
-            map.put(Pinochle.NORTH, new CustomHandsList<String>(cards));
+            map.put(Pinochle.NORTH, new ScenarioList<String>(cards));
             break;
           case SOUTH:
             cards = array[1].replaceFirst("^ ", "").split(" ", -1);
-            map.put(Pinochle.SOUTH, new CustomHandsList<String>(cards));
+            map.put(Pinochle.SOUTH, new ScenarioList<String>(cards));
             break;
           case EAST:
             cards = array[1].replaceFirst("^ ", "").split(" ", -1);
-            map.put(Pinochle.EAST, new CustomHandsList<String>(cards));
+            map.put(Pinochle.EAST, new ScenarioList<String>(cards));
             break;
           case WEST:
             cards = array[1].replaceFirst("^ ", "").split(" ", -1);
-            map.put(Pinochle.WEST, new CustomHandsList<String>(cards));
+            map.put(Pinochle.WEST, new ScenarioList<String>(cards));
             break;
         }
       }

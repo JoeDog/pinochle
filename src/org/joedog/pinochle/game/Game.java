@@ -149,11 +149,11 @@ public class Game {
      * south: AH QH JH 9C AD JD 9D 10S KS JS 9S 9S
      * west: AH JH 10C KC QC AD 10D 10D QD 10S QS JS
      */
-    CustomHands ch = new CustomHands();
-    if (ch.hasCustomHands()) {
+    Scenario scenario = new Scenario();
+    if (scenario.hasScenario()) {
       int id = 0;
       for (Player player : players) {
-        CustomHandsList<String> tmp = ch.get(player.getPosition());
+        ScenarioList<String> tmp = scenario.get(player.getPosition());
         for (String s : tmp) {
           Card c = new Card(id, s);
           player.takeCard(c);
