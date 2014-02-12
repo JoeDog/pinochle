@@ -6,9 +6,11 @@ import org.joedog.pinochle.game.*;
 import org.joedog.pinochle.player.*;
 import org.joedog.pinochle.view.*;
 import org.joedog.pinochle.view.actions.*;
+import org.joedog.pinochle.test.*;
 import org.joedog.pinochle.util.*;
 
 import java.util.concurrent.TimeUnit;
+import java.util.Map;
 import javax.swing.UIManager;
 import javax.swing.SwingUtilities;
 
@@ -20,12 +22,14 @@ public class Game {
   private GameView       view;
   private Player[]       players;
   private PlayerFactory  factory;
+  private Scenarios      scenarios;
 
 
   public Game(GameController controller, GameView view) {
     this.controller = controller;
     this.view       = view;
     this.players    = this.getPlayers();
+    this.scenarios  = new Scenarios();
   }
 
   /**
@@ -149,13 +153,13 @@ public class Game {
      * south: AH QH JH 9C AD JD 9D 10S KS JS 9S 9S
      * west: AH JH 10C KC QC AD 10D 10D QD 10S QS JS
      */
-    Scenario scenario = new Scenario();
-    if (scenario.hasScenario()) {
+    if (scenarios.loaded()) {
       int id = 0;
+      Map<java.lang.Integer,ScenarioList<java.lang.String>> m = scenarios.next();
       for (Player player : players) {
-        ScenarioList<String> tmp = scenario.get(player.getPosition());
-        for (String s : tmp) {
-          Card c = new Card(id, s);
+        ScenarioList<String> tmp = m.get(player.getPosition());
+        for (String str : tmp) {
+          Card c = new Card(id, str);
           player.takeCard(c);
           id++;
         }
@@ -171,7 +175,9 @@ public class Game {
     
     for (Player player : players) {
       player.refresh();
-    }
+      // Let's print in cards.txt friendly format in case we want to capture it
+      Debug.print(Pinochle.position(player.getPosition())+": "+player.handToString()); 
+    } Debug.print("");
 
     controller.store("GameTrump",    "-1");
     controller.store("GameStatus",   ""+GameController.BID);

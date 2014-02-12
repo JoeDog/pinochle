@@ -65,6 +65,26 @@ public final class Pinochle {
   }
 
   /**
+   * Returns the player's seated position as String
+   * <p>
+   * @param  int    Pinochle.POSITION
+   * @return String Name of the position
+   */
+  public final static String position(int position) {
+    switch (position) {
+      case NORTH:
+        return "north";
+      case EAST:
+        return "east";
+      case SOUTH:
+        return "south";
+      case WEST:
+        return "west";
+    }
+    return null;
+  }
+
+  /**
    * Programmer's convenience This method helps create
    * a string interpretation of a hand that we can store
    * inside our memory banks....
