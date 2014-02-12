@@ -56,6 +56,27 @@ public final class FileUtils {
   }
 
   /**
+   * Returns an Iterable iterator 
+   * for (String line : FileUtils.fileLineIterator("/home/jeff/cards.txt")) {
+   *   // You can handle comments and empty lines like this:
+   *   if (line.trim().startsWith("#")) continue;
+   *   if (line.trim().isEmpty()) continue;
+   *   // Do something with it:
+   *   System.out.println(line);
+   * } 
+   * <p>
+   * @param  String            the path to the file, i.e., /home/jeff/cards.txt
+   * @return FileLineIterator  implements Iterable, can be used in a foreach loop
+   */
+  public final static FileLineIterator fileLineIterator(String name) {
+    FileLineIterator fli = null;
+    try {
+      fli = new FileLineIterator(name);
+    } catch (IOException ioe) {}
+    return fli;
+  }  
+
+  /**
    * Returns true if file is in GZip format and 
    * false if it is not. 
    * <p>
