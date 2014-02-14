@@ -4,6 +4,7 @@ import java.util.Map;
 import java.util.HashMap;
 
 import org.joedog.pinochle.player.*;
+import org.joedog.pinochle.util.Debug;
 
 public class Trick {
   private int     trump;     // the named trump suit
@@ -31,6 +32,7 @@ public class Trick {
       this.card   = card;
       this.lead   = card;
       this.winner = player.getPosition();
+      Debug.print(player.getName()+" led with "+this.lead.toString());
     } else {
       if (this.card.getSuit() == this.trump && card.getSuit() == this.trump) {
         this.trumped   = true;
