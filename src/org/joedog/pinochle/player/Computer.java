@@ -443,7 +443,6 @@ public class Computer extends Player {
         }
       } else if (this.brain.haveHighest(this.hand, suit)) {
         if (temp.getRank() <= high.getRank()) {
-          Debug.print(temp.toString()+" is lower than "+high.toString());
           card = this.hand.getLowest(suit);
           if (card != null) {
             Debug.print(this.name+" says, 'Crap, we can only tie...' playing lowest: "+card.toString());
@@ -464,8 +463,10 @@ public class Computer extends Player {
           // Overstick if we can, else play the lowest...
           card = (controller.getIntProperty("TopVariation") == 0) ? hand.beat(high) : hand.getLowest(suit);
         }
-        if (card == null) 
+        if (card == null) {
+          Debug.print(this.name+"'s card is null: get lowest of these: "+Pinochle.suitname(trick.getLeadingSuit()));
           card = this.hand.getLowest(trick.getLeadingSuit()); 
+        }
         if (card != null) {
           Debug.print(this.name+" tried to overstick: "+card.toString());
           return card;
@@ -494,14 +495,12 @@ public class Computer extends Player {
         }
       }
       if (trick.winner() == this.partner) {
-        Debug.print("The trick winner is my partner");
         for (int i = 0; i < 4; i++) { // loop thru the suits
           cnt = this.hand.contains(i);
           if (cnt == 0) continue;
           else if (cnt < num && this.hand.counters(i) > 0) sel = i;
         }
       } else {
-        Debug.print("The trick winner is NOT my partner!!!!!!!!!");
         for (int i = Pinochle.HEARTS; i < Pinochle.SPADES; i++) {
           cnt = this.hand.contains(i);
           if (cnt == 0) continue;
