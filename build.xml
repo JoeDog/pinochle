@@ -11,7 +11,7 @@
     and assigns the release number to the version property.
    -->
   <target name="release">
-  <loadfile srcfile="${src.dir}/org/joedog/pinochle/Version.java" property="version"> 
+  <loadfile srcfile="${src.dir}/org/joedog/${ant.project.name}/Version.java" property="version"> 
     <filterchain> 
       <linecontainsregexp> 
         <regexp pattern='public final static String version   = ".*";'/> 
@@ -46,9 +46,9 @@
   </target>
 
   <target name="docs">
-    <javadoc packagenames="org.joedog.pinochle.*"
+    <javadoc packagenames="org.joedog.${ant.project.name}.*"
              sourcepath="src"
-             excludepackagenames="org.joedog.pinochle.images.*"
+             excludepackagenames="org.joedog.${ant.project.name}.images.*"
              defaultexcludes="yes"
              destdir="docs/api"
              author="true"
@@ -66,27 +66,27 @@
   </target>
 
   <target name="resources" >  
-    <copy todir="${build.dir}/org/joedog/pinochle/images" >  
-      <fileset dir="${src.dir}/org/joedog/pinochle/images" includes="*.zip" />  
+    <copy todir="${build.dir}/org/joedog/${ant.project.name}/images" >  
+      <fileset dir="${src.dir}/org/joedog/${ant.project.name}/images" includes="*.zip" />  
     </copy>
-    <copy todir="${build.dir}/org/joedog/pinochle/images" >  
-      <fileset dir="${src.dir}/org/joedog/pinochle/images" includes="*.png" />  
+    <copy todir="${build.dir}/org/joedog/${ant.project.name}/images" >  
+      <fileset dir="${src.dir}/org/joedog/${ant.project.name}/images" includes="*.png" />  
     </copy>
-    <copy todir="${build.dir}/org/joedog/pinochle/images/cards" >  
-      <fileset dir="${src.dir}/org/joedog/pinochle/images/cards" includes="*.png" />  
+    <copy todir="${build.dir}/org/joedog/${ant.project.name}/images/cards" >  
+      <fileset dir="${src.dir}/org/joedog/${ant.project.name}/images/cards" includes="*.png" />  
     </copy>
   </target> 
 
   <target name="memory">
-    <zip destfile="${src.dir}/org/joedog/pinochle/images/memory.zip">
-      <fileset dir="${user.home}/.pinochle" includes="memory.txt"/>
+    <zip destfile="${src.dir}/org/joedog/${ant.project.name}/images/memory.zip">
+      <fileset dir="${user.home}/.${ant.project.name}" includes="memory.txt"/>
     </zip>
   </target>
 
   <target name="run" depends="clean,compile,resources">
-    <java classname="org.joedog.pinochle.Main" fork="true" spawn="false">
+    <java classname="org.joedog.${ant.project.name}.Main" fork="true" spawn="false">
       <classpath refid="classpath" />
-      <jvmarg value="-splash:${build.dir}org/joedog/pinochle/images/splash.png -XX:-OmitStackTraceInFastThrow"/>
+      <jvmarg value="-splash:${build.dir}org/joedog/${ant.project.name}/images/splash.png -XX:-OmitStackTraceInFastThrow"/>
     </java>
   </target>
 
@@ -94,8 +94,8 @@
     <jar jarfile="${dist.dir}/${ant.project.name}-${version}.jar" basedir="${build.dir}">  
       <manifest>  
         <attribute name="Built-By"           value="${user.name}" />  
-        <attribute name="Main-Class"         value="org.joedog.pinochle.Main" />  
-        <attribute name="SplashScreen-Image" value="org/joedog/pinochle/images/splash.png" />  
+        <attribute name="Main-Class"         value="org.joedog.${ant.project.name}.Main" />  
+        <attribute name="SplashScreen-Image" value="org/joedog/${ant.project.name}/images/splash.png" />  
         <section name="common">  
           <attribute name="Specification-Title" value="${component.name}" />  
           <attribute name="Specification-Version" value="${component.version}" />  
