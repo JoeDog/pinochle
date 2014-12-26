@@ -112,7 +112,7 @@ public class BidDialog extends JFrame implements View {
     this.buttons.add(this.getOkayButton());
     this.buttons.add(this.getPassButton());
     this.dialog.add(buttons, null);
-    this.setPreferredSize(new Dimension(268,132));
+    this.setPreferredSize(new Dimension(268,146));
     JRootPane root = this.getRootPane();
     root.setDefaultButton(okay);
     this.addWindowFocusListener(new WindowAdapter() {
@@ -127,8 +127,8 @@ public class BidDialog extends JFrame implements View {
     });
     this.addComponentListener(new ComponentAdapter() {
       public void componentMoved(ComponentEvent e) {
-        x  = getX();  
-        y  = getY();  
+        x  = getX() + 10;  
+        y  = getY() + 10;  
       }
     });
     int xpos = controller.getIntProperty("DialogX");
