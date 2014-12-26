@@ -42,8 +42,8 @@ public class Main {
     frame.setJMenuBar(menu);
     frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
     frame.setContentPane(view.createContentPane());
-    frame.setPreferredSize(new Dimension(970,630));
-    frame.setSize(970, 630);
+    frame.setPreferredSize(new Dimension(970,640));
+    frame.setSize(970, 640);
     frame.addComponentListener(new ComponentAdapter() {
       public void componentMoved(ComponentEvent e) {
         //We'll snag and save these properties when we exit
