@@ -10,6 +10,8 @@ public abstract class AbstractModel {
     propertyChangeSupport = new PropertyChangeSupport(this);
   }
 
+  public abstract void save();
+
   public void addPropertyChangeListener(PropertyChangeListener listener) {
     propertyChangeSupport.addPropertyChangeListener(listener);
   }

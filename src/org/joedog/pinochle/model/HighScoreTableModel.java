@@ -10,6 +10,8 @@ import java.util.ArrayList;
 import java.security.*;
 import javax.swing.table.*;
 
+import org.joedog.util.FileUtils;
+
 public class HighScoreTableModel extends AbstractTableModel {
   private String[]   headers = {"Name", "Score", "Date"};
   private File       file;
@@ -48,7 +50,7 @@ public class HighScoreTableModel extends AbstractTableModel {
     Score score = (Score)this.scores.get(row);
     switch (col) {
     case 0:
-      if (score.getName().equals("Your Name")) {
+      if (score.getName(Score.ONE).equals("Your Name")) {
         return true;
       } else {
         return false;
@@ -63,7 +65,7 @@ public class HighScoreTableModel extends AbstractTableModel {
     Score score = (Score)this.scores.get(row);
     switch (col) {
       case 0:
-        score.setName((String)o);
+        score.setName(Score.ONE, (String)o);
         break;  
       case 1:
         break;
@@ -76,18 +78,33 @@ public class HighScoreTableModel extends AbstractTableModel {
     Score score = (Score)this.scores.get(row);
     switch(col) {
     case 0: 
-      return new String(score.getName());
+      return new String(score.getName(Score.ONE));
     case 1:
-      return new Double(score.getScore());
+      return new Double(score.getScore(Score.ONE));
     case 2:
-      return new String(score.getStamp());
+      return new String(score.getStamp(Score.ONE));
     }
     throw new IllegalArgumentException("Bad selection ("+row+", "+col+")");
   } 
 
-  public String getColumnName(int col) { return headers[col]; }
-  public int    getRowCount()          { return scores.size(); }
-  public int    getColumnCount()       { return headers.length; }
+  public String getColumnName(int col) { 
+    return headers[col]; 
+  }
+
+  public int getRowCount() { 
+    if (this.scores == null) {
+      // Added for Version 2.0 since the old high score data was 
+      // incompatible with this version....
+      FileUtils.delete(System.getProperty("pinochle.scores"));
+      return 0;
+    } else {
+      return scores.size(); 
+    }
+  }
+
+  public int getColumnCount() { 
+    return headers.length; 
+  }
 
   private HighScores read () throws IOException, ClassNotFoundException {
     SecurityManager sm = System.getSecurityManager();
