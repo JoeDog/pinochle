@@ -6,8 +6,18 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Iterator;
 
-public class Hand {
+import javax.swing.ListModel;
+import javax.swing.event.ListDataEvent;
+import javax.swing.event.ListDataListener;
+
+import org.joedog.pinochle.model.Location;
+
+public class Hand implements ListModel {
   private ArrayList hand;  
+  private ArrayList listeners = new ArrayList();
+  private Location  location  = null;
+  private int       width     = 372;
+  private int       csize     = 62;
   private int       ranks[]   = new int[] {
     Pinochle.ACE, Pinochle.TEN, Pinochle.KING, Pinochle.QUEEN, Pinochle.JACK,
   };
@@ -19,6 +29,53 @@ public class Hand {
    */
   public Hand() {
     hand = new ArrayList();
+  }
+
+  /** 
+   * Sets the hand layout for the hand
+   * <p>
+   * @param  HandLayout
+   * @return void
+   */
+  public void setLayout(Location start, int width){
+    this.location = start;
+    this.width    = width;
+  }
+
+  public void relocate() {
+    //if (this.csize == 0) this.csize = this.hand.get(1).getImageWidth();
+    // XXX: have to make csize dynamic!!!
+    int x = this.location.getX();
+    int y = this.location.getY();
+    Card tmp = null;
+    for (Card c: this.getCards()){
+      if (c.played()) {
+        continue;
+      }
+      x += 20;
+      c.setLocation(x, y);  
+      c.resetWidth();
+      tmp = c;
+    }
+    if (tmp != null) {
+      tmp.setWidth(tmp.getImageWidth());
+    }
+  }
+
+  /**
+   * Returns a Card object whose rank and suit match 
+   * the parameters
+   * <p>
+   * @param  int   A card's rank
+   * @return int   A card's suit
+   */
+  public Card getCard(int rank, int suit) {
+    for (Card c: this.getCards()){
+      if (c.isa(rank, suit)) {
+        return c; 
+      }
+    }
+    return null;
   }
 
   /**
@@ -106,6 +163,15 @@ public class Hand {
       }
     }
     return num;
+  }
+
+  public Card getSelected() {
+    for (Card c: this.getCards()){ 
+      if (c.isSelected()) {
+        return c;
+      } 
+    }
+    return null;
   }
 
   /**
@@ -418,6 +484,22 @@ public class Hand {
     return num;
   }
 
+  public int selectCount() {
+    int num = 0;
+    for (Card card : this.getCards()) {
+      if (card.isSelected()) {
+        num++;
+      } 
+    }
+    return num;
+  }
+
+  public void deselectAll() {
+    for (Card card : this.getCards()) {
+      card.select(false);
+    }
+  }
+
   public int counters(int suit) {
     int  num  = 0;
     Card card = null; 
@@ -546,35 +628,47 @@ public class Hand {
   }
 
   public void add(Card c) {
+    boolean b = false;
     if (c == null)
       throw new NullPointerException("Can't add a null card to a hand.");
-    hand.add(c);
+    b = hand.add(c);
   }
 
+ 
+  /**
+   * Removes a card like Card c
+   * <p>
+   * @param  Card  Remove a card like this one
+   * @return void
+   */ 
   public void remove (Card c) { 
     for (Iterator<Card> iterator = this.getCards().iterator(); iterator.hasNext(); ) {
       Card card = iterator.next();
       if (card.matches(c)) {
         iterator.remove();
+        this.notifyListeners();
         return; 
       }
     }
     return;
   } 
 
-  public void remove(List<Integer> indices) {
-    Collections.sort(indices, Collections.reverseOrder());
-    for (int i : indices) {
-      if (i < 0 || i >= hand.size())
-        throw new IllegalArgumentException("Card does not exist: " + i);
-      hand.remove(i);
+  /**
+   * Removes a card by its numeric ID.
+   * <p>
+   * @param  int  the id of the card to remove; hand.remove(card.getId());
+   * @return void
+   */
+  public void remove (int id) {
+    for (Iterator<Card> iterator = this.getCards().iterator(); iterator.hasNext(); ) {
+      Card card = iterator.next();
+      if (id == card.getId()) {
+        iterator.remove();
+        this.notifyListeners();
+        return;
+      }
     }
-  }
-
-  public void remove(int position) {
-    if (position < 0 || position >= hand.size())
-      throw new IllegalArgumentException("Position does not exist in hand: " + position);
-    hand.remove(position);
+    return;
   }
 
   public void removeAll() {
@@ -582,17 +676,46 @@ public class Hand {
       Card card = iterator.next();
       iterator.remove();
     }
+    this.notifyListeners();
     return;
-  }
-
-  public int size() {
-    return hand.size();
   }
 
   public Card get(int position) {
     if (position < 0 || position >= hand.size())
       throw new IllegalArgumentException("Position does not exist in hand: "+ position);
     return (Card)hand.get(position);
+  }
+
+  public int size() {
+    return hand.size();
+  }
+
+  /**
+   * The following methods are in support of the ListModel interface...
+   */
+  public int getSize() {
+    return this.size();
+  }
+
+  public Card getElementAt(int index) {
+    return this.get(index);
+  }
+
+  public void removeListDataListener(javax.swing.event.ListDataListener l) {
+    listeners.remove(l);
+  }
+
+  public void addListDataListener(javax.swing.event.ListDataListener l) {
+    listeners.add(l);
+  }
+
+  private void notifyListeners() {
+    ListDataEvent le = new ListDataEvent(
+      this, ListDataEvent.CONTENTS_CHANGED, 0, this.getSize()
+    );
+    for (int i = 0; i < listeners.size(); i++) {
+      ((ListDataListener)listeners.get(i)).contentsChanged(le);
+    }
   }
 }
 

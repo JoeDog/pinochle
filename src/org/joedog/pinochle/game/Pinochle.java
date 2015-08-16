@@ -5,6 +5,7 @@ public final class Pinochle {
   public final static int EAST       = 1;
   public final static int SOUTH      = 2;
   public final static int WEST       = 3;
+  public final static int [] PLAYERS = new int[] {NORTH, SOUTH, EAST, WEST};
 
   public final static int HEARTS     = 0;
   public final static int CLUBS      = 1;
@@ -17,6 +18,16 @@ public final class Pinochle {
   public final static int QUEEN      = 11;
   public final static int JACK       = 10;
   public final static int NINE       = 9;
+
+  public final static int DEAL       = 0;  // Deal the cards
+  public final static int BID        = 1;  // Bid on the hands
+  public final static int PASS       = 2;  // Winners pass cards
+  public final static int MELD       = 3;  // Select cards for meld
+  public final static int AVOW       = 4;  // Display cards for meld
+  public final static int PLAY       = 5;  // Play the hand
+  public final static int DONE       = 6;  // The hand is completed
+  public final static int OVER       = 7;  // GAME OVER
+
  
   public final static String suit(int suit) {
     switch(suit) {

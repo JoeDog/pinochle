@@ -1,16 +1,18 @@
 package org.joedog.pinochle.game;
 
+import org.joedog.util.*;
 import org.joedog.pinochle.control.*;
-import org.joedog.pinochle.util.*;
 
 public class Rules {
-  private GameController controller;
+  private Game control;
 
-  public Rules(GameController controller) { 
-    this.controller = controller;
+  public Rules(Game control) { 
+    this.control = control;
   }
 
   public boolean isLegitPlay(Trick trick, Hand hand, Card card) {
+    if (card == null) return false;
+
     int  suit  = trick.getLeadingSuit();
     int  trump = trick.getTrump();
     Card tops  = trick.getWinningCard(); 
@@ -35,7 +37,7 @@ public class Rules {
         // we're OK as long as we don't have a higher card...
         tmp = hand.getHighest(card.getSuit());
         if (tmp != null && tmp.getRank() > tops.getRank()) {
-          controller.setStatus("CHEATER!! You must beat the "+tops.toString());
+          control.setMessage("CHEATER!! You must beat the "+tops.toString());
           return false; // CHEATER!! 
         } else {
           return true;
@@ -47,21 +49,21 @@ public class Rules {
        * This first block is for the overstick variation;
        * we must top the highest card in the trick if we can.
        */
-      if (controller.getIntProperty("TopVariation") == 0) {
+      if (control.getModelBooleanProperty("TopVariation") == true) {
         if (tops != null && (card.getRank() > tops.getRank() || tops.getRank() == Pinochle.ACE)) {
           return true;
         } 
         if (card.getSuit() == trick.getLeadingSuit()) {
           if (hand.canTop(tops) && ! trick.containsTrump()) {
-            controller.setStatus("CHEATER!! You must beat the "+tops.toString());
+            control.setMessage("CHEATER!! You must beat the "+tops.toString());
             return false;
           } else {
             // someone trumped but we can follow suit....
-            controller.setStatus("You're okay. The lead was trumped but  "+tops.toString());
+            control.setMessage("You're okay. The lead was trumped but  "+tops.toString());
             return true;
           }
         } else if (hand.canTop(tops))  {
-          controller.setStatus("CHEATER!! You must beat the "+tops.toString());
+          control.setMessage("CHEATER!! You must beat the "+tops.toString());
           return false;
         } 
       }
@@ -73,22 +75,22 @@ public class Rules {
     } else {
       if (card.getSuit() == trump) {
         if (hand.contains(suit) > 0) {
-          controller.setStatus("CHEATER!! You must follow suit by playing "+Pinochle.suitname(suit));
+          control.setMessage("CHEATER!! You must follow suit by playing "+Pinochle.suitname(suit));
           return false;
         }
         if (tops != null && (card.getRank() > tops.getRank() || tops.getRank() == Pinochle.ACE)) {
           return true;
         } else if (hand.canTop(tops))  {
-          controller.setStatus("CHEATER!! You must beat the "+tops.toString());
+          control.setMessage("CHEATER!! You must beat the "+tops.toString());
           return false;
         } 
       } else if (card.getSuit() != suit) {
         if (hand.contains(suit) > 0) {
-          controller.setStatus("CHEATER!! You must follow suit ("+Pinochle.suitname(suit)+")");
+          control.setMessage("CHEATER!! You must follow suit ("+Pinochle.suitname(suit)+")");
           return false;
         }
         if (hand.contains(trump) > 0) {
-          controller.setStatus("CHEATER!! In this case, you must play trump ("+Pinochle.suitname(trump)+")");
+          control.setMessage("CHEATER!! In this case, you must play trump ("+Pinochle.suitname(trump)+")");
           return false;
         } 
       }

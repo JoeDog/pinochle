@@ -1,6 +1,6 @@
 package org.joedog.pinochle.game;
 
-import org.joedog.pinochle.util.*;
+import org.joedog.util.*;
 
 import java.util.Random;
 

@@ -2,16 +2,16 @@ package org.joedog.pinochle.game;
 
 import java.util.Map;
 import java.util.HashMap;
+import java.util.ArrayList;
 
+import org.joedog.util.Debug;
 import org.joedog.pinochle.player.*;
-import org.joedog.pinochle.util.Debug;
 
 public class Trick {
   private int     trump;     // the named trump suit
   private int     winner;    // the winning position
   private Card    card;      // the winning card
   private Card    lead;      // the winning card
-  private Deck    deck;      // easy to pass reference of all cards
   private Hand    hand;      // programmer's convenience...
   private boolean trumped;   // does the trick contain trump?
   private Map<Player, Card> cards = new HashMap<Player, Card>();  
@@ -19,7 +19,6 @@ public class Trick {
   public Trick(int trump) {
     this.trump    = trump;
     this.trumped  = false;
-    this.deck     = new Deck();
     this.hand     = new Hand();
   }
 
@@ -27,6 +26,20 @@ public class Trick {
     if (card.getSuit() == this.trump) {
       this.trumped = true;
     }
+    switch (player.getPosition()) {
+      case Pinochle.NORTH: 
+        card.setLocation(450,180);
+        break; 
+      case Pinochle.SOUTH: 
+        card.setLocation(500,245);
+        break; 
+      case Pinochle.EAST: 
+        card.setLocation(550,215);
+        break; 
+      case Pinochle.WEST:
+        card.setLocation(400,215);
+        break;
+    } 
     this.hand.add(card);
     if (cards.size() == 0) { 
       this.card   = card;
@@ -56,7 +69,6 @@ public class Trick {
       }
     }
     cards.put(player, card);
-    deck.add(card); 
   }
 
   /**
@@ -99,8 +111,12 @@ public class Trick {
     return this.card;
   }
 
-  public Deck getCards() {
-    return this.deck;
+  public ArrayList <Card> getCards() {
+    ArrayList <Card> list = new ArrayList<Card>();
+    for (Map.Entry<Player, Card> play : cards.entrySet()) {
+      list.add(play.getValue());
+    }
+    return list;
   }
 
   public int counters() {

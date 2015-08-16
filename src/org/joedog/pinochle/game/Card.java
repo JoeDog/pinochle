@@ -1,26 +1,33 @@
 package org.joedog.pinochle.game;
 
 import java.net.URL;
+import java.awt.Graphics;
 import java.util.Comparator;
-import java.awt.BorderLayout;
 import java.awt.event.MouseListener;
+import java.awt.image.BufferedImage;
+import javax.imageio.ImageIO;
 import javax.swing.JPanel;
 import javax.swing.JLabel;
 import javax.swing.ImageIcon;
 
-public class Card {
-  int     id       = 0;
-  int     rank     = 0;
-  int     suit     = 0;
-  int     position = -1;
-  JPanel  card     = null;
-  JLabel  label    = null;
-  URL     face     = null;
-  URL     back     = null;
-  boolean faceup   = false;
-  boolean selected = false;
-  boolean melded   = false;
-  boolean counter  = false;
+import org.joedog.pinochle.player.Actor;
+import org.joedog.util.RandomUtils;
+
+public class Card extends Actor {
+  int      id       = 0;
+  int      y        = 0;
+  int      rank     = 0;
+  int      suit     = 0;
+  int      position = -1;
+  int      status   = 0;
+  JPanel   card     = null;
+  URL      face     = null;
+  URL      back     = null;
+  boolean  faceup   = false;
+  boolean  selected = false;
+  boolean  melded   = false;
+  boolean  played   = false;
+  boolean  counter  = false;
 
   /** 
    * Constructor - create a generic card of 
@@ -65,7 +72,8 @@ public class Card {
     this.id   = card.id;
     this.rank = card.rank;
     this.suit = card.suit;
-    createCard();
+    this.createCard();
+    this.setLocation(card.getLocation());
   }
 
   public Card(int id, String s) {
@@ -116,6 +124,22 @@ public class Card {
   }
 
   /**
+   * Given a set of x,y mouse coordinates, this method 
+   * determines whether or not this card has been selected.
+   * <p>
+   * @param  int      The x coordinate
+   * @param  int      The y coordinate
+   * @return boolean  true if selected, false if not 
+   */
+  public boolean isSelected(int x, int y) {
+    if ((x >= this.getX() && x <= this.getX()+this.getWidth())  &&
+        (y >= this.getY() && y <= this.getY()+this.getHeight())) {
+      return true;
+    }
+    return false;
+  }
+
+  /**
    * Return the rank value of the card as an int
    * <p>
    * @return    int 
@@ -147,6 +171,18 @@ public class Card {
   }
 
   /**
+   * Return boolean true if a Card's rank and suit 
+   * matches the parameters
+   * <p>
+   * @param  int     The rank we're testing
+   * @param  int     The suit we're testing
+   * return  boolean true if Card matches suit and rank
+   */ 
+  public boolean isa(int rank, int suit) {
+    return (this.rank == rank && this.suit == suit);
+  }
+
+  /**
    * Return an int interpretation of this card's value
    * @param none
    * @return      (1+this.suit)*this.rank;
@@ -166,6 +202,57 @@ public class Card {
    */
   public ImageIcon getIcon() {
     return new ImageIcon(this.getImageUrl(), this.getImageUrlString());
+  }
+
+  /**
+   * Return a BufferedImage which reprsets the card;
+   * the face is determined automatically depending  
+   * upon whether it is up or down.
+   * <p>
+   * @param  none
+   * @return BufferedImage
+   * @see    BufferedImage
+   */
+  public BufferedImage getImage() {
+    BufferedImage bi = null;
+    try {
+      bi = ImageIO.read(this.getImageUrl());
+    } catch (Exception e) {
+
+    }
+    return bi;
+  }
+
+  /**
+   * Returns the width of the image in pixels
+   * <p>
+   * @param  none
+   * @return int    The width in pixels
+   */
+  public int getImageWidth() {
+    BufferedImage bi = null;
+    try {
+      bi = ImageIO.read(this.getImageUrl());
+    } catch (Exception e) {
+
+    }
+    return bi.getWidth();
+  }
+
+  /**
+   * Returns the height of the image in pixels
+   * <p>
+   * @param  none
+   * @return int    The height in pixels
+   */
+  public int getImageHeight() {
+    BufferedImage bi = null;
+    try {
+      bi = ImageIO.read(this.getImageUrl());
+    } catch (Exception e) {
+
+    }
+    return bi.getHeight();
   }
 
   /**
@@ -199,6 +286,9 @@ public class Card {
   public void setId(int id) {
     this.id = id;
   }
+
+  /**
+   * Sets the clickable width of the card
 
   /**
    * Sets a int position value for the Card's 
@@ -293,6 +383,14 @@ public class Card {
    */
   public void meld () {
     this.melded = true;
+  }
+
+  public void play() {
+    this.played = true;
+  }
+
+  public boolean played() {
+    return this.played;
   }
 
   /**
