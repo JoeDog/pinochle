@@ -1,206 +1,150 @@
 package org.joedog.pinochle.view;
 
-import org.joedog.pinochle.control.*;
-
-import java.awt.Canvas;
 import java.awt.Color;
-import java.awt.Dimension;
+import java.awt.Font;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
-import java.awt.GridLayout;
-import java.awt.FlowLayout;
-import java.awt.BorderLayout;
-import java.awt.Font;
-import java.awt.event.KeyEvent;
+import java.awt.image.BufferedImage;
 import java.beans.PropertyChangeEvent;
-import javax.swing.Action;
-import javax.swing.AbstractAction;
-import javax.swing.JPanel;
-import javax.swing.JButton;
-import javax.swing.JLabel;
 
-public class ScorePad extends JPanel implements View {
-  static final long serialVersionUID = -196491492884005033L;
-  private String[] headers = {"Us", "Them"};
-  private Cell[][] cell    = new Cell[5][3];
-  private String[] labels  = new String[] {"Meld", "Counters", "Total", "Score"};
-  private GameController controller;
+import org.joedog.util.TextUtils;
+import org.joedog.util.RandomUtils;
+import org.joedog.pinochle.control.Game;
+import org.joedog.pinochle.control.Constants;
 
-  public ScorePad (GameController controller) {
-    this.controller = controller;
-    this.setup();
-    this.reset();
+/**
+ *
+ * @author J. Fulmer <jeff@joedog.org>
+ */
+public class ScorePad extends BufferedImage implements Viewable {
+  private Game control;
+  private int width   = 240;
+  private int height  = 130;
+  private int winner  = 0;
+  private String ns   = "Us";
+  private String ew   = "Them";
+  private String[][] cell  = new String[][] {
+    {"",      ns,    ew}, // [0][0] blank  [0][1] Us,      [0][2] Them
+    {"Meld",  "0",  "0"}, // [1][0] meld   [1][1] us meld  [1][2] them meld
+    {"Take",  "0",  "0"}, // [2][0] take   [2][1] us take  [2][2] them take
+    {"Total", "0",  "0"}, // [3][0] total  [3][1] us total [3][2] them total
+    {"Score", "0",  "0"}  // [4][0] score  [4][1] us score [4][2] them score
+  };
+
+  public ScorePad(Game control) {
+    super(240, 130, BufferedImage.TYPE_INT_RGB);
+    this.control = control;
+    this.control.addView(this);
+    render();
   }
 
-  public void reset () {
-    String east  = controller.getProperty("PlayerEastName");
-    String west  = controller.getProperty("PlayerWestName");
-    String north = controller.getProperty("PlayerNorthName");
-    String south = controller.getProperty("PlayerSouthName");
+  public void reset() {
+    this.winner = 0;
+  }
+    
+  public void render(){
+    int third    = (this.width/3);
+    int fifth    = (this.height/5);
+    String east  = this.control.getModelStringProperty("PlayerEastName");
+    String west  = this.control.getModelStringProperty("PlayerWestName");
+    String north = this.control.getModelStringProperty("PlayerNorthName");
+    String south = this.control.getModelStringProperty("PlayerSouthName");
 
-    if (north != null && north.length() > 0 && south != null && south.length() > 1) {
-      headers[0] = south.substring(0, 1)+"/"+north.substring(0,1);
+    if (north != null && north.length() > 0 && south != null && south.length() > 0) {
+      cell[0][1] = south.substring(0, 1)+"/"+north.substring(0,1);
     } else {
-      headers[0] = "Us";
+      cell[0][1] = "Us";
     }
-    if (east != null && east.length() > 1 && west != null && west.length() > 1) {
-      headers[1] = east.substring(0, 1)+"/"+west.substring(0,1);
+    if (east != null && east.length() > 0 && west != null && west.length() > 0) {
+      cell[0][2] = east.substring(0, 1)+"/"+west.substring(0,1);
     } else {
-      headers[1] = "Them";
+      cell[0][2] = "Them";
     }
-    cell[0][1].setValue(headers[0]);
-    cell[0][2].setValue(headers[1]);
-    for (int i = 1, j = 0; i < labels.length+1; i++, j++)
-      cell[i][0].setValue(labels[j]);
-    for (int i = 1; i < cell.length; i++) {
-      for (int j = 1; j < cell[i].length; j++) {
-        cell[i][j].setValue("0");
-        cell[i][j].clearWinner();
-      }
+
+    Graphics2D g2 = (Graphics2D)this.getGraphics();
+    g2.setColor(new Color(239,236,157));
+    g2.fillRect(0, 0, this.width, this.height);
+    g2.setColor(new Color(123,145,83)); 
+    for (int i = third;  i < this.width; i+= third) {
+      g2.drawLine(i, 0, i, this.height);
     }
-  }
-
-  public void resetHand() {
-    for (int i = 1; i < cell.length-1; i++) {
-      for (int j = 1; j < cell[i].length; j++) {
-        cell[i][j].setValue("0");
-      }
-    } 
-  }
-
-  private void setup() {
-    int id = 0;
-    BorderLayout bl = new BorderLayout();
-    GridLayout   gl = new GridLayout(5, 3);
-    gl.setVgap(1);
-    gl.setHgap(1);
-    this.setLayout(gl);
-    this.setBackground(new Color(123,145,83));
-    for (int i = 0; i < cell.length; i++) {
-      for (int j = 0; j < cell[i].length; j++) {
-        id++;
-        cell[i][j] = new Cell(id);
-        this.add(cell[i][j]);
-        if (i == 0) 
-          cell[i][j].setBold();
-        if (j == 0) 
-          cell[i][j].setLabel();
+    for (int i = fifth;  i < this.height; i+= fifth) {
+      g2.setColor(new Color(123,145,83)); 
+      g2.drawLine(0, i, this.width, i);
+    }
+    int cpad = 0;
+    int vpad = 0;
+    g2.setColor(new Color(33, 33, 33));
+    for (int i = 0; i < cell[0].length; i++) {
+      for (int j = 0; j < cell.length; j++) {
+        if (i == 0 || j == 0) {
+          cpad = 10; // label padding
+          g2.setFont(new Font("Tahoma", Font.BOLD, 12));
+        } else {
+          cpad = (cell[j][i]).length()*5; // text padding based on string length
+          cpad += RandomUtils.range(-1,1);
+          vpad =  RandomUtils.range(-1,1);
+          g2.setFont(new Font("Tahoma", Font.PLAIN, 12));
+        }
+        g2.drawString(cell[j][i], (i*third)+(third/2)-cpad, (j*fifth)+(fifth/2)+5+vpad);
+        /** draw a circle around the winner XXX: need to reset this.winner on new game */
+        if (this.winner == 1 && (j == 4 && i == 1)) {
+          Font f = new Font("Helvetica", Font.ITALIC, 32);
+          g2.setFont(f);
+          //g2.setColor(new Color(46, 184, 46));
+          g2.setColor(new Color(0, 153, 255));
+          g2.drawString("0", (i*third)+(third/2)-(cpad/2)-15, (j*fifth)+(fifth/2)+5+(vpad/2)+8); 
+          g2.setColor(new Color(33, 33, 33));
+        }
+        if (this.winner == 2 && (j == 4 && i == 2)) {
+          Font f = new Font("Helvetica", Font.ITALIC, 32);
+          g2.setFont(f);
+          //g2.setColor(new Color(46, 184, 46));
+          g2.setColor(new Color(0, 153, 255));
+          g2.drawString("0", (i*third)+(third/2)-(cpad/2)-15, (j*fifth)+(fifth/2)+5+(vpad/2)+8); 
+          g2.setColor(new Color(33, 33, 33));
+        }
+        /** end of draw circle around the winner */
       }
     }
   }
 
   public void modelPropertyChange(PropertyChangeEvent e) {
     if (e.getNewValue() == null) return;
-    if (e.getPropertyName().equals(controller.MELD_SCORE)) {
-      if (e.getOldValue().equals("NSMELD")) {
-        cell[1][1].setValue((String)e.getNewValue()); 
-      } else {
-        cell[1][2].setValue((String)e.getNewValue()); 
-      }
+    if (e.getPropertyName().equals(Constants.MELD)) {
+      int [] meld = TextUtils.toArray((String)e.getNewValue());
+      this.cell[1][1] = ""+meld[0];  
+      this.cell[1][2] = ""+meld[1];
+      this.render();
     }
-    if (e.getPropertyName().equals(controller.TAKE_SCORE)) {
-      if (e.getOldValue().equals("NSTAKE")) {
-        cell[2][1].setValue((String)e.getNewValue()); 
-      } else {
-        cell[2][2].setValue((String)e.getNewValue()); 
-      }
+    if (e.getPropertyName().equals(Constants.TAKE)) {
+      int [] take = TextUtils.toArray((String)e.getNewValue());
+      this.cell[2][1] = ""+take[0];  
+      this.cell[2][2] = ""+take[1];
+      this.render();
     }
-    if (e.getPropertyName().equals(controller.HAND_SCORE)) {
-      if (e.getOldValue().equals("NSHAND")) {
-        cell[3][1].setValue((String)e.getNewValue()); 
-      } else {
-        cell[3][2].setValue((String)e.getNewValue()); 
-      }
+    if (e.getPropertyName().equals(Constants.TOTAL)) {
+      int [] total = TextUtils.toArray((String)e.getNewValue());
+      this.cell[3][1] = ""+total[0];  
+      this.cell[3][2] = ""+total[1];
+      this.render();
     }
-    if (e.getPropertyName().equals(controller.GAME_SCORE)) {
-      if (e.getOldValue().equals("NSGAME")) {
-        cell[4][1].setValue((String)e.getNewValue()); 
-      } else {
-        cell[4][2].setValue((String)e.getNewValue()); 
-      }
+    if (e.getPropertyName().equals(Constants.SCORE)) {
+      int [] score = TextUtils.toArray((String)e.getNewValue());
+      this.cell[4][1] = ""+score[0];  
+      this.cell[4][2] = ""+score[1];
+      this.render();
     }
-    if (e.getPropertyName().equals(controller.WINNER)) {
-      this.controller.winner();
-      if (e.getNewValue().equals("NS")) {
-        cell[4][1].drawWinner(); 
-      } else {
-        cell[4][2].drawWinner(); 
-      }
+    if (e.getPropertyName().equals(Constants.WINNER)) {
+      int [] score = TextUtils.toArray((String)e.getNewValue());
+      if (score[0] > score[1]) this.winner = 1;
+      if (score[0] < score[1]) this.winner = 2;
+      this.render(); 
     }
-    if (e.getPropertyName().equals(controller.RESET)) {
-      if (e.getNewValue().equals("game")) {
-        this.reset();
-      } else {
-        this.resetHand();
-      }
-    }
-  }
-
-  
-
-  private class Cell extends Canvas {
-    private int     id;
-    private int     wr     = 0;
-    private int     hr     = 0;
-    private int     weight = Font.PLAIN;
-    private boolean winner = false;
-    private String  value  = "";
-    private Color   black  = Color.BLACK;
-    private Color   red    = Color.RED;
-    static final long serialVersionUID = -200243434234218974L; 
-
-    public Cell(int id) {
-      this.id = id;
-      this.wr = -10 + (int)(Math.random()*2);
-      this.hr =  2  + (int)(Math.random()*6);
-      this.setBackground(new Color(239,236,157));
-    }
-
-    public synchronized void setValue(String value) {
-      this.value = value;
-      repaint();
-    }
-
-    public int getId() {
-      return this.id;
-    }
-  
-    public void setBold() {
-      this.weight = Font.BOLD;
-    }
-
-    public void setLabel() {
-      this.wr = -25;
-    }
-
-    public void drawWinner() {
-      this.winner = true;
-      this.repaint();
-    }
-
-    public void clearWinner() {
-      this.winner = false; 
-      this.repaint();
-    }
-
-    public void paint(Graphics g) {
-      Graphics2D g2 = (Graphics2D)g;
-      int w   = this.getWidth();
-      int h   = this.getHeight();
-      Font font = new Font("Helvetica", weight, 12);
-      g2.setFont(font);
-      if (this.value.startsWith("-", 1)) {
-        g2.setColor(red);
-      } else {
-        g2.setColor(black);
-      }
-      g2.drawString(this.value, (w/2)+this.wr, (h/2)+this.hr);
-      if (this.winner) {
-        Font f = new Font("Helvetica", Font.ITALIC, 24);
-        g2.setFont(f);
-        g2.setColor(Color.GREEN);
-        g2.drawString("0", (w/2)+this.wr-5, (h/2)+this.hr+4);
-      }
+    if (e.getPropertyName().equals(Constants.NAMES)) {
+      this.render();
     }
   }
 }
+
+

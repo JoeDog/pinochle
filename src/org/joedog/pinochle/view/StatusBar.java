@@ -47,7 +47,7 @@ public class StatusBar extends JPanel implements LayoutManager {
     g.drawLine(0, y, getWidth(), y);
     g.setColor(Color.BLACK);
     g.setFont(new Font("Helvetica", Font.PLAIN, 12));
-    g.drawString(message, pad, getHeight()-4);
+    g.drawString(message, pad, getHeight()-10);
   }
 
   public void layoutContainer(Container container) {

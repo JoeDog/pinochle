@@ -30,4 +30,3 @@ public class TrumpIcon extends ImageIcon {
     }
   } 
 }
- 

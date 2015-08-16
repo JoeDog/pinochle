@@ -31,7 +31,7 @@ import org.joedog.pinochle.control.*;
 import org.joedog.pinochle.view.actions.*;
 import org.joedog.pinochle.model.HighScoreTableModel;
 
-public class HighScorePanel extends JFrame /*implements TableModelListener*/{
+public class HighScorePanel extends JFrame {
   private JLabel header = new JLabel("All-Time Highest Hands"); 
   private JTable table;
   private JPanel south;
@@ -39,12 +39,12 @@ public class HighScorePanel extends JFrame /*implements TableModelListener*/{
   private JScrollPane scroll;
   private Container   main;
   private HighScoreTableModel model;
-  private GameController      controller;
+  private Game      control;
   static final long serialVersionUID = -687991492884005033L;
   
-  public HighScorePanel (GameController controller) {
+  public HighScorePanel (Game control) {
     super("Hall of Fame");
-    this.controller = controller;
+    this.control = control;
     SwingUtilities.invokeLater(new Runnable() {
       public void run() {
         createAndShowGui();
@@ -64,14 +64,14 @@ public class HighScorePanel extends JFrame /*implements TableModelListener*/{
     Dimension dim   = Toolkit.getDefaultToolkit().getScreenSize();
     int w = this.getSize().width;
     int h = this.getSize().height;
-    int x = controller.getIntProperty("ConfigX");
-    int y = controller.getIntProperty("ConfigY");
+    int x = control.getModelIntProperty("ConfigX");
+    int y = control.getModelIntProperty("ConfigY");
     this.setLocation(x, y);
     this.setDefaultCloseOperation(model.save());
     this.scroll = new JScrollPane(table);
     this.south  = new JPanel();
     this.okay   = new JButton("Okay"); 
-    this.okay.addActionListener(new HighScoreCloseAction(this, controller, model));
+    this.okay.addActionListener(new HighScoreCloseAction(this, control, model));
     south.add(okay);
     main.add(scroll, BorderLayout.CENTER);
     main.add(south,  BorderLayout.SOUTH);
