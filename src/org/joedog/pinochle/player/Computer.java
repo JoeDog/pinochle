@@ -1,34 +1,22 @@
 package org.joedog.pinochle.player;
 
 import java.util.Random;
-import org.joedog.pinochle.control.GameController;
+import org.joedog.util.*;
+import org.joedog.pinochle.control.Game;
 import org.joedog.pinochle.game.*;
-import org.joedog.pinochle.util.*;
 
 public class Computer extends Player {
-  private GameController controller;
-  private Brain          brain;
-  private int            ptops;
+  private Game   control;
+  private Brain  brain;
 
-  public Computer(GameController controller) {
+  public Computer(Game control) {
     this.type = COMPUTER;
-    this.controller = controller;
+    this.control = control;
     this.ptops = 0;
     this.brain = new Brain();
   }
 
-  @Override
-  public synchronized void newHand() {
-    this.hand   = new Hand();
-    if (this.brain == null) {
-      this.brain = new Brain();
-    }
-    this.brain.forget(); 
-    this.myBid  = 0;
-    this.maxBid = 0;
-    this.pBid   = 0;
-    this.ptops  = 0;
-  }
+  public void save() {}
 
   /**
    * Takes a single card and adds
@@ -38,7 +26,7 @@ public class Computer extends Player {
    * @return void   
    */
   public void takeCard(Card c) {
-    if (controller.cheatMode()) {
+    if (control.cheatMode()) {
       c.setFaceUp();
     } else {
       c.setFaceDown();
@@ -55,24 +43,39 @@ public class Computer extends Player {
    */ 
   public void takeCards(Deck d) {
     for (Card c: d.getCards()) {
-      if (controller.cheatMode()) {
+      if (control.cheatMode()) {
         c.setFaceUp();
       } else {
         c.setFaceDown();
       }
       this.hand.add(c);
     }
+    Sleep.milliseconds(1300);
     this.hand.sort();
-    this.setting.refresh(this.hand);
-    this.setting.refresh();
+    this.hand.relocate();
+    this.hand.deselectAll();
   }
 
+  /**
+   * Commits a Deck of cards to memory; generally
+   * we use this to remember subsets of Cards that
+   * are stored in a Deck
+   * <p>
+   * @param  Deck  A set of cards to commit to memory
+   * @return void
+   */
   public void remember(Deck d) {
     if (d != null || d.size() > 1) {
       this.brain.remember(d);
     }
   }
 
+  /**
+   * Commits a single card to memory
+   * <p>
+   * @param  Card  A card to remember
+   * @return void
+   */
   public void remember(Card c) {
     if (c != null) {
       this.brain.remember(c);
@@ -91,32 +94,32 @@ public class Computer extends Player {
    * @return int   Our bid or -1 for pass
    */
   public int bid (int bid, int pbid, boolean opponents) {
-    if (myBid == -1) return myBid;
+    if (this.myBid == -1) return this.myBid;
 
     /** 
      * Single bid variation; we'll just take our best shot
      */
-    if (controller.getProperty("BidVariation").equals("single")) {
+    if (control.getModelStringProperty("BidVariation").equals("single")) {
       if (bid >= this.maxBid) {
-        this.setting.setText("Bid: Pass");
-        myBid = -1;
-        return myBid;
+        this.setText("Bid: Pass");
+        this.myBid = -1;
+        return this.myBid;
       } else {
-        myBid = this.maxBid;
-        this.setting.setText("Bid: "+myBid);
-        return myBid;
+        this.myBid = this.maxBid;
+        this.setText("Bid: "+myBid);
+        return this.myBid;
       }
     }
 
     /**
      * Auction bid variation; increment the bid
      */ 
-    if (! opponents && pbid > myBid) {
-      ptops += 1;
+    if (! opponents && pbid > this.myBid-1) {
+      this.ptops += 1;
     }
-    if (ptops == 2) {
+    if (this.ptops == 2) {
       this.myBid = -1;
-      this.setting.setText("Bid: Pass");
+      this.setText("Bid: Pass");
       return this.myBid;
     }
     else return this.bid(bid);
@@ -133,12 +136,12 @@ public class Computer extends Player {
     if (myBid == -1) return myBid;
 
     if (bid > this.maxBid) {
-      this.setting.setText("Bid: Pass");
+      this.setText("Bid: Pass");
       myBid = -1;
       return myBid;
     }
     this.myBid = bid+1; // XXX: hard-coded auction
-    this.setting.setText("Bid: "+this.myBid);
+    this.setText("Bid: "+this.myBid);
     return this.myBid;
   }
 
@@ -151,9 +154,8 @@ public class Computer extends Player {
    * @return int    the meld score within our hand
    */
   public int meld() {
-    int trump = controller.getIntProperty("GameTrump");
+    int trump = Integer.parseInt(control.getModelStringProperty("Trump"));
     Meld m = new Meld(this.hand, trump);
-    this.setting.setText("Meld: "+m.getMeld());
     return m.getMeld();
   }
 
@@ -167,7 +169,7 @@ public class Computer extends Player {
   public void clearMeld() {
     for (Card card: this.hand.getCards()) {
       card.unmeld();
-      if (controller.cheatMode()) {
+      if (control.cheatMode()) {
         card.setFaceUp();
       } else {
         card.setFaceDown();
@@ -202,10 +204,8 @@ public class Computer extends Player {
    */
   public Deck passCards(boolean bidder) {
     Deck deck = null;
-    int trump = controller.getIntProperty("GameTrump");
+    int trump = Integer.parseInt(control.getModelStringProperty("Trump"));
     deck = meld.passables(bidder, 3, trump);
-    this.setting.refresh(this.hand);
-    Debug.print(this.name+" passed:\t"+deck.toString());
     return deck;
   }
 
@@ -229,7 +229,6 @@ public class Computer extends Player {
       card = this.hand.get(0);
     }
     this.hand.remove(card);
-    this.setting.refresh(this.hand);
     return card;
   }
 
@@ -271,8 +270,9 @@ public class Computer extends Player {
       if (card == null && this.hand.contains(new Card(Pinochle.NINE, trick.getTrump())) > 0) {
         card = new Card(Pinochle.NINE, trick.getTrump());
       }
-      if (card != null) 
+      if (card != null) {
         Debug.print(this.name+" says, c'mon let's see some trump: "+card.toString());
+      }
     }
     if (card == null) {
       // We're not the bidder - we're mostly concerned with getting tricks
@@ -314,9 +314,8 @@ public class Computer extends Player {
             continue;  
           }
           card = this.hand.getHighest(i);
-          // XXX: said 10D and played 10C WTF??
           Debug.print(this.name+" says, I'll hit you with my best shot: "+card.toString()); 
-          if (card == null) return card;
+          if (card != null) return card;
           break;
         }
       }
@@ -409,7 +408,7 @@ public class Computer extends Player {
             Debug.print("Never fear! "+this.name+" is here!!! "+card.toString());
             if (card != null) return card;
           } else {
-            if (controller.getIntProperty("TopVariation") == 0) {
+            if (control.getModelBooleanProperty("TopVariation") == true) {
               card = this.hand.beat(high, false);
               if (card != null) {
                 Debug.print(this.name+" must try to overstick: "+card.toString());
@@ -435,7 +434,7 @@ public class Computer extends Player {
           Debug.print(this.name+" says, '(226) Good job! I tried to give a counter' ("+card.toString()+")");
           if (card != null) return card;
         } else {
-          card = (controller.getIntProperty("TopVariation")==0) ? hand.beat(high) : hand.getLowest(suit);
+          card = (control.getModelBooleanProperty("TopVariation") == true) ? hand.beat(high) : hand.getLowest(suit);
           if (card != null) {
             Debug.print(this.name+" is no help at all: "+card.toString());
             return card;
@@ -461,7 +460,7 @@ public class Computer extends Player {
           card = hand.getLowest(suit);
         } else {
           // Overstick if we can, else play the lowest...
-          card = (controller.getIntProperty("TopVariation") == 0) ? hand.beat(high) : hand.getLowest(suit);
+          card = (control.getModelBooleanProperty("TopVariation") == true) ? hand.beat(high) : hand.getLowest(suit);
         }
         if (card == null) {
           Debug.print(this.name+"'s card is null: get lowest of these: "+Pinochle.suitname(trick.getLeadingSuit()));

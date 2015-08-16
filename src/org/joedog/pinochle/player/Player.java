@@ -1,55 +1,61 @@
 package org.joedog.pinochle.player;
 
-import org.joedog.pinochle.control.GameController;
-import org.joedog.pinochle.view.Setting;
-import org.joedog.pinochle.game.*;
-import org.joedog.pinochle.util.*;
+import org.joedog.util.*;
 import java.net.URL;
-import java.awt.Canvas;
-import java.util.Random;
 
-public abstract class Player {
-  public static final  int HUMAN    = 0;
-  public static final  int COMPUTER = 1;
-  protected Hand       hand;
-  protected Meld       meld;
-  public   int         partner;
-  public   int         position;
-  public   int         type;
-  public   String      name;
-  public   Setting     setting;
-  public   int         maxBid = 0;
-  public   int         myBid  = 0;
-  public   int         pBid   = 0; 
-  public   Assessment  assessment;
-  public   boolean     bidder = false;
-  public   String      memory;
-  public   String      memtxt = System.getProperty("pinochle.memory");
-  public   Knowledge   knowledge = null;
-  public   int         distance;
+import org.joedog.pinochle.game.*;
+import org.joedog.pinochle.control.Constants;
+import org.joedog.pinochle.model.AbstractModel;
+
+public abstract class Player extends AbstractModel {
+  public static final   int HUMAN    = 0;
+  public static final   int COMPUTER = 1;
+  protected Hand        hand   = null;
+  protected Brain       brain  = null;
+  protected Meld        meld;
+  public   int          partner;
+  public   int          position;
+  public   int          type;
+  public   String       name;
+  public   int          maxBid = 0;
+  public   int          myBid  = 0;
+  public   int          pBid   = 0; 
+  public   int          ptops  = 0;
+  public   Assessment   assessment;
+  public   boolean      bidder = false;
+  public   String       memory;
+  public   String       memtxt = System.getProperty("pinochle.memory");
+  public   Knowledge    knowledge   = null;
+  public   int          distance;
 
   public Player () {
-    newHand();
     this.knowledge = knowledge.getInstance();
+  }
+
+  public void addHand(Hand hand) {
+    this.hand = hand;
   }
 
   public void takeCard(Card c) {
     this.hand.add(c);
   }
 
-  public void refresh() {
-    this.setting.refresh(this.hand);
-  }
-
-  public synchronized void newHand() {
-    this.hand   = new Hand();
-    this.myBid  = 0;
-    this.maxBid = 0;
-    this.pBid   = 0;
+  public synchronized void init() {
+    this.myBid     = 0;
+    this.maxBid    = 0;
+    this.pBid      = 0;
+    this.ptops     = 0;
+    if (this.hand != null) {
+      this.hand.reset();
+    }
+    if (this.brain == null) {
+      this.brain = new Brain();
+    }
+    this.brain.forget();
   }
 
   public void assessHand() {
-    meld = new Meld(this.hand);
+    meld    = new Meld(this.hand);
     assessment   = meld.assessment(); 
     this.maxBid  = assessment.maxBid();
     // we want to rely on experience but that's 
@@ -58,6 +64,7 @@ public abstract class Player {
     // programmatic maxBid
     this.maxBid  = experience(this.hand.asRanks());
     this.maxBid += guts();
+
     Debug.print("  "+this.name+"'s assessment: "+assessment.toString());
 
     // We need to shave some bid if we're lacking aces 
@@ -163,15 +170,32 @@ public abstract class Player {
     return 0;
   }
 
-  public void setup(Setting setting, int position, int partner, String name) {
-    this.setting  = setting;
+  public void setup(int position, int partner, String name, Hand hand) {
     this.position = position;
     this.partner  = partner;
     this.name     = name;
+    this.hand     = hand;
+    this.setText("");
   } 
 
   public void setText(String text) {
-    this.setting.setText(text);
+    String status = this.name+" "+text;
+    switch (this.position) {
+      case Pinochle.NORTH:
+        firePropertyChange(Constants.NORTH, "northStatus", status);  
+        break;
+      case Pinochle.SOUTH:
+        firePropertyChange(Constants.SOUTH, "southStatus", status);  
+        break;
+      case Pinochle.EAST: 
+        firePropertyChange(Constants.EAST,  "eastStatus", status);  
+        break;
+      case Pinochle.WEST: 
+        firePropertyChange(Constants.WEST,  "westStatus", status);  
+        break;
+      default:
+        break;
+    }
   }
 
   public void showHand() {
@@ -206,11 +230,11 @@ public abstract class Player {
    * This is a programmer's helper; it will
    * never be called in the final product....
    */
-  public void clearHand() {
+  /*public void clearHand() {
     while (this.hand.size() > 0) {
       this.hand.remove(0);
     }  
-  }
+  }*/
 
   public String getName() {
     return this.name;
@@ -236,6 +260,7 @@ public abstract class Player {
     }
 
     String a [] = new String[2];
+
     for (String line: knowledge.getMemory()) {
       String[] array = line.split("\\|",-1);
       /** 
@@ -269,6 +294,7 @@ public abstract class Player {
         }
       }
     }
+    Debug.print(this.name+" is thinking now....");
     Debug.print("  Distance of the match:    "+low);
     Debug.print("  Average bid returned bid: "+bid);
     this.distance = low;
@@ -308,9 +334,9 @@ public abstract class Player {
   public void remember(int meld, int take) {
     if (!this.bidder) return;
     if (this.memory == null || this.memory.length() < 2) return;
-    int game = (meld+take);
 
-    this.memory += "|"+game;
+    int score  = (meld+take);
+    this.memory += "|"+score;
     Logger.remember(memtxt, memory);
     this.memory = new String("");
   }

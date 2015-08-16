@@ -8,19 +8,18 @@ import java.lang.Thread;
 import javax.swing.JFrame;
 import javax.swing.JInternalFrame;
 import javax.swing.JOptionPane;
-import org.joedog.pinochle.control.GameController;
+import org.joedog.util.*;
+import org.joedog.pinochle.control.Game;
 import org.joedog.pinochle.game.*;
-import org.joedog.pinochle.util.*;
-import org.joedog.pinochle.view.Setting;
 import org.joedog.pinochle.view.TrumpDialog;
 import org.joedog.pinochle.view.BidDialog;
 
 public class Human extends Player {
-  private GameController controller;
+  private Game control;
 
-  public Human(GameController controller) {
-    this.type = HUMAN;
-    this.controller = controller;
+  public Human(Game control) {
+    this.type    = HUMAN;
+    this.control = control;
   }
 
   public void takeCard(Card c) {
@@ -32,12 +31,16 @@ public class Human extends Player {
     this.myBid = 0;
     for (Card c: d.getCards()) {
       c.setFaceUp();
+      c.select(true);
       this.hand.add(c);
     }
+    Sleep.milliseconds(1300);
+    this.hand.deselectAll();
     this.hand.sort();
-    this.setting.refresh(this.hand);
-    this.setting.refresh();
+    this.hand.relocate();
   }
+
+  public void save() {}
 
   /**
    * Returns a Human bid with no consideration
@@ -52,14 +55,13 @@ public class Human extends Player {
 
   public int bid(int bid) {
     if (myBid == -1) return myBid;
-
-    BidDialog bd = new BidDialog(this.controller, bid); 
-    this.myBid   = bd.getValue();
+    BidDialog bd = new BidDialog(this.control, bid); 
+    this.myBid   = (Integer)bd.getValue();
     if (this.myBid < 0) {
       Debug.print(this.name+" passed.");
-      this.setting.setText("Bid: Pass");
+      this.setText("Bid: Pass");
     } else {
-      this.setting.setText("Bid: "+this.myBid);
+      this.setText("Bid: "+this.myBid);
     }
     return this.myBid;
   }
@@ -67,7 +69,7 @@ public class Human extends Player {
   public int nameTrump() {
     String suits[] = new String[]{"Hearts", "Clubs", "Diamonds", "Spades"};
     JFrame frame   = new JFrame("Trump");
-    TrumpDialog td = new TrumpDialog(this.controller);
+    TrumpDialog td = new TrumpDialog(this.control);
     this.bidder    = true;
     this.memory    = this.hand.toMemory();
 
@@ -81,25 +83,19 @@ public class Human extends Player {
   }
 
   public Deck passCards(boolean bidder) {
-    Deck    deck     = new Deck();
-    boolean thinking = true;
-    JFrame  frame    = new JFrame("Pass cards...");
-    int     selected = 0;
+    int  selected = 0;
+    Deck deck     = new Deck();
     
     //XXX: the okay button should be disabled until three cards are selected
     //XXX: three should be dynamic -- selected from config....
-    //while (hand.numSelected() < 3) {
-    this.controller.addPassButton();
-    this.setting.refresh();
-    while (! this.controller.isPassable()) {
+    this.control.addPassButton();
+    while (! this.control.isPassable()) {
       if (hand.numSelected() == 3) {
-        this.controller.enablePassButton();
+        this.control.enablePassButton(true);
       } else {
-        this.controller.disablePassButton();
+        this.control.enablePassButton(false);
       } 
-      try {
-        Thread.sleep(500);
-      } catch (Exception e) {}
+      Sleep.milliseconds(500);
     }  
     for (Iterator<Card> iterator = hand.getCards().iterator(); iterator.hasNext(); ) {
       Card card = iterator.next();
@@ -108,7 +104,8 @@ public class Human extends Player {
         iterator.remove();
       }
     }
-    this.setting.refresh(this.hand);
+    this.hand.sort();
+    this.hand.relocate();
     Debug.print(this.name+" passed:\t"+deck.toString());
     return deck;
   } 
@@ -122,14 +119,10 @@ public class Human extends Player {
    */
   public int meld() {
     Hand tmp  = new Hand();
-
-    int trump = controller.getIntProperty("GameTrump");
-    this.controller.addMeldButton();
-    this.setting.refresh();
-    while (! this.controller.isMeldable()) {
-      try { 
-        Thread.sleep(500);  
-      } catch (Exception e) {}
+    int trump = control.getModelIntProperty("Trump");
+    this.control.addMeldButton();
+    while (! this.control.isMeldable()) {
+      Sleep.milliseconds(500);  
     }
     for (Iterator<Card> iterator = hand.getCards().iterator(); iterator.hasNext(); ) {
       Card card = iterator.next();
@@ -145,7 +138,6 @@ public class Human extends Player {
         this.hand.meld(card);
       }
     } 
-    this.setting.setText("Meld: "+m.getMeld());
     return m.getMeld();
   }
 
@@ -153,6 +145,7 @@ public class Human extends Player {
     for (Card card: this.hand.getCards()) {
       card.unmeld();
       card.setFaceUp();
+      card.select(false);
     }
   }
 
@@ -187,20 +180,16 @@ public class Human extends Player {
    */
   public Card playCard(Trick trick) {
     Card  card;
-    Rules rules  = new Rules(this.controller);
+    Rules rules  = new Rules(this.control);
     boolean okay = false;
     do {
-      while (! this.controller.isPlayable()) {
-        try { 
-          Thread.sleep(500);  
-        } catch (Exception e) {}
-      }
-      card = this.setting.getCard();
+      card = this.hand.getSelected();
       okay = rules.isLegitPlay(trick, this.hand, card);
+      Sleep.milliseconds(50);  
     } while (! okay);
-    this.hand.remove(card);
-    this.setting.refresh(this.hand);
-    this.controller.setPlayable(false);
+    card.play();
+    this.hand.deselectAll();
+    this.hand.remove(card.getId());
     return card;
   }
 }

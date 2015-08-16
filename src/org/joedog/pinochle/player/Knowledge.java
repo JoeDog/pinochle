@@ -2,8 +2,8 @@ package org.joedog.pinochle.player;
 
 import java.util.Map;
 import java.util.HashMap;
+import org.joedog.util.*;
 import org.joedog.pinochle.game.*;
-import org.joedog.pinochle.util.*;
 
 public class Knowledge {
   private String [] memory = null;

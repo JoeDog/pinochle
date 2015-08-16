@@ -1,9 +1,9 @@
 package org.joedog.pinochle.player;
 
-import org.joedog.pinochle.control.GameController;
+import org.joedog.pinochle.control.Game;
 
 public interface PlayerFactory {
 
-  public Player getPlayer(GameController controller, int type);
+  public Player getPlayer(Game controller, int type);
 }
 

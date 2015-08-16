@@ -1,7 +1,7 @@
 package org.joedog.pinochle.player;
 
+import org.joedog.util.*;
 import org.joedog.pinochle.game.*;
-import org.joedog.pinochle.util.*;
 
 public class Brain {
   private Deck    deck;

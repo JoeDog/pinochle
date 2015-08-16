@@ -1,13 +1,13 @@
 package org.joedog.pinochle.player;
 
-import org.joedog.pinochle.control.GameController;
+import org.joedog.pinochle.control.Game;
 
 public class PlayerFactoryImpl implements PlayerFactory {
   
   public PlayerFactoryImpl() {
   }
 
-  public Player getPlayer(GameController controller, int type) {
+  public Player getPlayer(Game controller, int type) {
     if (type == Player.HUMAN) {
       return new Human(controller);
     } 
