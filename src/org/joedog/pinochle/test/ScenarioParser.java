@@ -5,8 +5,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.HashMap;
 
+import org.joedog.util.*;
 import org.joedog.pinochle.game.Pinochle;
-import org.joedog.pinochle.util.*;
 
 public class ScenarioParser {
   private boolean loaded = false;
