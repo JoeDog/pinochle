@@ -4,19 +4,20 @@ import java.awt.event.ActionListener;
 import java.awt.event.ActionEvent;
 import javax.swing.SwingUtilities;
 
-import org.joedog.pinochle.control.GameController;
+import org.joedog.pinochle.control.Game;
 
 public class NewAction implements ActionListener {
-  private GameController controller;
+  private Game controller;
 
-  public NewAction (GameController controller) {
+  public NewAction (Game controller) {
     this.controller = controller;
   }
 
   public void actionPerformed (ActionEvent e) {
     SwingUtilities.invokeLater(new Runnable() {
       public void run() {
-        controller.resetGame();
+        System.out.println("controller.newGame()");
+        controller.newGame();
       }
     });
   }

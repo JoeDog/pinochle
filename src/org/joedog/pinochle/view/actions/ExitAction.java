@@ -2,12 +2,12 @@ package org.joedog.pinochle.view.actions;
 
 import java.awt.event.ActionListener;
 import java.awt.event.ActionEvent;
-import org.joedog.pinochle.control.GameController;
+import org.joedog.pinochle.control.Game;
 
 public class ExitAction implements ActionListener {
-  private GameController controller;
+  private Game controller;
 
-  public ExitAction (GameController controller) {
+  public ExitAction (Game controller) {
     this.controller = controller;
   }
 
