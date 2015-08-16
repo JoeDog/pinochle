@@ -1,6 +1,7 @@
 package org.joedog.pinochle.control;
 
-import org.joedog.pinochle.view.View;
+import org.joedog.util.TextUtils;
+import org.joedog.pinochle.view.Viewable;
 import org.joedog.pinochle.model.AbstractModel;
 
 import java.util.ArrayList;
@@ -9,15 +10,15 @@ import java.beans.PropertyChangeListener;
 import java.lang.reflect.Method;
 
 public abstract class AbstractController implements PropertyChangeListener {
-  private ArrayList <View>          registeredViews;
+  private ArrayList <Viewable>      registeredViews;
   private ArrayList <AbstractModel> registeredModels;
  
   public AbstractController () {
-    this.registeredViews  = new ArrayList<View>();
+    this.registeredViews  = new ArrayList<Viewable>();
     this.registeredModels = new ArrayList<AbstractModel>();
   } 
 
-  public void addView (View view) {
+  public void addView (Viewable view) {
     this.registeredViews.add(view);
   }
 
@@ -26,7 +27,7 @@ public abstract class AbstractController implements PropertyChangeListener {
     model.addPropertyChangeListener(this);
   }
 
-  public void removeView (View view) {
+  public void removeView (Viewable view) {
     registeredViews.remove(view);
   }
 
@@ -35,38 +36,80 @@ public abstract class AbstractController implements PropertyChangeListener {
   }
 
   public void propertyChange(PropertyChangeEvent evt) {
-    for (View view: registeredViews) {
+    for (Viewable view: registeredViews) {
       view.modelPropertyChange(evt);
     }
   }
 
-  protected Object getModelProperty(String propertyName) {
+  public int save() {
+    for (AbstractModel model: registeredModels) {
+      model.save();
+    }
+    return 1;
+  }
+
+  public String getModelStringProperty(String key) {
+    String val = (String)getModelProperty(key);
+    if (val == null) {
+      return "null";
+    }
+    return val;
+  }
+
+  public int getModelIntProperty(String key) {
+    Object obj = getModelProperty(key);
+    if (obj == null) {
+      return 0;
+    }
+    if (obj instanceof String) {
+      return Integer.parseInt((String) obj);
+    } else if (obj instanceof Integer) {
+      return ((Integer) obj).intValue();
+    } else {
+      String toString = obj.toString();
+      if (toString.matches("-?\\d+")) {
+        return Integer.parseInt(toString);
+      }
+      return 0;
+    }
+  }
+
+  public boolean getModelBooleanProperty(String key) {
+    boolean result = false;
+    String  value  = ((String)getModelProperty(key)).trim();
+
+    if (value.matches("^true|^false"))  {
+      result = Boolean.parseBoolean(value);  
+    }
+    return result;
+  }
+
+  public int[] getModelArrayProperty(String key) {
+    String value = (String)getModelProperty(key);
+
+    if (value == null) {
+      // the model is designed to return a default value but shit happens
+      return null;
+    }
+   
+    int [] ret = TextUtils.toArray(value); 
+    return ret;
+  }
+
+  public Object getModelProperty(String propertyName) {
     for (AbstractModel model: registeredModels) {
       try {
         Method method = model.getClass().getMethod("get"+propertyName);
         return method.invoke(model);
       } catch (Exception ex) {
+        // ex.printStackTrace();
         // No warning; some models won't have the requested method
       }
     }
     return null;
   }
 
-  protected Object getModelProperty (String propertyName, Object param) {
-    for (AbstractModel model: registeredModels) {
-      try {
-        Method method = model.getClass().getMethod("get"+propertyName, new Class[] {
-          param.getClass()
-        });
-        return method.invoke(model, param);
-      } catch (Exception ex) {
-        // No warning; some models won't have the requested method
-      }
-    }
-    return null;
-  }
-
-  protected void setModelProperty (String propertyName, Object newValue) {
+  public void setModelProperty (String propertyName, Object newValue) {
     for (AbstractModel model: registeredModels) {
       try {
         Method method = model.getClass().getMethod("set"+propertyName, new Class[] {
@@ -81,7 +124,7 @@ public abstract class AbstractController implements PropertyChangeListener {
   }
 
   protected Object getViewProperty(String propertyName) {
-    for (View view: registeredViews) {
+    for (Viewable view: registeredViews) {
       try {
         Method method = view.getClass().getMethod("get"+propertyName);
         return method.invoke(view);
@@ -93,7 +136,7 @@ public abstract class AbstractController implements PropertyChangeListener {
   }
 
   protected Object getViewProperty (String propertyName, Object param) {
-    for (View view: registeredViews) {
+    for (Viewable view: registeredViews) {
       try {
         Method method = view.getClass().getMethod("get"+propertyName, new Class[] {
           param.getClass()
@@ -107,7 +150,7 @@ public abstract class AbstractController implements PropertyChangeListener {
   }
 
   protected void setViewProperty (String propertyName, Object newValue) {
-    for (View view: registeredViews) {
+    for (Viewable view: registeredViews) {
       try {
         Method method = view.getClass().getMethod("set"+propertyName, new Class[] {
           newValue.getClass()
@@ -127,17 +170,19 @@ public abstract class AbstractController implements PropertyChangeListener {
         method.invoke(model);
       } catch (Exception ex) {
         // No warning; some models won't have the requested method
+        //ex.printStackTrace();
       }
     }
   }
 
   protected void runViewMethod (String name) {
-    for (View view: registeredViews) {
+    for (Viewable view: registeredViews) {
       try {
         Method method = view.getClass().getMethod(name);
         method.invoke(view);
       } catch (Exception ex) {
         // No warning; some views won't have the requested method
+        //ex.printStackTrace();
       }
     }
   }
