@@ -2,7 +2,7 @@ package org.joedog.pinochle.model;
 
 import java.lang.NumberFormatException;
 import org.joedog.pinochle.control.*;
-import org.joedog.pinochle.util.DateUtils;
+import org.joedog.util.DateUtils;
 
 public class HighScoreModel extends AbstractModel {
   HighScoreTableModel model = new HighScoreTableModel();
@@ -12,6 +12,8 @@ public class HighScoreModel extends AbstractModel {
    * abstract model for high score management....
    */
   public HighScoreModel() { }
+
+  public void save() {}
 
   /**
    * Rather than instantiate a score somewhere
