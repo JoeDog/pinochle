@@ -3,6 +3,10 @@
 # Date:       Wed, Nov 13, 2013 19:12:50 PM
 # Version:    1.00
 
+2016/03/07 Jeffrey Fulmer <http://www.joedog.org/support/>
+ * COPYING                Added to the distribution
+ * .java                  Added GPL copyright information
+
 2014/01/23 Jeffrey Fulmer <http://www.joedog.org/support/>
  * view.HighScorePanel    Added to the distribution
  * model.HighScoreModel   Added to the distribution 
