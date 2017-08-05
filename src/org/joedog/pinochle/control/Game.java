@@ -172,11 +172,13 @@ public class Game extends AbstractController {
           this.play(players);
           break;
         case Pinochle.DONE:
+          this.done(players);
           break;
         case Pinochle.OVER:
           if (this.getModelBooleanProperty("Headless") == true) {
             System.exit(0);
           }
+          this.setMessage("Game. Set. Match.");
           this.pause(true);
           while(this.isPaused()); 
           break;
@@ -364,7 +366,9 @@ public class Game extends AbstractController {
         this.setMessage(players[ind].getName()+" bids "+ret+".");
       else
         this.setMessage(players[ind].getName()+" passes.");
-      Sleep.milliseconds(RandomUtils.range(10,40));
+      if (! this.getModelBooleanProperty("Headless")) {
+        Sleep.milliseconds(RandomUtils.range(10,40));
+      }
 
       if (ret < bid) {
         passes[turn%players.length] = 1;
@@ -559,11 +563,15 @@ public class Game extends AbstractController {
 
         int lo = (sim==true) ?  20 : 300;
         int hi = (sim==true) ?  80 : 700;
-        Sleep.milliseconds(RandomUtils.range(lo, hi));
+        if (! this.getModelBooleanProperty("Headless")) {
+          Sleep.milliseconds(RandomUtils.range(lo, hi));
+        }
         turn++;
       }
 
-      Sleep.milliseconds(RandomUtils.range((sim==true)?20:300,(sim==true)?80:700));
+      if (! this.getModelBooleanProperty("Headless")) {
+        Sleep.milliseconds(RandomUtils.range((sim==true)?20:300,(sim==true)?80:700));
+      } 
       turn = trick.winner();
 
       if (turn % 2 == 0) {
@@ -588,7 +596,9 @@ public class Game extends AbstractController {
     }
 
     this.runModelMethod("addItUp"); // a homage to Violent Femmes
-    Sleep.seconds(2);
+    if (! this.getModelBooleanProperty("Headless")) {
+      Sleep.seconds(2);
+    }
    
     // we pass this information to all players but only the bidder stores it 
     players[Pinochle.NORTH].remember(this.getModelIntProperty("NSMeld"), this.getModelIntProperty("NSTake"));
@@ -608,6 +618,37 @@ public class Game extends AbstractController {
       this.getModelProperty("PlayerWestName")+"|"+
       this.getModelProperty("EWHand")
     ); 
+    this.setModelProperty("Status", ""+Pinochle.DONE);
+  }
+
+  private void done(Player[] players) {
+    this.runModelMethod("addItUp"); // a homage to Violent Femmes
+    if (! this.getModelBooleanProperty("Headless")) {
+      Sleep.seconds(2);
+    }
+
+    // we pass this information to all players but only the bidder stores it 
+    players[Pinochle.NORTH].remember(this.getModelIntProperty("NSMeld"), this.getModelIntProperty("NSTake"));
+    players[Pinochle.EAST].remember (this.getModelIntProperty("EWMeld"), this.getModelIntProperty("EWTake"));
+    players[Pinochle.SOUTH].remember(this.getModelIntProperty("NSMeld"), this.getModelIntProperty("NSTake"));
+    players[Pinochle.WEST].remember (this.getModelIntProperty("EWMeld"), this.getModelIntProperty("EWTake"));
+
+    this.setModelProperty(
+      "HighScore",
+      this.getModelProperty("PlayerNorthName")+"/"+
+      this.getModelProperty("PlayerSouthName")+"|"+
+      this.getModelProperty("NSHand")
+    );
+    this.setModelProperty(
+      "HighScore",
+      this.getModelProperty("PlayerEastName")+"/"+
+      this.getModelProperty("PlayerWestName")+"|"+
+      this.getModelProperty("EWHand")
+    );
+    for (Player player : players) {
+      player.clear();  
+      player.setText("");
+    }
     if (this.getModelIntProperty("Status") != Pinochle.OVER) {
       this.newHand();
     }
