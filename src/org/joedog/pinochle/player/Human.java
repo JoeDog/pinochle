@@ -176,6 +176,10 @@ public class Human extends Player {
     // You're on your own, Human....
   }
 
+  public void clear() {
+    // You're on your own, Human....
+  }
+
   public void remember(int meld, int take) {
     if (!this.bidder) return;
     if (this.memory == null || this.memory.length() < 2) return;
