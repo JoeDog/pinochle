@@ -76,6 +76,13 @@ public class Computer extends Player {
   }
 
   /**
+   * Called between hands to clear our memory banks
+   */
+  public void clear() {
+    this.brain.forget();
+  }
+
+  /**
    * Commits a Deck of cards to memory; generally
    * we use this to remember subsets of Cards that
    * are stored in a Deck
@@ -269,7 +276,6 @@ public class Computer extends Player {
       // out the other ace? We have beat-the-queen below but do we want to run
       // all our aces first? 
       card = this.hand.getHighest(trick.getTrump());
-      Debug.print(this.name+" plans to run you fsckers out of trump: "+card.toString());
     } else if (this.hand.singletons() > 0) {
       card = this.hand.getSingleton();
       if (card != null) {
