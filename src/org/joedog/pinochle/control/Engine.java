@@ -72,13 +72,9 @@ public class Engine {
 
           view.action();
           delta = System.nanoTime() - lastTime;
-          
           if (delta < 10000000L) {
             Sleep.milliseconds((10000000L - delta) / 1000000L);
           }
-          //if (delta < 20000000L) {
-          //  Sleep.milliseconds((20000000L - delta) / 1000000L);
-          //}
         }
       }
     }
