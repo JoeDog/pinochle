@@ -126,11 +126,11 @@ public class Table extends JPanel {
         }
       }
     }
-    if (this.bidval != null && bidval.length() > 0) {
+    if (this.bidval != null && bidval.length() > 0 && this.over != true) {
       g.setFont(new Font("Tahoma", Font.BOLD, 14));
       g.drawString(this.bidval, 60, 43);
     }
-    if (this.trump != null) {
+    if (this.trump != null && this.over != true) {
       g.drawImage(this.trump, 20, 20, null);
     }
     g.drawImage(this.pad, 20, 350, this);
