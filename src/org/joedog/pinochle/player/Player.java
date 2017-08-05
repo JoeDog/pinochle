@@ -360,6 +360,8 @@ public abstract class Player extends AbstractModel {
     this.memory = new String("");
   }
 
+  public abstract void clear();
+
   public abstract void remember(Deck cards);
   
   public abstract void remember(Card card);
