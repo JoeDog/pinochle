@@ -806,8 +806,7 @@ public class Config extends AbstractModel {
     if (key==null || key.length() < 2) {
       return "false";
     } 
-
-    if (key.equals("6f40ce1466318bc16e9541c437609de5")) {
+    if (key.equals("91924358dbfa1ad602a7eecad53c99f1")) {
       return "true";
     }
     return "false";
