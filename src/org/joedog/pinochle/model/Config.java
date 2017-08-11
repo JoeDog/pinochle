@@ -113,7 +113,7 @@ public class Config extends AbstractModel {
     conf.remove("DialogY");
     conf.remove("ConfigX");
     conf.remove("ConfigY");
-    if (conf.getProperty("PLayerNorthType") != null && conf.getProperty("PlayerNorthType").equals("1")) 
+    if (conf.getProperty("PlayerNorthType") != null && conf.getProperty("PlayerNorthType").equals("1")) 
       conf.setProperty("PlayerNorthType", "computer");
     if (conf.getProperty("PlayerNorthType") != null && conf.getProperty("PlayerNorthType").equals("0")) 
       conf.setProperty("PlayerNorthType", "human");
