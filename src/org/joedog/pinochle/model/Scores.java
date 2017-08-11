@@ -195,10 +195,10 @@ public class Scores {
     /**
      * Determine if we have a winner.
      */ 
-    if (this.sum.getScore(Score.ONE) > win && this.sum.getScore(Score.TWO) > win) {
+    if (this.sum.getScore(Score.ONE) >= win && this.sum.getScore(Score.TWO) >= win) {
       // if both are over win, then the bidder wins out
       this.winner = (this.bid.getScore(Score.ONE) > this.bid.getScore(Score.TWO)) ? new Score(1,0) : new Score(0,1);
-    } else if (this.sum.getScore(Score.ONE) > win || this.sum.getScore(Score.TWO) > win) {
+    } else if (this.sum.getScore(Score.ONE) >= win || this.sum.getScore(Score.TWO) >= win) {
       // if just one is greater than win, the high score wins out
       this.winner = (this.sum.getScore(Score.ONE) > win) ? new Score(1,0) : new Score(0,1);
     }
