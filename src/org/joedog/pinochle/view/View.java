@@ -58,7 +58,7 @@ public class View extends JDesktopPane implements Viewable {
   }
 
   public void action() {
-    table.repaint();
+    table.repaint(100);
   }
 
   public void reset() {
@@ -102,7 +102,7 @@ public class View extends JDesktopPane implements Viewable {
         }  
         passButton.setEnabled(false);
         bbar.removeAll();
-        bbar.repaint();
+        bbar.repaint(100);
         bbar.add(passButton);
         invalidate();
         validate();
@@ -115,7 +115,7 @@ public class View extends JDesktopPane implements Viewable {
     if (SwingUtilities.isEventDispatchThread()) {
       passButton.setEnabled(true);
     } else {
-      SwingUtilities.invokeLater(new Runnable() {
+      SwingUtilities.invokeAndWait(new Runnable() {
         public void run() {
           passButton.setEnabled(true);
         }
@@ -142,7 +142,7 @@ public class View extends JDesktopPane implements Viewable {
           meldButton = new JButton(new MeldAction(control));
         }  
         bbar.removeAll();
-        bbar.repaint();
+        bbar.repaint(100);
         bbar.add(meldButton);
         bbar.invalidate();
         bbar.validate();
@@ -159,7 +159,7 @@ public class View extends JDesktopPane implements Viewable {
         }  
         playButton.setEnabled(true);
         bbar.removeAll();
-        bbar.repaint();
+        bbar.repaint(100);
         bbar.add(playButton);
         invalidate();
         validate();
