@@ -115,7 +115,7 @@ public class View extends JDesktopPane implements Viewable {
     if (SwingUtilities.isEventDispatchThread()) {
       passButton.setEnabled(true);
     } else {
-      SwingUtilities.invokeAndWait(new Runnable() {
+      SwingUtilities.invokeLater(new Runnable() {
         public void run() {
           passButton.setEnabled(true);
         }
