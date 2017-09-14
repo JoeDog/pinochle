@@ -93,13 +93,11 @@ public class Main extends JPanel implements MouseListener {
   public void mousePressed(MouseEvent e){
     int x = e.getX();
     int y = e.getY();
-    //control.select(x, y);
   }
   public void mouseReleased(MouseEvent e){
     int x = e.getX();
     int y = e.getY();
     control.select(x, y);
-    //control.slide(x, y);
   }
   public void mouseClicked(MouseEvent e) {}
   public void mouseEntered(MouseEvent e) {}
