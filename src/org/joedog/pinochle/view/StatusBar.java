@@ -42,7 +42,6 @@ public class StatusBar extends JPanel implements LayoutManager {
     this.setLayout(this);
     this.gap = 10;
     this.pad =  8;
-    this.setPreferredSize(new Dimension(490, 24));
     this.constraints = new HashMap(8);
     this.message     = new String("Ready...");
   }
@@ -51,10 +50,15 @@ public class StatusBar extends JPanel implements LayoutManager {
     this.message = message;
     SwingUtilities.invokeLater(new Runnable() {
       public void run() {
-        repaint();
+        repaint(100);
       }
     });
   } 
+
+  @Override
+  public Dimension getPreferredSize() {
+    return new Dimension(490, 24);
+  }
 
   protected void paintComponent(Graphics g) {
     super.paintComponent(g);
