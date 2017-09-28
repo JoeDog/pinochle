@@ -30,10 +30,9 @@ import org.joedog.pinochle.view.Menu;
 import org.joedog.pinochle.view.actions.*;
 
 public class Menu extends JMenuBar {
-  private String fileItems[]  = new String [] {"New", "Exit"};
-  private String prefItems[]  = new String [] {"Configure...", "Scores..."};
-  char    fileShorts[] = {'N', 'X'};
-  char    prefShorts[] = {'C', 'S'};
+  private String fileItems[]  = new String [] {"New", "Save Hand", "Save Game", "Exit"};
+  private String prefItems[]  = new String [] {"Configure...", "Select...", "Scores..."};
+  char    fileShorts[] = {'N', 'S', 'G', 'X'};
   private JMenu  fileMenu;
   private JMenu  prefMenu;
   private GameActions actions;
@@ -58,9 +57,6 @@ public class Menu extends JMenuBar {
 
     for (int i = 0; i < prefItems.length; i++) {
       JMenuItem item = new JMenuItem(prefItems[i]);
-      item.setAccelerator(
-        KeyStroke.getKeyStroke(prefShorts[i], Toolkit.getDefaultToolkit().getMenuShortcutKeyMask(), false)
-      );
       item.addActionListener(actions.getAction(prefItems[i]));
       prefMenu.add(item);
     }
