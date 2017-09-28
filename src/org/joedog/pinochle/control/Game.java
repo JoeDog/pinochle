@@ -277,6 +277,16 @@ public class Game extends AbstractController {
     }
   }
 
+  public void saveHand() {
+    String hand  = (String)this.getModelProperty("DealtCards");
+    String cards = (String)System.getProperty("pinochle.cards");
+    FileUtils.append(cards, System.getProperty("line.separator")+hand);
+  }
+
+  public void saveGame() {
+
+  }
+
   /**
    * Deals the cards to all game participants
    * <p>
@@ -323,17 +333,20 @@ public class Game extends AbstractController {
       }
     }
 
+    String history = "";
     for (Player player : players) {
-      // Let's print in cards.txt friendly format in case we want to capture it
-      Debug.print(Pinochle.position(player.getPosition())+": "+player.handToString());
-    } Debug.print("");
+      // Capture the hand in case we want to save it.
+      history += Pinochle.position(player.getPosition())+": "+player.handToString()+System.getProperty("line.separator");
+    } history += System.getProperty("line.separator");
+
+    Debug.print(history);
 
     this.runModelMethod("relocate");
-
-    this.setModelProperty("Trump",  "-1");
-    this.setModelProperty("Status", ""+Pinochle.BID);
-    this.setModelProperty("Dealer", ""+next);
-    this.setModelProperty("Active", ""+next);
+    this.setModelProperty("Trump",      "-1");
+    this.setModelProperty("Status",     ""+Pinochle.BID);
+    this.setModelProperty("Dealer",     ""+next);
+    this.setModelProperty("Active",     ""+next);
+    this.setModelProperty("DealtCards", history);
     return;
   }
 
