@@ -34,7 +34,8 @@ public class Scenarios {
   } 
 
   public boolean loaded() {
-    return (array != null && array.size() > 0);
+    return false;
+    //return (array != null && array.size() > 0);
   } 
  
   public boolean hasNext() {
