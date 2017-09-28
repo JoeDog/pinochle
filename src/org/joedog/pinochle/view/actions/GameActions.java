@@ -33,10 +33,16 @@ public class GameActions {
   public ActionListener getAction(String item) {
     if (item.equals("New")) {
       return new NewAction(controller);
+    } else if (item.equals("Save Hand")) {
+      return new SaveHandAction(controller);
+    } else if (item.equals("Save Game")) {
+      return new SaveGameAction(controller);
     } else if (item.equals("Exit")) {
       return new ExitAction(controller);
     } else if (item.equals("Configure...")) {
       return new ConfigAction(controller);
+    } else if (item.equals("Select...")) {
+      return new HandSelectAction(controller); 
     } else if (item.equals("Scores...")) {
       return new ScoresAction(controller);
     } else {
