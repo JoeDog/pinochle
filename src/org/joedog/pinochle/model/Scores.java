@@ -176,6 +176,15 @@ public class Scores {
   public boolean total(int round, int win) {
     Score m  = this.getMeld(round);
     Score t  = this.getTake(round);
+    /**
+     * If the player(s) are no-tricked, they lose their meld
+     */
+    if (t.getScore(Score.ONE) < 1) {
+      m.setScore(Score.ONE, 0);
+    }
+    if (t.getScore(Score.TWO) < 1) {
+      m.setScore(Score.TWO, 0);
+    }
     int   s1 = m.getScore(Score.ONE)+t.getScore(Score.ONE);
     int   s2 = m.getScore(Score.TWO)+t.getScore(Score.TWO);
     int   b1 = this.bid.getScore(Score.ONE);
