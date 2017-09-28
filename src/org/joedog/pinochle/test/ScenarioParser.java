@@ -1,6 +1,6 @@
 package org.joedog.pinochle.test;
 /**
- * Copyright (C) 2013-2016
+ * Copyright (C) 2013-2017
  * Jeffrey Fulmer - <jeff@joedog.org>, et al.
  *
  * This program is free software; you can redistribute it and/or modify
