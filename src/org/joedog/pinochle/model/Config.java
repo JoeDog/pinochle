@@ -42,6 +42,7 @@ public class Config extends AbstractModel {
   private static String memfile   = cfgdir+sep+"memory.txt";
   private static String hsfile    = cfgdir+sep+"scores-2.0.data";
   private static String cardfile  = cfgdir+sep+"cards.txt";
+  private static String savefile  = cfgdir+sep+"saved.txt";
   private static Config _instance = null;
   private static Object mutex     = new Object();
 
@@ -51,6 +52,7 @@ public class Config extends AbstractModel {
     System.getProperties().put("pinochle.memory", memfile);
     System.getProperties().put("pinochle.scores", hsfile);
     System.getProperties().put("pinochle.cards",  cardfile);
+    System.getProperties().put("pinochle.saved",  savefile);
 
     conf = new Attributes();
 
