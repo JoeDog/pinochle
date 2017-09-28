@@ -94,6 +94,14 @@ public class Match extends AbstractModel {
     this.conf.setProperty("Status", status);
   }
 
+  public void setDealtCards(String dealt) {
+    this.conf.setProperty("DealtCards", dealt);
+  }
+
+  public String getDealtCards() {
+    return this.conf.getProperty("DealtCards");
+  }
+
   /**
    * Returns the status of the match
    * <p>
