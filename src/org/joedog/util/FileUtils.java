@@ -1,6 +1,6 @@
 package org.joedog.util;
 /**
- * Copyright (C) 2013-2016
+ * Copyright (C) 2013-2017
  * Jeffrey Fulmer - <jeff@joedog.org>, et al.
  *
  * This program is free software; you can redistribute it and/or modify
@@ -20,8 +20,11 @@ package org.joedog.util;
  */
 
 import java.io.BufferedReader;
+import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileReader;
+import java.io.FileWriter;
+import java.io.PrintWriter;
 import java.io.FileInputStream;
 import java.io.InputStreamReader;
 import java.io.IOException;
@@ -68,6 +71,37 @@ public final class FileUtils {
       return file.delete();
     } else {
       return true;
+    }
+  }
+
+  public final static void append(String name, String content) {
+    FileWriter     fw  = null;
+    BufferedWriter bw  = null;
+    PrintWriter    out = null;
+    try {
+      fw  = new FileWriter(name, true);
+      bw  = new BufferedWriter(fw);
+      out = new PrintWriter(bw);
+      out.println(content);
+      out.close();
+    } catch (IOException e) {
+      System.err.println("ERROR: Unable to write to "+name); 
+    } finally {
+      try {
+        if (out != null) out.close();
+      } catch (Exception e) {
+        System.err.println("ERROR: Unable to close the print stream.");    
+      }
+      try {
+        if (bw != null) bw.close();
+      } catch (IOException e) {
+        System.err.println("ERROR: Unable to close the buffered stream.");    
+      }
+      try {
+        if (fw != null) fw.close();
+      } catch (IOException e) {
+        System.err.println("ERROR: Unable to close the file writer.");    
+      }
     }
   }
 
