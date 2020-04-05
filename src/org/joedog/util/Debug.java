@@ -27,11 +27,37 @@ public final class Debug {
     }
   }
 
-  public final static void trace(String s) {
-    if (Debug.debug() == true) {
-      System.out.println(s);
-      new IllegalStateException().printStackTrace();
+  /**
+   * Returns a stack trace without an Exception
+   * <p>
+   * @return String
+   */
+  public static String trace() {
+    StringBuffer ret = new StringBuffer("Stack Trace\n");
+    StackTraceElement[] elements = Thread.currentThread().getStackTrace();
+    for (int i = 1; i < elements.length; i++) {
+      StackTraceElement s = elements[i];
+      ret.append("\tat " + s.getClassName() + "." + s.getMethodName()
+        + "(" + s.getFileName() + ":" + s.getLineNumber() + ")\n");
     }
+    return ret.toString();
+  }
+
+  /**
+   * Returns a stack trace without an Exception
+   * <p>
+   * @param  String - A message for the first line of the trace
+   * @return String
+   */
+  public static String trace(String str) {
+    StringBuffer ret = new StringBuffer(str+"\n");
+    StackTraceElement[] elements = Thread.currentThread().getStackTrace();
+    for (int i = 1; i < elements.length; i++) {
+      StackTraceElement s = elements[i];
+      ret.append("\tat " + s.getClassName() + "." + s.getMethodName()
+        + "(" + s.getFileName() + ":" + s.getLineNumber() + ")\n");
+    }
+    return ret.toString();
   }
 
   public static boolean debug() {
